@@ -105,6 +105,47 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, voting_results: decision.voting_results });
     }
 
+    if (action === 'get_proposals') {
+      const proposals = await base44.asServiceRole.entities.BoardProposal.list('-timestamp', 50);
+      return Response.json({ success: true, proposals });
+    }
+
+    if (action === 'chairman_review') {
+      const { proposal_id, status, chairman_notes } = await req.json();
+      await base44.asServiceRole.entities.BoardProposal.update(proposal_id, {
+        status,
+        chairman_notes: chairman_notes || ''
+      });
+      // Post a message to the channel about the decision
+      const proposal = await base44.asServiceRole.entities.BoardProposal.get(proposal_id);
+      const statusLabel = status === 'approved' ? '✅ APPROVED' : status === 'rejected' ? '❌ REJECTED' : '⏸ DEFERRED';
+      await base44.asServiceRole.entities.BoardMessage.create({
+        channel_id: proposal.channel_id,
+        channel_name: proposal.channel_name,
+        from_member: '👑 Chairman',
+        message_content: `${statusLabel}: "${proposal.title}"${chairman_notes ? ` — ${chairman_notes}` : ''}`,
+        message_type: 'decision',
+        timestamp: new Date().toISOString()
+      });
+      return Response.json({ success: true });
+    }
+
+    if (action === 'submit_proposal') {
+      const { title, summary, raised_by, proposal_type, products_involved } = await req.json();
+      const proposal = await base44.asServiceRole.entities.BoardProposal.create({
+        title,
+        summary,
+        raised_by,
+        channel_id,
+        channel_name: '',
+        proposal_type: proposal_type || 'build',
+        products_involved: products_involved || [],
+        status: 'pending_chairman',
+        timestamp: new Date().toISOString()
+      });
+      return Response.json({ success: true, proposal });
+    }
+
     return Response.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

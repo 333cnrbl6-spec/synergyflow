@@ -1,0 +1,70 @@
+{
+  "name": "BoardProposal",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Short title of the proposal"
+    },
+    "summary": {
+      "type": "string",
+      "description": "What the board collectively proposes"
+    },
+    "raised_by": {
+      "type": "string",
+      "description": "Which board member(s) raised this"
+    },
+    "channel_id": {
+      "type": "string",
+      "description": "Channel where this was discussed"
+    },
+    "channel_name": {
+      "type": "string"
+    },
+    "proposal_type": {
+      "type": "string",
+      "enum": [
+        "build",
+        "pricing",
+        "go_to_market",
+        "partnership",
+        "governance",
+        "readiness"
+      ],
+      "description": "Category of proposal"
+    },
+    "products_involved": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Which products this affects"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_chairman",
+        "approved",
+        "rejected",
+        "deferred"
+      ],
+      "default": "pending_chairman",
+      "description": "Chairman approval status"
+    },
+    "chairman_notes": {
+      "type": "string",
+      "description": "Chairman feedback/decision notes"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "raised_by",
+    "channel_id",
+    "proposal_type"
+  ]
+}

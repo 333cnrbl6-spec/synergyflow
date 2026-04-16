@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Send, Hash } from 'lucide-react';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
+import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -19,6 +20,7 @@ export default function BoardCommunication() {
   const [products, setProducts] = useState([]);
   const [activeMember, setActiveMember] = useState(null);
   const [sending, setSending] = useState(false);
+  const [proposals, setProposals] = useState([]);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export default function BoardCommunication() {
           setSelectedChannel(channelsList[0]);
           await loadMessages(channelsList[0].id);
         }
+        await loadProposals();
       } catch (e) {
         console.error(e);
       } finally {
@@ -49,13 +52,25 @@ export default function BoardCommunication() {
 
   useEffect(() => {
     if (!selectedChannel) return;
-    const interval = setInterval(() => loadMessages(selectedChannel.id), 4000);
+    const interval = setInterval(async () => {
+      await loadMessages(selectedChannel.id);
+      await loadProposals();
+    }, 4000);
     return () => clearInterval(interval);
   }, [selectedChannel]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const loadProposals = async () => {
+    try {
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      setProposals(res.data.proposals || []);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const loadMessages = async (channelId) => {
     try {
@@ -147,6 +162,7 @@ export default function BoardCommunication() {
             onMemberClick={setActiveMember}
           />
           <ReadinessDashboard members={boardMembers} products={products} />
+          <ChairmanPanel proposals={proposals} onRefresh={loadProposals} />
         </div>
 
         {/* Right: Channel Discussion */}
@@ -167,8 +183,10 @@ export default function BoardCommunication() {
               </div>
             ) : (
               messages.map((msg) => {
-                const isUser = !boardMembers.some(m => m.member_name === msg.from_member);
-                const memberColor = MEMBER_COLORS[msg.from_member] || '#64748b';
+                const isCollective = msg.from_member === '📋 Board Collective';
+                const isChairman = msg.from_member === '👑 Chairman';
+                const isUser = !boardMembers.some(m => m.member_name === msg.from_member) && !isCollective && !isChairman;
+                const memberColor = isChairman ? '#f59e0b' : isCollective ? '#6366f1' : (MEMBER_COLORS[msg.from_member] || '#64748b');
                 return (
                   <div key={msg.id} className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
                     {!isUser && (
@@ -189,6 +207,10 @@ export default function BoardCommunication() {
                       <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                         isUser
                           ? 'bg-blue-600 text-white rounded-tr-sm'
+                          : isCollective
+                          ? 'bg-indigo-900/60 border border-indigo-500/30 text-indigo-100 rounded-tl-sm italic'
+                          : isChairman
+                          ? 'bg-amber-900/60 border border-amber-500/40 text-amber-100 rounded-tl-sm font-semibold'
                           : 'bg-slate-800 text-slate-100 rounded-tl-sm'
                       }`}>
                         {msg.message_content}
