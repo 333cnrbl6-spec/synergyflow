@@ -22,9 +22,12 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, message: 'No members in channel' });
     }
 
-    // Get board member details for those in the channel
+    // Get all board members and products
     const allMembers = await base44.asServiceRole.entities.BoardMember.list();
-    const channelMembers = allMembers.filter(m => 
+    const allProducts = await base44.asServiceRole.entities.Product.list();
+
+    // Filter to channel members who are not the sender and are active
+    const channelMembers = allMembers.filter(m =>
       channel.members.includes(m.app_name) && m.app_name !== from_member && m.active
     );
 
@@ -34,12 +37,44 @@ Deno.serve(async (req) => {
 
     // Generate responses from each member
     for (const member of channelMembers) {
-      const prompt = `You are ${member.member_name}, a ${member.role} representing ${member.app_name}. Your expertise: ${member.expertise?.join(', ')}. 
+      // Find this member's product and calculate its sell-as-is value
+      const product = allProducts.find(p => p.name === member.app_name);
 
-A message was just posted in the board channel by ${from_member}:
+      let productValueContext = '';
+      if (product) {
+        const lowestTier = product.pricing_tiers?.[0];
+        const midTier = product.pricing_tiers?.[1];
+        const enterpriseTier = product.pricing_tiers?.[2];
+
+        productValueContext = `
+Your product: ${product.name}
+Description: ${product.description}
+Target market: ${product.target_market}
+Current sell-as-is pricing:
+  - Starter: $${lowestTier?.price || 0}/month
+  - Professional: $${midTier?.price || 0}/month  
+  - Enterprise: $${enterpriseTier?.price || 0}/month
+Estimated ARR if 100 customers (mix of tiers): ~$${Math.round(((lowestTier?.price || 0) * 40 + (midTier?.price || 0) * 45 + (enterpriseTier?.price || 0) * 15) * 12)}/year
+Key features: ${product.features?.join(', ')}`;
+      }
+
+      const channelContext = {
+        strategy: 'Focus on long-term strategic direction, growth opportunities, market positioning, and competitive advantage.',
+        products: 'Focus on product development, feature priorities, cross-product integrations, and technical roadmap.',
+        prospects: 'Focus on the sales pipeline, lead quality, deal values, conversion rates, and commercial opportunities.',
+        governance: 'Focus on policy, compliance, voting outcomes, risk management, and board governance matters.'
+      }[channel.channel_type] || 'Provide your professional perspective.';
+
+      const prompt = `You are ${member.member_name}, the ${member.role} representing ${member.app_name} on the board of directors.
+
+${productValueContext}
+
+Channel context: ${channelContext}
+
+A message was posted in the #${channel.display_name} channel by ${from_member}:
 "${message_content}"
 
-Respond briefly (2-3 sentences) with your perspective or question, staying in character. Be professional and constructive.`;
+Respond concisely (2-4 sentences) from your unique product and role perspective. Reference your product's current value and pricing where relevant. Be professional, direct, and constructive. Do not use bullet points.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
