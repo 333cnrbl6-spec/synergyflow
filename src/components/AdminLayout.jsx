@@ -15,6 +15,7 @@ export default function AdminLayout() {
     { label: 'Subscriptions', icon: FileText, path: '/admin/subscriptions' },
     { label: 'Support', icon: Headphones, path: '/admin/support' },
     { label: 'Board', icon: Gavel, path: '/admin/board' },
+    { label: 'Boardroom', icon: Gavel, path: '/admin/board-communication' },
     { label: 'Settings', icon: Settings, path: '/admin/settings' },
   ];
 

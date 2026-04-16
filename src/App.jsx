@@ -13,6 +13,7 @@ import ProspectDetail from './pages/admin/ProspectDetail';
 import SubscriptionManager from './pages/admin/SubscriptionManager';
 import SupportCenter from './pages/admin/SupportCenter';
 import Board from './pages/admin/Board';
+import BoardCommunication from './pages/admin/BoardCommunication';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/subscriptions" element={<SubscriptionManager />} />
         <Route path="/admin/support" element={<SupportCenter />} />
         <Route path="/admin/board" element={<Board />} />
+        <Route path="/admin/board-communication" element={<BoardCommunication />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
