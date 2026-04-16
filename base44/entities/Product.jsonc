@@ -1,0 +1,68 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Product name (e.g., Property Management, Zoo Research, etc.)"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL slug for the product"
+    },
+    "description": {
+      "type": "string",
+      "description": "Product description"
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "Product icon/logo URL"
+    },
+    "base44_app_id": {
+      "type": "string",
+      "description": "Link to the Base44 app ID"
+    },
+    "target_market": {
+      "type": "string",
+      "description": "Target customer type"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Key features list"
+    },
+    "pricing_tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ]
+          },
+          "stripe_price_id": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Pricing tiers for this product"
+    }
+  },
+  "required": [
+    "name",
+    "slug",
+    "description",
+    "target_market"
+  ]
+}

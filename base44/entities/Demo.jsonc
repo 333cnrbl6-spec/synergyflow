@@ -1,0 +1,61 @@
+{
+  "name": "Demo",
+  "type": "object",
+  "properties": {
+    "prospect_id": {
+      "type": "string",
+      "description": "Prospect ID"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product being demoed"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Demo scheduled date/time"
+    },
+    "demo_type": {
+      "type": "string",
+      "enum": [
+        "video",
+        "screen_share",
+        "in_person",
+        "self_guided"
+      ],
+      "description": "Type of demo"
+    },
+    "conducted_by": {
+      "type": "string",
+      "description": "Sales agent conducting demo"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "rescheduled",
+        "cancelled"
+      ],
+      "default": "scheduled",
+      "description": "Demo status"
+    },
+    "meeting_link": {
+      "type": "string",
+      "description": "Zoom/meeting link"
+    },
+    "feedback": {
+      "type": "string",
+      "description": "Demo feedback/notes"
+    },
+    "follow_up_action": {
+      "type": "string",
+      "description": "Next step"
+    }
+  },
+  "required": [
+    "prospect_id",
+    "product_id",
+    "scheduled_date"
+  ]
+}

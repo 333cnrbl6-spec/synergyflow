@@ -1,0 +1,64 @@
+{
+  "name": "SalesAgent",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Agent name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Agent email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Agent phone"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "sales_rep",
+        "account_manager",
+        "sales_director"
+      ],
+      "description": "Agent role"
+    },
+    "assigned_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product IDs they sell"
+    },
+    "commission_rate": {
+      "type": "number",
+      "description": "Commission rate percentage"
+    },
+    "ytd_revenue": {
+      "type": "number",
+      "description": "Year-to-date revenue in cents"
+    },
+    "ytd_deals_closed": {
+      "type": "integer",
+      "description": "Number of deals closed YTD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Agent status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "role"
+  ]
+}

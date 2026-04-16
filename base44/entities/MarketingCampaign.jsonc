@@ -1,0 +1,77 @@
+{
+  "name": "MarketingCampaign",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Campaign name"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "email",
+        "social",
+        "content",
+        "webinar",
+        "paid_ads",
+        "referral",
+        "other"
+      ],
+      "description": "Campaign type"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Target product"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "planning",
+      "description": "Campaign status"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Campaign start date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Campaign end date"
+    },
+    "budget": {
+      "type": "number",
+      "description": "Campaign budget in cents"
+    },
+    "leads_generated": {
+      "type": "integer",
+      "description": "Number of leads generated"
+    },
+    "conversion_rate": {
+      "type": "number",
+      "description": "Conversion rate percentage"
+    },
+    "roi": {
+      "type": "number",
+      "description": "Return on investment percentage"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "product_id"
+  ]
+}

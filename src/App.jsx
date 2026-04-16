@@ -5,6 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import Landing from './pages/Landing';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import CRMDashboard from './pages/admin/CRMDashboard';
+import ProspectDetail from './pages/admin/ProspectDetail';
+import SubscriptionManager from './pages/admin/SubscriptionManager';
+import SupportCenter from './pages/admin/SupportCenter';
+import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -33,7 +40,14 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/" element={<Landing />} />
+      <Route element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/crm" element={<CRMDashboard />} />
+        <Route path="/admin/prospects/:id" element={<ProspectDetail />} />
+        <Route path="/admin/subscriptions" element={<SubscriptionManager />} />
+        <Route path="/admin/support" element={<SupportCenter />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

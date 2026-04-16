@@ -1,0 +1,79 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "customer_email": {
+      "type": "string",
+      "description": "Customer email"
+    },
+    "customer_company": {
+      "type": "string",
+      "description": "Customer company name"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "tier": {
+      "type": "string",
+      "description": "Subscription tier (Starter, Professional, Enterprise, etc.)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "cancelled",
+        "past_due"
+      ],
+      "default": "active",
+      "description": "Subscription status"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly",
+      "description": "Billing cycle"
+    },
+    "monthly_price": {
+      "type": "number",
+      "description": "Monthly price in cents"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Subscription start date"
+    },
+    "renewal_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next renewal date"
+    },
+    "cancellation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Cancellation date if applicable"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "customer_email",
+    "product_id",
+    "tier",
+    "monthly_price"
+  ]
+}

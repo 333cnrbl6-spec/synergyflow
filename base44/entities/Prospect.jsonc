@@ -1,0 +1,86 @@
+{
+  "name": "Prospect",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Primary contact person"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry/vertical"
+    },
+    "interested_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product IDs they're interested in"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "website",
+        "referral",
+        "linkedin",
+        "inbound",
+        "event",
+        "outbound",
+        "other"
+      ],
+      "description": "How they found us"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "qualified",
+        "engaged",
+        "demo_scheduled",
+        "proposal",
+        "negotiating",
+        "won",
+        "lost"
+      ],
+      "default": "lead",
+      "description": "Sales pipeline stage"
+    },
+    "assigned_sales_agent": {
+      "type": "string",
+      "description": "Email of assigned sales agent"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    },
+    "budget": {
+      "type": "number",
+      "description": "Estimated annual budget"
+    },
+    "deal_value": {
+      "type": "number",
+      "description": "Estimated deal value"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected close date"
+    }
+  },
+  "required": [
+    "company_name",
+    "email"
+  ]
+}
