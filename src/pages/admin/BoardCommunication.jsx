@@ -216,9 +216,12 @@ export default function BoardCommunication() {
           <div className="flex-1 flex gap-4 overflow-hidden">
             {/* Members Present Sidebar */}
             <div className="w-48 border rounded-lg p-3 bg-card space-y-3 overflow-y-auto">
-              <h4 className="font-semibold text-xs text-muted-foreground">MEMBERS PRESENT</h4>
+              <h4 className="font-semibold text-xs text-muted-foreground">MEMBERS PRESENT ({channelMembers.length})</h4>
               {channelMembers.length === 0 ? (
-                <p className="text-xs text-muted-foreground">No members in this channel</p>
+                <div className="text-xs text-muted-foreground p-2 bg-yellow-50 border border-yellow-200 rounded">
+                  <p className="font-semibold text-yellow-900">No members configured</p>
+                  <p className="text-yellow-700 mt-1">Add board members to this channel in the Board settings.</p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {channelMembers.map((member) => (

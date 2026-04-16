@@ -3,25 +3,34 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    const payload = await req.json();
+    const { event, data } = payload;
+
+    // Extract data from entity automation trigger
+    const channel_id = data.channel_id;
+    const message_content = data.message_content;
+    const from_member = data.from_member;
+
+    if (!channel_id || !message_content || !from_member) {
+      return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
-    const { message_id, channel_id, message_content, from_member } = await req.json();
 
     // Get board members for this channel
     const channel = await base44.asServiceRole.entities.BoardChannel.get(channel_id);
-    if (!channel) {
-      return Response.json({ error: 'Channel not found' }, { status: 404 });
+    if (!channel || !channel.members || channel.members.length === 0) {
+      return Response.json({ success: true, message: 'No members in channel' });
     }
 
     // Get board member details for those in the channel
     const allMembers = await base44.asServiceRole.entities.BoardMember.list();
     const channelMembers = allMembers.filter(m => 
-      channel.members && channel.members.includes(m.app_name) && m.app_name !== from_member
+      channel.members.includes(m.app_name) && m.app_name !== from_member && m.active
     );
+
+    if (channelMembers.length === 0) {
+      return Response.json({ success: true, message: 'No active members to respond' });
+    }
 
     // Generate responses from each member
     for (const member of channelMembers) {
@@ -48,8 +57,9 @@ Respond briefly (2-3 sentences) with your perspective or question, staying in ch
       });
     }
 
-    return Response.json({ success: true });
+    return Response.json({ success: true, responses_generated: channelMembers.length });
   } catch (error) {
+    console.error('Error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
