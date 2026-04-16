@@ -1,0 +1,53 @@
+{
+  "name": "BoardChannel",
+  "type": "object",
+  "properties": {
+    "channel_name": {
+      "type": "string",
+      "description": "Channel identifier (e.g., '#strategy', '#products', '#prospects', '#governance')"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable channel name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Channel purpose and scope"
+    },
+    "channel_type": {
+      "type": "string",
+      "enum": [
+        "strategy",
+        "products",
+        "prospects",
+        "governance",
+        "general"
+      ],
+      "description": "Category of channel"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of board member app names with access"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Channel creation timestamp"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is channel active"
+    }
+  },
+  "required": [
+    "channel_name",
+    "display_name",
+    "description",
+    "channel_type",
+    "members"
+  ]
+}

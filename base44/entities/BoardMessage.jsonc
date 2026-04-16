@@ -1,0 +1,63 @@
+{
+  "name": "BoardMessage",
+  "type": "object",
+  "properties": {
+    "channel_id": {
+      "type": "string",
+      "description": "ID of the channel this message belongs to"
+    },
+    "channel_name": {
+      "type": "string",
+      "description": "Channel name for easy reference"
+    },
+    "from_member": {
+      "type": "string",
+      "description": "Board member app name sending the message"
+    },
+    "message_content": {
+      "type": "string",
+      "description": "The message text"
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "perspective",
+        "proposal",
+        "decision",
+        "announcement",
+        "question"
+      ],
+      "description": "Type of message"
+    },
+    "meeting_id": {
+      "type": "string",
+      "description": "Optional link to related board meeting"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When message was sent"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Optional attachments"
+    }
+  },
+  "required": [
+    "channel_id",
+    "from_member",
+    "message_content",
+    "message_type"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "name": "BoardDecision",
+  "type": "object",
+  "properties": {
+    "decision_title": {
+      "type": "string",
+      "description": "Title of the decision"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what's being decided"
+    },
+    "proposed_by": {
+      "type": "string",
+      "description": "Board member app name that proposed"
+    },
+    "channel_id": {
+      "type": "string",
+      "description": "Channel where decision is being made"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "in_discussion",
+        "voting",
+        "passed",
+        "rejected",
+        "archived"
+      ],
+      "default": "proposed",
+      "description": "Current status of decision"
+    },
+    "voting_results": {
+      "type": "object",
+      "properties": {
+        "yes_votes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Members who voted yes"
+        },
+        "no_votes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Members who voted no"
+        },
+        "abstain_votes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Members who abstained"
+        }
+      },
+      "description": "Vote tallies"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Voting deadline"
+    },
+    "implementation_owner": {
+      "type": "string",
+      "description": "Board member responsible for implementation"
+    },
+    "implementation_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "blocked"
+      ],
+      "default": "pending",
+      "description": "Status of implementation"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or context"
+    }
+  },
+  "required": [
+    "decision_title",
+    "description",
+    "proposed_by",
+    "channel_id"
+  ]
+}
