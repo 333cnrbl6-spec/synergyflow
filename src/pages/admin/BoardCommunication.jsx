@@ -17,6 +17,8 @@ export default function BoardCommunication() {
   const [user, setUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [boardMembers, setBoardMembers] = useState([]);
+  const [channelMembers, setChannelMembers] = useState([]);
 
   useEffect(() => {
     const initBoard = async () => {
@@ -26,9 +28,19 @@ export default function BoardCommunication() {
 
         const channelsList = await base44.entities.BoardChannel.list();
         setChannels(channelsList);
+        
+        // Load board members
+        const members = await base44.entities.BoardMember.list();
+        setBoardMembers(members);
+        
         if (channelsList.length > 0) {
           setSelectedChannel(channelsList[0]);
           await loadChannelMessages(channelsList[0].id);
+          
+          // Set channel members
+          const channelMemberNames = channelsList[0].members || [];
+          const activeMembers = members.filter(m => channelMemberNames.includes(m.app_name));
+          setChannelMembers(activeMembers);
         }
 
         // Load notifications
@@ -42,12 +54,22 @@ export default function BoardCommunication() {
 
     initBoard();
 
-    // Poll for new notifications every 5 seconds
-    const interval = setInterval(() => {
+    // Poll for messages every 3 seconds for real-time feel
+    const messageInterval = setInterval(() => {
+      if (selectedChannel) {
+        loadChannelMessages(selectedChannel.id);
+      }
+    }, 3000);
+
+    // Poll for notifications every 5 seconds
+    const notificationInterval = setInterval(() => {
       loadNotifications();
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(messageInterval);
+      clearInterval(notificationInterval);
+    };
   }, []);
 
   const loadChannelMessages = async (channelId) => {
@@ -170,6 +192,9 @@ export default function BoardCommunication() {
               onClick={() => {
                 setSelectedChannel(channel);
                 loadChannelMessages(channel.id);
+                const channelMemberNames = channel.members || [];
+                const activeMembers = boardMembers.filter(m => channelMemberNames.includes(m.app_name));
+                setChannelMembers(activeMembers);
               }}
             >
               <span className="mr-2">#</span>
@@ -189,6 +214,36 @@ export default function BoardCommunication() {
           )}
 
           <div className="flex-1 flex gap-4 overflow-hidden">
+            {/* Members Present Sidebar */}
+            <div className="w-48 border rounded-lg p-3 bg-card space-y-3 overflow-y-auto">
+              <h4 className="font-semibold text-xs text-muted-foreground">MEMBERS PRESENT</h4>
+              {channelMembers.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No members in this channel</p>
+              ) : (
+                <div className="space-y-2">
+                  {channelMembers.map((member) => (
+                    <div key={member.id} className="p-2 rounded bg-background border text-xs">
+                      <p className="font-semibold text-foreground">{member.member_name}</p>
+                      <p className="text-muted-foreground text-xs">{member.role}</p>
+                      <p className="text-muted-foreground text-xs mt-1">{member.app_name}</p>
+                      {member.expertise && (
+                        <div className="mt-2 space-y-1">
+                          <p className="text-xs font-semibold text-muted-foreground">Expertise:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {member.expertise.slice(0, 2).map((exp, idx) => (
+                              <span key={idx} className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">
+                                {exp}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Messages */}
             <div className="flex-1 flex flex-col gap-4 overflow-y-auto border rounded-lg p-4 bg-background">
               {messages.length === 0 ? (
