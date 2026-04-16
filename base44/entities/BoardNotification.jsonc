@@ -1,0 +1,46 @@
+{
+  "name": "BoardNotification",
+  "type": "object",
+  "properties": {
+    "channel_id": {
+      "type": "string",
+      "description": "Channel ID where message was posted"
+    },
+    "channel_name": {
+      "type": "string",
+      "description": "Channel name for display"
+    },
+    "message_id": {
+      "type": "string",
+      "description": "The message that triggered notification"
+    },
+    "from_member": {
+      "type": "string",
+      "description": "Who sent the message"
+    },
+    "to_member": {
+      "type": "string",
+      "description": "Which board member should be notified"
+    },
+    "message_preview": {
+      "type": "string",
+      "description": "Preview of message content"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has this notification been read"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When notification was created"
+    }
+  },
+  "required": [
+    "channel_id",
+    "from_member",
+    "to_member",
+    "message_preview"
+  ]
+}

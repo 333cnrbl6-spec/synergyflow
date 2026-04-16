@@ -20,6 +20,29 @@ Deno.serve(async (req) => {
         message_type,
         timestamp: new Date().toISOString()
       });
+
+      // Get channel to find members to notify
+      const channel = await base44.asServiceRole.entities.BoardChannel.get(channel_id);
+      
+      // Create notifications for all other members
+      if (channel && channel.members) {
+        const notificationPromises = channel.members
+          .filter(member => member !== from_member)
+          .map(member =>
+            base44.asServiceRole.entities.BoardNotification.create({
+              channel_id,
+              channel_name: channel.display_name,
+              message_id: message.id,
+              from_member,
+              to_member: member,
+              message_preview: message_content.substring(0, 100),
+              timestamp: new Date().toISOString()
+            })
+          );
+        
+        await Promise.all(notificationPromises);
+      }
+
       return Response.json({ success: true, message });
     }
 
@@ -30,6 +53,24 @@ Deno.serve(async (req) => {
         100
       );
       return Response.json({ success: true, messages });
+    }
+
+    if (action === 'get_notifications') {
+      const member = user.full_name;
+      const notifications = await base44.asServiceRole.entities.BoardNotification.filter(
+        { to_member: member, read: false },
+        '-timestamp',
+        50
+      );
+      return Response.json({ success: true, notifications });
+    }
+
+    if (action === 'mark_notification_read') {
+      const { notification_id } = await req.json();
+      await base44.asServiceRole.entities.BoardNotification.update(notification_id, {
+        read: true
+      });
+      return Response.json({ success: true });
     }
 
     if (action === 'propose_decision') {

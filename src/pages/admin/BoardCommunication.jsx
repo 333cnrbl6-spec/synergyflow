@@ -15,6 +15,8 @@ export default function BoardCommunication() {
   const [messageType, setMessageType] = useState('perspective');
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const initBoard = async () => {
@@ -28,6 +30,9 @@ export default function BoardCommunication() {
           setSelectedChannel(channelsList[0]);
           await loadChannelMessages(channelsList[0].id);
         }
+
+        // Load notifications
+        await loadNotifications();
       } catch (error) {
         console.error('Failed to load board data:', error);
       } finally {
@@ -36,6 +41,13 @@ export default function BoardCommunication() {
     };
 
     initBoard();
+
+    // Poll for new notifications every 5 seconds
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const loadChannelMessages = async (channelId) => {
@@ -57,6 +69,30 @@ export default function BoardCommunication() {
     }
   };
 
+  const loadNotifications = async () => {
+    try {
+      const response = await base44.functions.invoke('boardCommunications', {
+        action: 'get_notifications'
+      });
+      setNotifications(response.data.notifications || []);
+      setUnreadCount(response.data.notifications?.length || 0);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+    }
+  };
+
+  const markNotificationRead = async (notificationId) => {
+    try {
+      await base44.functions.invoke('boardCommunications', {
+        action: 'mark_notification_read',
+        notification_id: notificationId
+      });
+      await loadNotifications();
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!messageContent.trim() || !selectedChannel) return;
 
@@ -71,6 +107,7 @@ export default function BoardCommunication() {
 
       setMessageContent('');
       await loadChannelMessages(selectedChannel.id);
+      await loadNotifications();
     } catch (error) {
       console.error('Failed to send message:', error);
     }
@@ -96,6 +133,31 @@ export default function BoardCommunication() {
 
   return (
     <div className="p-8 space-y-6 max-w-7xl mx-auto">
+      {/* Notifications Banner */}
+      {unreadCount > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-blue-900">{unreadCount} new notification{unreadCount !== 1 ? 's' : ''}</span>
+          </div>
+          <div className="space-y-2">
+            {notifications.slice(0, 3).map((notif) => (
+              <div key={notif.id} className="flex items-start justify-between bg-white p-2 rounded text-sm">
+                <div className="flex-1">
+                  <p className="text-blue-900"><strong>{notif.from_member}</strong> posted in {notif.channel_name}</p>
+                  <p className="text-blue-700 text-xs mt-1">{notif.message_preview}</p>
+                </div>
+                <button
+                  onClick={() => markNotificationRead(notif.id)}
+                  className="ml-2 text-xs text-blue-600 hover:text-blue-900 whitespace-nowrap"
+                >
+                  Dismiss
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-6 h-[calc(100vh-200px)]">
         {/* Channels Sidebar */}
         <div className="w-48 space-y-2 overflow-y-auto">
