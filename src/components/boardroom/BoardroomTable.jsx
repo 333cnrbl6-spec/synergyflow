@@ -107,8 +107,9 @@ function MemberSeat({ member, product, position, isActive, onClick }) {
 export default function BoardroomTable({ members, products, activeMember, onMemberClick }) {
   const getProduct = (member) => products.find(p => p.name === member.app_name);
 
+  // Parity score = weakest member; board only advances when everyone advances
   const combinedReadiness = members.length > 0
-    ? Math.round(members.reduce((sum, m) => sum + calcReadiness(getProduct(m)), 0) / members.length)
+    ? Math.min(...members.map(m => calcReadiness(getProduct(m))))
     : 0;
 
   return (
@@ -142,9 +143,9 @@ export default function BoardroomTable({ members, products, activeMember, onMemb
         {/* Combined value in centre */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           <div className="text-center">
-            <div className="text-xs text-emerald-600 font-semibold tracking-widest uppercase mb-1">Board Readiness</div>
+            <div className="text-xs text-emerald-600 font-semibold tracking-widest uppercase mb-1">Board Parity</div>
             <div className="text-5xl font-black text-slate-800">{combinedReadiness}%</div>
-            <div className="text-xs text-slate-500 mt-1">Combined Score</div>
+            <div className="text-xs text-slate-500 mt-1">Weakest Link Score</div>
             <div className="flex gap-1 mt-3 justify-center">
               {members.map((m) => {
                 const color = MEMBER_COLORS[m.member_name] || { accent: '#64748b' };

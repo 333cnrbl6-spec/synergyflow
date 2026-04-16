@@ -34,11 +34,12 @@ export default function ReadinessDashboard({ members, products }) {
     score: calcReadiness(getProduct(m)),
   }));
 
-  const combined = scores.length > 0
-    ? Math.round(scores.reduce((s, x) => s + x.score, 0) / scores.length)
-    : 0;
-
-  const maxScore = Math.max(...scores.map(x => x.score), 1);
+  // Parity score: the board is only as strong as its weakest member.
+  // Combined score = the minimum individual score (not the average).
+  // This means the score only rises when ALL members rise together.
+  const minScore = scores.length > 0 ? Math.min(...scores.map(x => x.score)) : 0;
+  const maxScore = scores.length > 0 ? Math.max(...scores.map(x => x.score)) : 1;
+  const combined = minScore; // Board readiness = weakest link
 
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 space-y-4">
@@ -50,7 +51,7 @@ export default function ReadinessDashboard({ members, products }) {
       {/* Combined bar */}
       <div className="bg-slate-800 rounded-lg p-3 space-y-2">
         <div className="flex justify-between items-center">
-          <span className="text-slate-300 text-xs font-semibold">COMBINED BOARD SCORE</span>
+          <span className="text-slate-300 text-xs font-semibold">BOARD PARITY SCORE</span>
           <span className="text-white font-black text-lg">{combined}%</span>
         </div>
         <div className="w-full bg-slate-700 rounded-full h-3">
@@ -58,14 +59,17 @@ export default function ReadinessDashboard({ members, products }) {
             className="h-3 rounded-full transition-all duration-700"
             style={{
               width: `${combined}%`,
-              background: 'linear-gradient(90deg, #3b82f6, #22c55e)',
+              background: 'linear-gradient(90deg, #f97316, #22c55e)',
             }}
           />
         </div>
         <div className="text-xs text-slate-500">
-          {combined >= 80 ? '✅ Board is collectively near launch-ready' :
-           combined >= 60 ? '⚡ Board progressing — collaboration can close gaps' :
-           '🔧 Early stages — focused effort needed across products'}
+          {combined >= 80 ? '✅ All products are launch-ready — true board parity achieved' :
+           combined >= 60 ? '⚡ Getting closer — lagging products need collective support' :
+           '🔧 Board parity is low — stronger products must lift the others'}
+        </div>
+        <div className="text-xs text-amber-400/80">
+          ⚖️ Score reflects the weakest product — all must rise together
         </div>
       </div>
 
@@ -83,7 +87,7 @@ export default function ReadinessDashboard({ members, products }) {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color.accent }} />
                   <span className="text-white text-xs font-semibold">{member.member_name}</span>
-                  {isLeader && <span className="text-xs bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded font-semibold">LEADER</span>}
+                  {score === maxScore && score > minScore && <span className="text-xs bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-semibold">AHEAD — help others</span>}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: stage.color + '22', color: stage.color }}>
@@ -112,10 +116,15 @@ export default function ReadinessDashboard({ members, products }) {
                 {tiers.length === 0 && <span className="text-slate-500 text-xs">No pricing configured</span>}
               </div>
 
-              {/* Gap from leader */}
-              {!isLeader && (
-                <div className="text-xs text-slate-500">
-                  ↑ {maxScore - score}% gap from leader — add enterprise tier to close gap
+              {/* Gap from top — framed as board needing to close this */}
+              {score < maxScore && (
+                <div className="text-xs text-amber-500/80">
+                  ↑ {maxScore - score}% behind the board's most advanced product — board parity requires closing this gap
+                </div>
+              )}
+              {score === minScore && scores.length > 1 && (
+                <div className="text-xs text-red-400/80 font-semibold">
+                  ⚠️ This product sets the board's parity score — priority to advance
                 </div>
               )}
             </div>
