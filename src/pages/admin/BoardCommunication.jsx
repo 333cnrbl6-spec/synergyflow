@@ -36,12 +36,11 @@ export default function BoardCommunication() {
         if (channelsList.length > 0) {
           setSelectedChannel(channelsList[0]);
           await loadChannelMessages(channelsList[0].id);
-          
-          // Set channel members
-          const channelMemberNames = channelsList[0].members || [];
-          const activeMembers = members.filter(m => channelMemberNames.includes(m.app_name));
-          setChannelMembers(activeMembers);
         }
+        
+        // Set all active board members
+        const activeMembers = members.filter(m => m.active);
+        setChannelMembers(activeMembers);
 
         // Load notifications
         await loadNotifications();
@@ -194,9 +193,6 @@ export default function BoardCommunication() {
                 onClick={() => {
                   setSelectedChannel(channel);
                   loadChannelMessages(channel.id);
-                  const channelMemberNames = channel.members || [];
-                  const activeMembers = boardMembers.filter(m => channelMemberNames.includes(m.app_name));
-                  setChannelMembers(activeMembers);
                 }}
               >
                 <span className="mr-2">#</span>
