@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 
 const MEMBER_COLORS = {
-  'Premiso': { bg: '#1e3a5f', accent: '#3b82f6', light: '#dbeafe' },
-  'Species Explorer': { bg: '#14532d', accent: '#22c55e', light: '#dcfce7' },
-  'Age UK Bury': { bg: '#7c2d12', accent: '#f97316', light: '#ffedd5' },
-  'CaseNarrative': { bg: '#4c1d95', accent: '#a855f7', light: '#f3e8ff' },
+  'Premiso': { bg: '#3b82f6', accent: '#2563eb', light: '#dbeafe' },
+  'Species Explorer': { bg: '#22c55e', accent: '#16a34a', light: '#dcfce7' },
+  'Age UK Bury': { bg: '#f97316', accent: '#ea580c', light: '#ffedd5' },
+  'CaseNarrative': { bg: '#a855f7', accent: '#9333ea', light: '#f3e8ff' },
 };
 
 const SEAT_POSITIONS = [
@@ -52,7 +52,7 @@ function CashStack({ count, color }) {
 }
 
 function MemberSeat({ member, product, position, isActive, onClick }) {
-  const color = MEMBER_COLORS[member.member_name] || { bg: '#334155', accent: '#64748b', light: '#f1f5f9' };
+  const color = MEMBER_COLORS[member.member_name] || { bg: '#94a3b8', accent: '#64748b', light: '#f1f5f9' };
   const readiness = calcReadiness(product);
   const tierCount = product?.pricing_tiers?.length || 0;
 
@@ -64,18 +64,18 @@ function MemberSeat({ member, product, position, isActive, onClick }) {
     >
       {/* Avatar */}
       <div
-        className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg border-4 transition-all duration-300 group-hover:scale-110"
+        className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md border-4 transition-all duration-300 group-hover:scale-110"
         style={{
           backgroundColor: color.bg,
-          borderColor: isActive ? color.accent : 'rgba(255,255,255,0.3)',
-          boxShadow: isActive ? `0 0 20px ${color.accent}88` : undefined,
+          borderColor: isActive ? color.accent : 'rgba(255,255,255,0.6)',
+          boxShadow: isActive ? `0 0 20px ${color.accent}66` : '0 4px 12px rgba(0,0,0,0.15)',
         }}
       >
         {member.member_name.slice(0, 2).toUpperCase()}
       </div>
       {/* Name tag */}
       <div
-        className="mt-1 px-2 py-0.5 rounded text-xs font-semibold text-white shadow text-center max-w-24"
+        className="mt-1 px-2 py-0.5 rounded text-xs font-semibold text-white shadow-sm text-center max-w-24"
         style={{ backgroundColor: color.bg }}
       >
         {member.member_name}
@@ -115,36 +115,36 @@ export default function BoardroomTable({ members, products, activeMember, onMemb
     <div className="relative w-full" style={{ height: 480 }}>
       {/* Room background */}
       <div className="absolute inset-0 rounded-2xl overflow-hidden"
-        style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #0f172a 100%)' }}>
-        {/* Wood panelling lines */}
+        style={{ background: 'linear-gradient(160deg, #f0f4ff 0%, #e8edf8 60%, #f0f4ff 100%)' }}>
+        {/* Subtle panel lines */}
         {[...Array(6)].map((_, i) => (
           <div key={i} className="absolute w-full" style={{
             top: `${15 + i * 14}%`, height: 1,
-            background: 'rgba(255,255,255,0.03)'
+            background: 'rgba(0,0,0,0.04)'
           }} />
         ))}
       </div>
 
       {/* Table surface */}
       <div
-        className="absolute rounded-full shadow-2xl"
+        className="absolute rounded-full shadow-lg"
         style={{
           top: '18%', left: '20%', width: '60%', height: '60%',
-          background: 'linear-gradient(145deg, #7c5b3a 0%, #5c3d20 40%, #3d2610 100%)',
-          border: '6px solid #9d7350',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), inset 0 2px 8px rgba(255,255,255,0.1)',
+          background: 'linear-gradient(145deg, #ffffff 0%, #f1f5f9 60%, #e2e8f0 100%)',
+          border: '6px solid #cbd5e1',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.12), inset 0 2px 8px rgba(255,255,255,0.8)',
         }}
       >
-        {/* Table felt */}
+        {/* Table felt - light green */}
         <div className="absolute inset-4 rounded-full"
-          style={{ background: 'linear-gradient(145deg, #1a472a, #0f2d1a)', opacity: 0.7 }} />
+          style={{ background: 'linear-gradient(145deg, #d1fae5, #a7f3d0)', opacity: 0.5 }} />
 
         {/* Combined value in centre */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           <div className="text-center">
-            <div className="text-xs text-green-400 font-semibold tracking-widest uppercase mb-1">Board Readiness</div>
-            <div className="text-5xl font-black text-white">{combinedReadiness}%</div>
-            <div className="text-xs text-slate-400 mt-1">Combined Score</div>
+            <div className="text-xs text-emerald-600 font-semibold tracking-widest uppercase mb-1">Board Readiness</div>
+            <div className="text-5xl font-black text-slate-800">{combinedReadiness}%</div>
+            <div className="text-xs text-slate-500 mt-1">Combined Score</div>
             <div className="flex gap-1 mt-3 justify-center">
               {members.map((m) => {
                 const color = MEMBER_COLORS[m.member_name] || { accent: '#64748b' };
@@ -156,7 +156,7 @@ export default function BoardroomTable({ members, products, activeMember, onMemb
                 );
               })}
             </div>
-            <div className="text-xs text-slate-500 mt-1">PERMANENTLY CONVENED</div>
+            <div className="text-xs text-slate-400 mt-1">PERMANENTLY CONVENED</div>
           </div>
         </div>
       </div>
@@ -177,9 +177,9 @@ export default function BoardroomTable({ members, products, activeMember, onMemb
       })}
 
       {/* "Permanently Convened" badge */}
-      <div className="absolute top-3 right-4 flex items-center gap-2 bg-green-900/80 border border-green-500/40 rounded-full px-3 py-1">
-        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-        <span className="text-green-300 text-xs font-semibold">Live Session</span>
+      <div className="absolute top-3 right-4 flex items-center gap-2 bg-white/80 border border-emerald-200 rounded-full px-3 py-1 shadow-sm">
+        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="text-emerald-700 text-xs font-semibold">Live Session</span>
       </div>
     </div>
   );
