@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Users, FileText, Headphones, Settings, LogOut, Menu, X } from 'lucide-react';
+import { BarChart3, Users, FileText, Headphones, Settings, LogOut, Menu, X, Gavel } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function AdminLayout() {
@@ -14,6 +14,7 @@ export default function AdminLayout() {
     { label: 'CRM', icon: Users, path: '/admin/crm' },
     { label: 'Subscriptions', icon: FileText, path: '/admin/subscriptions' },
     { label: 'Support', icon: Headphones, path: '/admin/support' },
+    { label: 'Board', icon: Gavel, path: '/admin/board' },
     { label: 'Settings', icon: Settings, path: '/admin/settings' },
   ];
 
