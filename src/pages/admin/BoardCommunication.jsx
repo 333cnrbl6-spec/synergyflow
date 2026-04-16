@@ -181,26 +181,47 @@ export default function BoardCommunication() {
       )}
 
       <div className="flex gap-6 h-[calc(100vh-200px)]">
-        {/* Channels Sidebar */}
-        <div className="w-48 space-y-2 overflow-y-auto">
-          <h3 className="font-semibold text-sm px-2 text-muted-foreground">CHANNELS</h3>
-          {channels.map((channel) => (
-            <Button
-              key={channel.id}
-              variant={selectedChannel?.id === channel.id ? 'default' : 'ghost'}
-              className="w-full justify-start text-left"
-              onClick={() => {
-                setSelectedChannel(channel);
-                loadChannelMessages(channel.id);
-                const channelMemberNames = channel.members || [];
-                const activeMembers = boardMembers.filter(m => channelMemberNames.includes(m.app_name));
-                setChannelMembers(activeMembers);
-              }}
-            >
-              <span className="mr-2">#</span>
-              {channel.display_name}
-            </Button>
-          ))}
+        {/* Left Sidebar: Channels + Board Members */}
+        <div className="w-56 space-y-6 overflow-y-auto">
+          {/* Channels Section */}
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sm px-2 text-muted-foreground">CHANNELS</h3>
+            {channels.map((channel) => (
+              <Button
+                key={channel.id}
+                variant={selectedChannel?.id === channel.id ? 'default' : 'ghost'}
+                className="w-full justify-start text-left"
+                onClick={() => {
+                  setSelectedChannel(channel);
+                  loadChannelMessages(channel.id);
+                  const channelMemberNames = channel.members || [];
+                  const activeMembers = boardMembers.filter(m => channelMemberNames.includes(m.app_name));
+                  setChannelMembers(activeMembers);
+                }}
+              >
+                <span className="mr-2">#</span>
+                {channel.display_name}
+              </Button>
+            ))}
+          </div>
+
+          {/* Board Members Section */}
+          <div className="border-t pt-4 space-y-2">
+            <h3 className="font-semibold text-sm px-2 text-muted-foreground">BOARD MEMBERS ({boardMembers.filter(m => m.active).length})</h3>
+            {boardMembers.filter(m => m.active).length === 0 ? (
+              <p className="text-xs text-muted-foreground px-2">No active board members</p>
+            ) : (
+              <div className="space-y-2">
+                {boardMembers.filter(m => m.active).map((member) => (
+                  <div key={member.id} className="p-2 rounded bg-card border border-border text-xs space-y-1 hover:border-primary transition-colors">
+                    <p className="font-semibold text-foreground">{member.member_name}</p>
+                    <p className="text-muted-foreground">{member.app_name}</p>
+                    <p className="text-muted-foreground text-xs">{member.role}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Communication Area */}
