@@ -1,0 +1,56 @@
+{
+  "name": "AppSubscription",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email (links to User entity)"
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "Organization/business name"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter",
+      "description": "Subscription level"
+    },
+    "apps_included": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Apps included in subscription (e.g., ['property_management', 'zoo_research', 'charity_hub', 'legal_builder'])"
+    },
+    "active_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Subscription expiry date"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID for billing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "trial",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "Current subscription status"
+    }
+  },
+  "required": [
+    "user_email",
+    "organization_name",
+    "subscription_tier",
+    "apps_included"
+  ]
+}
