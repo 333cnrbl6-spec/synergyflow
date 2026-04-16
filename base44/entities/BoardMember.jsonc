@@ -1,0 +1,50 @@
+{
+  "name": "BoardMember",
+  "type": "object",
+  "properties": {
+    "member_name": {
+      "type": "string",
+      "description": "Board member name/title"
+    },
+    "role": {
+      "type": "string",
+      "description": "Role in organization (e.g., 'Chief Product Officer', 'Legal Analysis Lead')"
+    },
+    "app_name": {
+      "type": "string",
+      "description": "Which app they represent (e.g., 'Base44 AI', 'CaseNarrative', 'SynergyFlow')"
+    },
+    "persona": {
+      "type": "string",
+      "description": "Detailed persona/background"
+    },
+    "expertise": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Areas of expertise (e.g., 'Product Development', 'Legal Strategy')"
+    },
+    "decision_authority": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What this member can approve/decide (e.g., 'Technical Architecture', 'Pricing')"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is this board member active"
+    },
+    "contact_function": {
+      "type": "string",
+      "description": "Backend function endpoint for agent invocation"
+    }
+  },
+  "required": [
+    "member_name",
+    "role",
+    "app_name"
+  ]
+}

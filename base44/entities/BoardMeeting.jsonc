@@ -1,0 +1,146 @@
+{
+  "name": "BoardMeeting",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Meeting topic/agenda"
+    },
+    "called_by": {
+      "type": "string",
+      "description": "User or system that initiated"
+    },
+    "attendees": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Board member personas attending (e.g., 'Base44 AI', 'CaseNarrative App', 'Commercial Officer')"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "in_progress",
+        "concluded"
+      ],
+      "default": "scheduled",
+      "description": "Meeting status"
+    },
+    "meeting_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the meeting is/was held"
+    },
+    "agenda_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Topics to be discussed"
+    },
+    "discussion_threads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "agenda_item": {
+            "type": "string"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "perspective": {
+                  "type": "string"
+                },
+                "recommendation": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "decision": {
+            "type": "string"
+          },
+          "action_items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Discussion threads by agenda item"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string"
+          },
+          "voted_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "implementation_owner": {
+            "type": "string"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "description": "Decisions made during meeting"
+    },
+    "notes": {
+      "type": "string",
+      "description": "General meeting notes"
+    },
+    "recording_url": {
+      "type": "string",
+      "description": "Recording/transcript URL if available"
+    }
+  },
+  "required": [
+    "title",
+    "called_by",
+    "meeting_date"
+  ]
+}
