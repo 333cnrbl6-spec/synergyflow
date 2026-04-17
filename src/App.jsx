@@ -65,6 +65,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/approval-impact" element={<ApprovalImpactAnalysis />} />
         <Route path="/admin/board-resolution-memo" element={<BoardResolutionMemo />} />
         <Route path="/admin/strategy" element={<BoardStrategy />} />
+        <Route path="/admin/launch" element={<BoardUnifiedLaunch />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
