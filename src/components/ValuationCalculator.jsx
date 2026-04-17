@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import BoardValuationSuggestions from './BoardValuationSuggestions';
 
 export default function ValuationCalculator() {
   const [proposals, setProposals] = useState([]);
@@ -107,7 +108,11 @@ export default function ValuationCalculator() {
   if (loading) return <div className="text-center py-8">Loading proposals...</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Board Valuation Suggestions Summary */}
+      <BoardValuationSuggestions />
+
+      <div className="space-y-6">
       {proposals.length === 0 ? (
         <Card className="p-6 text-center text-slate-600">No valuation proposals yet</Card>
       ) : (
@@ -230,6 +235,7 @@ export default function ValuationCalculator() {
           );
         })
       )}
+      </div>
     </div>
   );
 }
