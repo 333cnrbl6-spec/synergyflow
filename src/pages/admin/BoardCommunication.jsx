@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
 import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
+import ValueImpactTracker from '@/components/ValueImpactTracker';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -197,6 +198,7 @@ export default function BoardCommunication() {
 
         {/* Left: Boardroom Table */}
         <div className="w-[480px] flex-shrink-0 p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-200 bg-white">
+          <ValueImpactTracker proposals={proposals} products={products} />
           <BoardroomTable
             members={boardMembers}
             products={products}
