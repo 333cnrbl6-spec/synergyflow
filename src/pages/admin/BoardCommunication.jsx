@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell, Target } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -11,6 +11,7 @@ import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
 import ValueImpactTracker from '@/components/ValueImpactTracker';
 import NotificationCenter from '@/components/NotificationCenter';
 import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard';
+import ConsolidationOverview from '@/components/ConsolidationOverview';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -27,7 +28,9 @@ export default function BoardCommunication() {
   const [proposals, setProposals] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showStrategicProposal, setShowStrategicProposal] = useState(false);
+  const [showConsolidation, setShowConsolidation] = useState(false);
   const [postingStrategic, setPostingStrategic] = useState(false);
+  const [postingConsolidation, setPostingConsolidation] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -142,6 +145,21 @@ export default function BoardCommunication() {
     }
   };
 
+  const postConsolidationAnnouncement = async () => {
+    setPostingConsolidation(true);
+    try {
+      const response = await base44.functions.invoke('postConsolidationAnnouncement', {});
+      setShowConsolidation(true);
+      await loadProposals();
+      toast.success('Cross-product consolidation announced and autonomous implementation authorized');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to post announcement');
+    } finally {
+      setPostingConsolidation(false);
+    }
+  };
+
   const handleExportPDF = async () => {
     if (!selectedChannel) return;
     try {
@@ -222,6 +240,16 @@ export default function BoardCommunication() {
           {postingStrategic ? 'Posting...' : 'Strategic JV'}
         </Button>
         <Button
+          onClick={postConsolidationAnnouncement}
+          disabled={postingConsolidation}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-amber-700 border-amber-300 hover:bg-amber-50"
+        >
+          <Zap className="w-4 h-4" />
+          {postingConsolidation ? 'Executing...' : 'Consolidation'}
+        </Button>
+        <Button
           onClick={handleExportPDF}
           variant="outline"
           size="sm"
@@ -244,6 +272,10 @@ export default function BoardCommunication() {
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <JointVenturesProposalBoard currentMember={boardMembers.find(m => m.member_name === activeMember?.member_name)} />
           </div>
+        ) : showConsolidation ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <ConsolidationOverview />
+          </div>
         ) : (
           <>
             {/* Left: Boardroom Table */}
@@ -262,7 +294,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showNotifications && !showStrategicProposal && (
+        {!showNotifications && !showStrategicProposal && !showConsolidation && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
