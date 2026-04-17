@@ -9,6 +9,8 @@ import StrategyLaunchPrep from '@/components/strategy/StrategyLaunchPrep';
 import StrategyBusinessPlan from '@/components/strategy/StrategyBusinessPlan';
 import StrategyRoadmap from '@/components/strategy/StrategyRoadmap';
 import StrategyExecution from '@/components/strategy/StrategyExecution';
+import ValuationProposalBuilder from '@/components/ValuationProposalBuilder';
+import ValuationCalculator from '@/components/ValuationCalculator';
 
 export default function BoardStrategy() {
   const [products, setProducts] = useState([]);
@@ -112,13 +114,14 @@ export default function BoardStrategy() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
-            <TabsTrigger value="launch">Launch Prep</TabsTrigger>
-            <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
-            <TabsTrigger value="execution">Execution</TabsTrigger>
-          </TabsList>
+         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+           <TabsList className="grid w-full grid-cols-5">
+             <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
+             <TabsTrigger value="valuation">Portfolio Valuation</TabsTrigger>
+             <TabsTrigger value="launch">Launch Prep</TabsTrigger>
+             <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+             <TabsTrigger value="execution">Execution</TabsTrigger>
+           </TabsList>
 
           {/* Strategy Overview */}
           <TabsContent value="overview" className="space-y-4">
@@ -192,6 +195,12 @@ export default function BoardStrategy() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Portfolio Valuation */}
+          <TabsContent value="valuation" className="space-y-4">
+            <ValuationProposalBuilder />
+            <ValuationCalculator />
           </TabsContent>
 
           {/* Launch Preparation */}

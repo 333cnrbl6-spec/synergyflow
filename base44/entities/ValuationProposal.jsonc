@@ -1,0 +1,80 @@
+{
+  "name": "ValuationProposal",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Proposal title (e.g., 'Q2 2026 Portfolio Valuation')"
+    },
+    "proposed_by": {
+      "type": "string",
+      "description": "Board member proposing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "in_discussion",
+        "voting",
+        "approved",
+        "rejected"
+      ],
+      "default": "proposed",
+      "description": "Approval status"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "annual_revenue_potential": {
+            "type": "number",
+            "description": "Estimated annual revenue (\u00a3)"
+          },
+          "valuation_multiple": {
+            "type": "number",
+            "default": 10,
+            "description": "SaaS multiple (e.g., 10x)"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this valuation"
+          }
+        }
+      },
+      "description": "Per-product valuations"
+    },
+    "suite_premium_percentage": {
+      "type": "number",
+      "default": 20,
+      "description": "Premium for selling as integrated suite (%)"
+    },
+    "yes_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "no_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approved_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "proposed_by",
+    "products"
+  ]
+}
