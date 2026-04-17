@@ -50,11 +50,14 @@ export default function ChairmanZone() {
       toast.success('Proposal approved');
       setChairmanNotes('');
       
-      // Update local state immediately for instant feedback
-      setSelectedProposal({ ...selectedProposal, status: 'approved', chairman_notes: chairmanNotes });
-      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'approved', chairman_notes: chairmanNotes } : p));
+      // Update local state and auto-select next pending proposal
+      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'approved', chairman_notes: chairmanNotes } : p);
+      setProposals(updatedProposals);
       
-      // Refresh from backend after a short delay
+      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      setSelectedProposal(nextPending || null);
+      
+      // Refresh from backend
       setTimeout(async () => {
         const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
         setProposals(res.data.proposals || []);
@@ -80,11 +83,14 @@ export default function ChairmanZone() {
       toast.success('Proposal rejected');
       setChairmanNotes('');
       
-      // Update local state immediately for instant feedback
-      setSelectedProposal({ ...selectedProposal, status: 'rejected', chairman_notes: chairmanNotes });
-      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'rejected', chairman_notes: chairmanNotes } : p));
+      // Update local state and auto-select next pending proposal
+      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'rejected', chairman_notes: chairmanNotes } : p);
+      setProposals(updatedProposals);
       
-      // Refresh from backend after a short delay
+      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      setSelectedProposal(nextPending || null);
+      
+      // Refresh from backend
       setTimeout(async () => {
         const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
         setProposals(res.data.proposals || []);
@@ -110,11 +116,14 @@ export default function ChairmanZone() {
       toast.success('Proposal deferred');
       setChairmanNotes('');
       
-      // Update local state immediately for instant feedback
-      setSelectedProposal({ ...selectedProposal, status: 'deferred', chairman_notes: chairmanNotes });
-      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'deferred', chairman_notes: chairmanNotes } : p));
+      // Update local state and auto-select next pending proposal
+      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'deferred', chairman_notes: chairmanNotes } : p);
+      setProposals(updatedProposals);
       
-      // Refresh from backend after a short delay
+      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      setSelectedProposal(nextPending || null);
+      
+      // Refresh from backend
       setTimeout(async () => {
         const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
         setProposals(res.data.proposals || []);
