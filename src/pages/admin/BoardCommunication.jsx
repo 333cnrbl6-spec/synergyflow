@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Send, Hash } from 'lucide-react';
+import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
 import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
@@ -97,8 +98,10 @@ export default function BoardCommunication() {
       });
       setMessageContent('');
       await loadMessages(selectedChannel.id);
+      toast.success('Message posted to the board');
     } catch (e) {
       console.error(e);
+      toast.error('Failed to post message');
     } finally {
       setSending(false);
     }
