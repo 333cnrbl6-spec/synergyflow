@@ -1,0 +1,83 @@
+{
+  "name": "ProductReadiness",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "overall_readiness_percentage": {
+      "type": "number",
+      "description": "Overall readiness percentage (0-100)"
+    },
+    "documentation_readiness": {
+      "type": "number",
+      "description": "Documentation completion (0-100)"
+    },
+    "security_readiness": {
+      "type": "number",
+      "description": "Security audit completion (0-100)"
+    },
+    "performance_readiness": {
+      "type": "number",
+      "description": "Performance optimization (0-100)"
+    },
+    "feature_completeness": {
+      "type": "number",
+      "description": "Core features implementation (0-100)"
+    },
+    "market_readiness": {
+      "type": "number",
+      "description": "Go-to-market readiness (0-100)"
+    },
+    "identified_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Gap category"
+          },
+          "description": {
+            "type": "string",
+            "description": "Gap description"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "description": "List of readiness gaps"
+    },
+    "last_assessed": {
+      "type": "string",
+      "format": "date",
+      "description": "Last assessment date"
+    },
+    "alert_triggered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has low readiness alert been triggered"
+    },
+    "related_proposal_id": {
+      "type": "string",
+      "description": "Related alert proposal ID"
+    }
+  },
+  "required": [
+    "product_id",
+    "product_name",
+    "overall_readiness_percentage"
+  ]
+}
