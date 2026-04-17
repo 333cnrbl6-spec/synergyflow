@@ -76,7 +76,7 @@ export default function BoardCommunication() {
     const interval = setInterval(async () => {
       await loadMessages(selectedChannel.id);
       await loadProposals();
-    }, 4000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [selectedChannel]);
 
