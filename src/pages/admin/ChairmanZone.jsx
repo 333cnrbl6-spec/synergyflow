@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause, Info } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause, Info, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
+import ChairmanRecommendations from '@/components/ChairmanRecommendations';
 
 export default function ChairmanZone() {
   const queryClient = useQueryClient();
@@ -175,7 +176,7 @@ export default function ChairmanZone() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-3 mb-6 flex-wrap">
           <Button
             variant={activeTab === 'transcript' ? 'default' : 'outline'}
             onClick={() => setActiveTab('transcript')}
@@ -199,6 +200,14 @@ export default function ChairmanZone() {
           >
             <CheckCircle2 className="w-4 h-4" />
             Decided ({decisions.length})
+          </Button>
+          <Button
+            variant={activeTab === 'insights' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('insights')}
+            className="gap-2"
+          >
+            <Lightbulb className="w-4 h-4" />
+            Board Insights
           </Button>
         </div>
 
@@ -449,6 +458,11 @@ export default function ChairmanZone() {
               ))
             )}
           </div>
+        )}
+
+        {/* Insights Tab */}
+        {activeTab === 'insights' && (
+          <ChairmanRecommendations />
         )}
       </div>
     </div>
