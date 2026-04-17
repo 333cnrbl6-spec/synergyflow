@@ -27,6 +27,24 @@ export default function NotificationCenter() {
     initUser();
   }, []);
 
+  // Subscribe to new notifications in real-time
+  useEffect(() => {
+    const unsubscribe = base44.entities.ProposalNotification.subscribe((event) => {
+      if (event.type === 'create') {
+        // New notification created - add to top of list
+        setNotifications(prev => [event.data, ...prev]);
+        toast.success('New notification received');
+      } else if (event.type === 'update') {
+        // Notification updated (e.g., marked as read)
+        setNotifications(prev =>
+          prev.map(n => n.id === event.id ? event.data : n)
+        );
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const fetchNotifications = async (userEmail) => {
     try {
       const boardMembers = await base44.entities.BoardMember.filter({});
