@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CheckCircle2 } from 'lucide-react';
+import { Download, CheckCircle2, Zap } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { toast } from 'sonner';
 import BoardMetricsSummary from '@/components/BoardMetricsSummary';
@@ -15,6 +15,7 @@ export default function BoardImpactAnalytics() {
   const [loading, setLoading] = useState(true);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [actioningProposals, setActioningProposals] = useState(false);
+  const [bulkActioning, setBulkActioning] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -67,6 +68,20 @@ export default function BoardImpactAnalytics() {
       toast.error('Failed to action proposals');
     } finally {
       setActioningProposals(false);
+    }
+  };
+
+  const bulkActionAllProposals = async () => {
+    setBulkActioning(true);
+    try {
+      const response = await base44.functions.invoke('bulkActionAllPendingProposals', {});
+      await loadData();
+      toast.success(`${response.proposals_actioned} proposals approved and set to autonomous execution`);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to bulk action proposals');
+    } finally {
+      setBulkActioning(false);
     }
   };
 
@@ -224,7 +239,19 @@ export default function BoardImpactAnalytics() {
             <h1 className="text-4xl font-black text-slate-900">Board Impact Analytics</h1>
             <p className="text-slate-600 mt-2">How autonomous board decisions create competitive value</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-end">
+            <Button 
+              onClick={bulkActionAllProposals}
+              disabled={bulkActioning}
+              className="gap-2 bg-red-600 hover:bg-red-700"
+            >
+              {bulkActioning ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
+              {bulkActioning ? 'Executing...' : 'Bulk Action All'}
+            </Button>
             <Button 
               onClick={actionDataMappingProposals}
               disabled={actioningProposals}
