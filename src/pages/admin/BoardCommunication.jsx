@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell, Target, Zap, Vote, Play, CheckCircle2 } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target, Zap, Vote, Play, CheckCircle2, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -14,6 +14,7 @@ import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard'
 import ConsolidationOverview from '@/components/ConsolidationOverview';
 import ImplementationTimeline from '@/components/ImplementationTimeline';
 import BoardActionsMetrics from '@/components/BoardActionsMetrics';
+import ExecutionMetricsDashboard from '@/components/ExecutionMetricsDashboard';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -39,6 +40,7 @@ export default function BoardCommunication() {
   const [initiatingMeeting, setInitiatingMeeting] = useState(false);
   const [executingVoting, setExecutingVoting] = useState(false);
   const [executingFullBuild, setExecutingFullBuild] = useState(false);
+  const [showExecutionMetrics, setShowExecutionMetrics] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -351,6 +353,15 @@ export default function BoardCommunication() {
           {showTimeline ? 'Hide' : 'Show'} Timeline
         </Button>
         <Button
+          onClick={() => setShowExecutionMetrics(!showExecutionMetrics)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <TrendingUp className="w-4 h-4" />
+          {showExecutionMetrics ? 'Hide' : 'Show'} Metrics
+        </Button>
+        <Button
           onClick={() => setShowBoardDialogue(!showBoardDialogue)}
           variant="outline"
           size="sm"
@@ -415,6 +426,10 @@ export default function BoardCommunication() {
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <ImplementationTimeline />
           </div>
+        ) : showExecutionMetrics ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <ExecutionMetricsDashboard />
+          </div>
         ) : showNotifications ? (
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <NotificationCenter />
@@ -445,7 +460,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showBoardDialogue && !showTimeline && !showNotifications && !showStrategicProposal && !showConsolidation && (
+        {!showBoardDialogue && !showTimeline && !showExecutionMetrics && !showNotifications && !showStrategicProposal && !showConsolidation && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
