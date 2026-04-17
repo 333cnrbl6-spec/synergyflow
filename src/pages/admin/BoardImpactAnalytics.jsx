@@ -45,24 +45,26 @@ export default function BoardImpactAnalytics() {
     };
     
     loadData();
-    const interval = setInterval(loadData, 5000);
+    const interval = setInterval(loadData, 8000); // Increased from 5s to 8s to reduce polling
     return () => clearInterval(interval);
   }, []);
 
-  // Watch for execution progress
+  // Watch for execution progress (reduced polling to prevent slowdown)
   useEffect(() => {
     if (!executionWatch) return;
     const watchInterval = setInterval(async () => {
       try {
         const actionItems = await base44.entities.ActionItem.filter({ status: 'in_progress' });
-        setLiveExecutionStatus(actionItems.slice(0, 8).map((item, idx) => ({
-          ...item,
-          progress: Math.min(25 + (idx * 8), 95)
-        })));
+        if (actionItems.length > 0) {
+          setLiveExecutionStatus(actionItems.slice(0, 8).map((item, idx) => ({
+            ...item,
+            progress: Math.min(25 + (idx * 8), 95)
+          })));
+        }
       } catch (e) {
-        console.error(e);
+        console.error('Watch error:', e);
       }
-    }, 1000);
+    }, 3000); // Reduced frequency from 1s to 3s
     return () => clearInterval(watchInterval);
   }, [executionWatch]);
 
