@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause, Info } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ChairmanZone() {
@@ -16,6 +16,7 @@ export default function ChairmanZone() {
   const [chairmanNotes, setChairmanNotes] = useState('');
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [proposalFilter, setProposalFilter] = useState('pending_chairman');
 
   const loadData = async () => {
     try {
@@ -161,13 +162,37 @@ export default function ChairmanZone() {
         {activeTab === 'proposals' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Proposal List */}
-            <div className="lg:col-span-1 space-y-3">
+            <div className="lg:col-span-1 flex flex-col gap-3">
+              {/* Status Filter */}
+              <div className="flex gap-2">
+                <Button
+                  variant={proposalFilter === 'pending_chairman' ? 'default' : 'outline'}
+                  onClick={() => setProposalFilter('pending_chairman')}
+                  size="sm"
+                  className="text-xs"
+                >
+                  Pending
+                </Button>
+                <Button
+                  variant={proposalFilter === 'all' ? 'default' : 'outline'}
+                  onClick={() => setProposalFilter('all')}
+                  size="sm"
+                  className="text-xs"
+                >
+                  All
+                </Button>
+              </div>
+
+              {/* Proposals List */}
+              <div className="flex-1 space-y-3 overflow-y-auto max-h-[70vh]">
               {proposals.length === 0 ? (
                 <Card className="text-center py-8">
                   <p className="text-slate-500 text-sm">No proposals yet.</p>
                 </Card>
               ) : (
-                proposals.map((prop) => (
+                proposals
+                  .filter((p) => proposalFilter === 'all' || p.status === proposalFilter)
+                  .map((prop) => (
                   <Card
                     key={prop.id}
                     className={`cursor-pointer transition-all ${
@@ -196,9 +221,10 @@ export default function ChairmanZone() {
                       </p>
                     </CardHeader>
                   </Card>
-                ))
-              )}
-            </div>
+                  ))
+                  )}
+                  </div>
+                  </div>
 
             {/* Proposal Detail & Commentary */}
             <div className="lg:col-span-2">
@@ -246,17 +272,24 @@ export default function ChairmanZone() {
 
                   {selectedProposal.status === 'pending_chairman' && (
                     <div className="border-t p-4 space-y-3">
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-2 items-start">
+                        <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-amber-900">
+                          <p className="font-semibold">How to decide:</p>
+                          <p className="mt-1"><strong>Approve</strong> — Accept and execute | <strong>Defer</strong> — Postpone decision | <strong>Reject</strong> — Decline proposal</p>
+                        </div>
+                      </div>
                       <Textarea
                         placeholder="Add your chairman commentary or decision…"
                         value={chairmanNotes}
                         onChange={(e) => setChairmanNotes(e.target.value)}
                         className="resize-none h-24"
                       />
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         <Button
                           onClick={handleApproveProposal}
                           disabled={saving}
-                          className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
+                          className="gap-2 bg-green-600 hover:bg-green-700"
                         >
                           {saving ? (
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -268,7 +301,7 @@ export default function ChairmanZone() {
                         <Button
                           onClick={handleDeferProposal}
                           disabled={saving}
-                          className="flex-1 gap-2 bg-amber-600 hover:bg-amber-700"
+                          className="gap-2 bg-amber-600 hover:bg-amber-700"
                         >
                           <Pause className="w-4 h-4" />
                           Defer
@@ -277,7 +310,7 @@ export default function ChairmanZone() {
                           onClick={handleRejectProposal}
                           disabled={saving}
                           variant="destructive"
-                          className="flex-1 gap-2"
+                          className="gap-2"
                         >
                           <ThumbsDown className="w-4 h-4" />
                           Reject
