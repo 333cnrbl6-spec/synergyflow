@@ -21,6 +21,7 @@ import BoardInsights from './pages/admin/BoardInsights';
 import ApprovalImpactAnalysis from './pages/admin/ApprovalImpactAnalysis';
 import BoardResolutionMemo from './pages/admin/BoardResolutionMemo';
 import BoardStrategy from './pages/admin/BoardStrategy';
+import BoardUnifiedLaunch from './pages/admin/BoardUnifiedLaunch';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 

@@ -287,12 +287,12 @@ export default function BoardUnifiedLaunch() {
                     </div>
                     <div className="text-center">
                       <p className="text-white/60 text-xs uppercase mb-2">Onboarding</p>
-                      <p className="text-2xl font-black text-white">> 85%</p>
+                      <p className="text-2xl font-black text-white">{`> 85%`}</p>
                       <p className="text-xs text-white/60">Complete</p>
                     </div>
                     <div className="text-center">
                       <p className="text-white/60 text-xs uppercase mb-2">Support</p>
-                      <p className="text-2xl font-black text-white">< 5%</p>
+                      <p className="text-2xl font-black text-white">{`< 5%`}</p>
                       <p className="text-xs text-white/60">Help Tickets</p>
                     </div>
                   </div>
