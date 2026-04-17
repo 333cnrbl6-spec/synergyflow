@@ -20,6 +20,7 @@ import BoardImpactAnalytics from './pages/admin/BoardImpactAnalytics';
 import BoardInsights from './pages/admin/BoardInsights';
 import ApprovalImpactAnalysis from './pages/admin/ApprovalImpactAnalysis';
 import BoardResolutionMemo from './pages/admin/BoardResolutionMemo';
+import BoardStrategy from './pages/admin/BoardStrategy';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/board-insights" element={<BoardInsights />} />
         <Route path="/admin/approval-impact" element={<ApprovalImpactAnalysis />} />
         <Route path="/admin/board-resolution-memo" element={<BoardResolutionMemo />} />
+        <Route path="/admin/strategy" element={<BoardStrategy />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
