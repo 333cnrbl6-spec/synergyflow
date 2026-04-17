@@ -303,7 +303,19 @@ export default function BoardImpactAnalytics() {
               {showConflictMonitor ? 'Hide' : 'Scan'} Conflicts
             </Button>
             <Button 
-              onClick={bulkActionAllProposals}
+              onClick={async () => {
+                setBulkActioning(true);
+                try {
+                  const response = await base44.functions.invoke('bulkExecuteApprovedBacklog', {});
+                  await loadData();
+                  toast.success(`${response.executed_proposals} approved proposals now executing`);
+                } catch (error) {
+                  console.error(error);
+                  toast.error(error?.message || 'Bulk execution failed');
+                } finally {
+                  setBulkActioning(false);
+                }
+              }}
               disabled={bulkActioning}
               className="gap-2 bg-red-600 hover:bg-red-700"
             >
@@ -312,7 +324,7 @@ export default function BoardImpactAnalytics() {
               ) : (
                 <Zap className="w-4 h-4" />
               )}
-              {bulkActioning ? 'Executing...' : 'Bulk Action All'}
+              {bulkActioning ? 'Executing...' : 'Bulk Execute Approved'}
             </Button>
             <Button 
               onClick={loadData}
