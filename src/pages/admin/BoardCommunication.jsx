@@ -3,13 +3,14 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
 import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
 import ValueImpactTracker from '@/components/ValueImpactTracker';
 import NotificationCenter from '@/components/NotificationCenter';
+import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -25,6 +26,8 @@ export default function BoardCommunication() {
   const [sending, setSending] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showStrategicProposal, setShowStrategicProposal] = useState(false);
+  const [postingStrategic, setPostingStrategic] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -124,6 +127,21 @@ export default function BoardCommunication() {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSend();
   };
 
+  const postStrategicProposal = async () => {
+    setPostingStrategic(true);
+    try {
+      const response = await base44.functions.invoke('postStrategicProposalToBoard', {});
+      setShowStrategicProposal(true);
+      await loadProposals();
+      toast.success('Strategic Joint Ventures proposal posted to board');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to post proposal');
+    } finally {
+      setPostingStrategic(false);
+    }
+  };
+
   const handleExportPDF = async () => {
     if (!selectedChannel) return;
     try {
@@ -194,6 +212,16 @@ export default function BoardCommunication() {
           Alerts
         </Button>
         <Button
+          onClick={postStrategicProposal}
+          disabled={postingStrategic}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-purple-700 border-purple-300 hover:bg-purple-50"
+        >
+          <Target className="w-4 h-4" />
+          {postingStrategic ? 'Posting...' : 'Strategic JV'}
+        </Button>
+        <Button
           onClick={handleExportPDF}
           variant="outline"
           size="sm"
@@ -207,10 +235,14 @@ export default function BoardCommunication() {
       {/* Main: Notifications or table + chat side by side */}
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
         
-        {/* Notifications Panel (if shown) */}
+        {/* Side Panels */}
         {showNotifications ? (
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <NotificationCenter />
+          </div>
+        ) : showStrategicProposal ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <JointVenturesProposalBoard currentMember={boardMembers.find(m => m.member_name === activeMember?.member_name)} />
           </div>
         ) : (
           <>
@@ -230,7 +262,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showNotifications && (
+        {!showNotifications && !showStrategicProposal && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
