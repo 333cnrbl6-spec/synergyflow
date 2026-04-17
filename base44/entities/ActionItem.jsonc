@@ -1,0 +1,86 @@
+{
+  "name": "ActionItem",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Action item title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the action"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "compliance",
+        "readiness",
+        "revenue",
+        "proposal",
+        "product_health"
+      ],
+      "description": "Type of action item"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Priority level"
+    },
+    "trigger_entity_type": {
+      "type": "string",
+      "description": "Entity type that triggered this (e.g., 'Product', 'Subscription', 'BoardProposal')"
+    },
+    "trigger_entity_id": {
+      "type": "string",
+      "description": "ID of the entity that triggered this action"
+    },
+    "related_product_id": {
+      "type": "string",
+      "description": "Related product if applicable"
+    },
+    "related_product_name": {
+      "type": "string",
+      "description": "Product name for easy reference"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "completed",
+        "archived"
+      ],
+      "default": "open",
+      "description": "Action status"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Assigned user email"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Target completion date"
+    },
+    "resolution_notes": {
+      "type": "string",
+      "description": "Notes on how action was resolved"
+    },
+    "auto_triggered": {
+      "type": "boolean",
+      "default": true,
+      "description": "Was this created by automation"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "trigger_entity_type"
+  ]
+}

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Users, DollarSign, Package, Target, Zap } from 'lucide-react';
+import ActionItemsMonitor from '@/components/ActionItemsMonitor';
 
 const PRODUCT_NAMES = ['Premiso', 'Species Explorer', 'Age UK Bury', 'CaseNarrative'];
 const COLORS = ['#0f172a', '#64748b', '#334155', '#1e293b'];
@@ -271,8 +272,13 @@ export default function PortfolioMetrics() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </div>
-  );
-}
+          </div>
+
+          {/* Automation & Action Items */}
+          <div className="mt-8">
+          <ActionItemsMonitor />
+          </div>
+          </div>
+          </div>
+          );
+          }
