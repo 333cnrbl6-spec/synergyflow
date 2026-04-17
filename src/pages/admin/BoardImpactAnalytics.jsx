@@ -89,6 +89,20 @@ export default function BoardImpactAnalytics() {
     }
   };
 
+  const executeCollectiveValue = async () => {
+    setActioningProposals(true);
+    try {
+      const response = await base44.functions.invoke('executeAllApprovedInitiatives', {});
+      await loadData();
+      toast.success(`${response.executionResults.totalValue} initiatives now executing for collective value creation`);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to execute initiatives');
+    } finally {
+      setActioningProposals(false);
+    }
+  };
+
   const loadData = async () => {
     try {
       const [proposals, prods] = await Promise.all([
@@ -271,6 +285,18 @@ export default function BoardImpactAnalytics() {
                 <Zap className="w-4 h-4" />
               )}
               {bulkActioning ? 'Executing...' : 'Bulk Action All'}
+            </Button>
+            <Button 
+              onClick={executeCollectiveValue}
+              disabled={actioningProposals}
+              className="gap-2 bg-purple-600 hover:bg-purple-700"
+            >
+              {actioningProposals ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
+              {actioningProposals ? 'Executing...' : 'Execute Collective Value'}
             </Button>
             <Button 
               onClick={actionDataMappingProposals}
