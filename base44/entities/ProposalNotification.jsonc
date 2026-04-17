@@ -1,0 +1,59 @@
+{
+  "name": "ProposalNotification",
+  "type": "object",
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "description": "Related proposal"
+    },
+    "proposal_title": {
+      "type": "string",
+      "description": "Proposal title for reference"
+    },
+    "notification_type": {
+      "type": "string",
+      "enum": [
+        "needs_review",
+        "discussion_required",
+        "final_approval",
+        "rejected",
+        "passed"
+      ],
+      "description": "Type of notification"
+    },
+    "current_stage": {
+      "type": "string",
+      "description": "Current approval stage"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Board member receiving notification"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification message"
+    },
+    "action_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Does this require action from recipient"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has notification been read"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When notification was sent"
+    }
+  },
+  "required": [
+    "proposal_id",
+    "proposal_title",
+    "notification_type",
+    "recipient",
+    "message"
+  ]
+}

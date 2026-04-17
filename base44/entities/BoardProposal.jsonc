@@ -51,6 +51,71 @@
       "default": "pending_chairman",
       "description": "Chairman approval status"
     },
+    "is_unanimous": {
+      "type": "boolean",
+      "default": false,
+      "description": "Was the vote unanimous"
+    },
+    "approval_stage": {
+      "type": "string",
+      "enum": [
+        "needs_review",
+        "discussion_required",
+        "final_approval",
+        "passed",
+        "rejected"
+      ],
+      "default": "needs_review",
+      "description": "Multi-stage approval for non-unanimous proposals"
+    },
+    "approval_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewed_by": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Approval stage history"
+    },
+    "discussion_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of discussion messages"
+    },
+    "yes_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Board members who voted yes"
+    },
+    "no_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Board members who voted no"
+    },
+    "abstain_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Board members who abstained"
+    },
     "chairman_notes": {
       "type": "string",
       "description": "Chairman feedback/decision notes"
