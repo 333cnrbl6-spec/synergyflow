@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell, Target, Zap, Vote, Play } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target, Zap, Vote, Play, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -37,6 +37,7 @@ export default function BoardCommunication() {
   const [initiatingValuation, setInitiatingValuation] = useState(false);
   const [showBoardDialogue, setShowBoardDialogue] = useState(false);
   const [initiatingMeeting, setInitiatingMeeting] = useState(false);
+  const [executingVoting, setExecutingVoting] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -225,6 +226,21 @@ export default function BoardCommunication() {
     }
   };
 
+  const executeChairmanApprovedVoting = async () => {
+    setExecutingVoting(true);
+    try {
+      const response = await base44.functions.invoke('executeChairmanApprovedProposalsWithVoting', {});
+      await loadMessages(selectedChannel.id);
+      await loadProposals();
+      toast.success(`✅ Voting complete - ${response.proposals_approved} proposals approved by board consensus`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || 'No chairman-approved proposals to vote on');
+    } finally {
+      setExecutingVoting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
@@ -337,6 +353,20 @@ export default function BoardCommunication() {
             <Play className="w-4 h-4" />
           )}
           {initiatingMeeting ? 'Board Meeting...' : 'Auto-Execute Board Meeting'}
+        </Button>
+        <Button
+          onClick={executeChairmanApprovedVoting}
+          disabled={executingVoting}
+          variant="default"
+          size="sm"
+          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+        >
+          {executingVoting ? (
+            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <CheckCircle2 className="w-4 h-4" />
+          )}
+          {executingVoting ? 'Voting...' : 'Execute Chairman Approved'}
         </Button>
       </div>
 
