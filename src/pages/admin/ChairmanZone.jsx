@@ -182,8 +182,15 @@ export default function ChairmanZone() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-slate-900 mb-2">Chairman's Zone</h1>
-          <p className="text-slate-600">Human-readable board transcript, proposals, and decisions</p>
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-black text-slate-900">Chairman's Zone</h1>
+            {proposals.filter(p => p.status === 'pending_chairman').length > 0 && (
+              <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300 px-3 py-1 text-base">
+                {proposals.filter(p => p.status === 'pending_chairman').length} Pending
+              </Badge>
+            )}
+          </div>
+          <p className="text-slate-600 mt-2">Human-readable board transcript, proposals, and decisions</p>
         </div>
 
         {/* Tabs */}
