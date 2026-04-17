@@ -151,6 +151,8 @@ export default function BoardCommunication() {
       const response = await base44.functions.invoke('postConsolidationAnnouncement', {});
       setShowConsolidation(true);
       await loadProposals();
+      // Post integrated guidance
+      await base44.functions.invoke('postConsolidatedStrategicGuidance', {});
       toast.success('Cross-product consolidation announced and autonomous implementation authorized');
     } catch (error) {
       console.error(error);
