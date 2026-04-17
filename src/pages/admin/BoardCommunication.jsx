@@ -210,16 +210,16 @@ export default function BoardCommunication() {
     'CaseNarrative': '#a855f7',
   };
 
-  const initiateBoardMeeting = async () => {
+  const orchestrateBoardMeeting = async () => {
     setInitiatingMeeting(true);
     try {
-      const response = await base44.functions.invoke('initiateBoardMeeting', {});
+      const response = await base44.functions.invoke('orchestrateBoardMeetingWithExecution', {});
       await loadMessages(selectedChannel.id);
       await loadProposals();
-      toast.success(`Board meeting initiated - ${response.proposals_discussed} proposals under discussion`);
+      toast.success(`✅ Board meeting complete - ${response.proposals_approved} proposals approved & executing`);
     } catch (error) {
       console.error(error);
-      toast.error(error?.message || 'Failed to initiate board meeting');
+      toast.error(error?.message || 'Failed to orchestrate board meeting');
     } finally {
       setInitiatingMeeting(false);
     }
@@ -325,18 +325,18 @@ export default function BoardCommunication() {
           {showBoardDialogue ? 'Hide' : 'Show'} Dialogue
         </Button>
         <Button
-          onClick={initiateBoardMeeting}
+          onClick={orchestrateBoardMeeting}
           disabled={initiatingMeeting}
-          variant="outline"
+          variant="default"
           size="sm"
-          className="flex items-center gap-2 text-red-700 border-red-300 hover:bg-red-50"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white"
         >
           {initiatingMeeting ? (
-            <div className="w-3 h-3 border-2 border-red-700 border-t-transparent rounded-full animate-spin" />
+            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
             <Play className="w-4 h-4" />
           )}
-          {initiatingMeeting ? 'Meeting...' : 'Initiate Meeting'}
+          {initiatingMeeting ? 'Board Meeting...' : 'Auto-Execute Board Meeting'}
         </Button>
       </div>
 
