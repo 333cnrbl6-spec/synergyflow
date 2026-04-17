@@ -16,6 +16,7 @@ import Board from './pages/admin/Board';
 import BoardCommunication from './pages/admin/BoardCommunication';
 import ChairmanZone from './pages/admin/ChairmanZone';
 import Settings from './pages/admin/Settings';
+import BoardImpactAnalytics from './pages/admin/BoardImpactAnalytics';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/board" element={<Board />} />
         <Route path="/admin/board-communication" element={<BoardCommunication />} />
         <Route path="/admin/chairman-zone" element={<ChairmanZone />} />
+        <Route path="/admin/board-impact" element={<BoardImpactAnalytics />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
