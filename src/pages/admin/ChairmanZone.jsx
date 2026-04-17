@@ -411,52 +411,95 @@ export default function ChairmanZone() {
           </div>
         )}
 
-        {/* Decisions Tab */}
+        {/* Decisions Tab - Only show contentious decisions needing veto */}
         {activeTab === 'decisions' && (
           <div className="space-y-4">
-            {decisions.length === 0 ? (
-              <Card className="text-center py-12">
-                <p className="text-slate-500">No decisions recorded yet.</p>
-              </Card>
-            ) : (
-              decisions.map((dec) => (
-                <Card key={dec.id} className="border-l-4 border-green-500">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
+            {/* Filter: Show only decisions where votes do NOT favour (contentious) */}
+            {(() => {
+              const contentiousDecisions = decisions.filter(dec => {
+                const totalVotes = (dec.voting_results?.yes_votes?.length || 0) +
+                                   (dec.voting_results?.no_votes?.length || 0) +
+                                   (dec.voting_results?.abstain_votes?.length || 0);
+                const yesVotes = dec.voting_results?.yes_votes?.length || 0;
+                // Show only if NOT unanimous or consensus (>75%)
+                return totalVotes > 0 && (yesVotes < totalVotes || yesVotes / totalVotes < 0.75);
+              });
+
+              if (contentiousDecisions.length === 0) {
+                return (
+                  <Card className="text-center py-12 border-2 border-green-200 bg-green-50">
+                    <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                    <p className="text-slate-600 font-semibold">All decisions auto-approved</p>
+                    <p className="text-slate-500 text-sm mt-1">Decisions with board consensus are automatically approved. No veto decisions pending.</p>
+                  </Card>
+                );
+              }
+
+              return (
+                <div className="space-y-4">
+                  <Card className="border-2 border-red-200 bg-red-50 p-4">
+                    <div className="flex gap-2 items-start">
+                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                       <div>
-                        <CardTitle className="text-lg">{dec.decision_title}</CardTitle>
-                        <p className="text-sm text-slate-600 mt-1">{dec.description}</p>
+                        <p className="font-semibold text-red-900">Veto Decisions Required</p>
+                        <p className="text-sm text-red-800 mt-1">
+                          These {contentiousDecisions.length} decision(s) lack clear board consensus. Review and veto if needed.
+                        </p>
                       </div>
-                      <Badge className="bg-green-600">Decided</Badge>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Proposed By</p>
-                        <p>{dec.proposed_by}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Owner</p>
-                        <p>{dec.implementation_owner || '—'}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Status</p>
-                        <Badge variant="outline" className="capitalize">
-                          {dec.implementation_status}
-                        </Badge>
-                      </div>
-                    </div>
-                    {dec.notes && (
-                      <div className="bg-slate-100 rounded p-3">
-                        <p className="text-xs font-semibold text-slate-700 uppercase mb-1">Notes</p>
-                        <p className="text-sm text-slate-700">{dec.notes}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))
-            )}
+                  </Card>
+
+                  {contentiousDecisions.map((dec) => {
+                    const totalVotes = (dec.voting_results?.yes_votes?.length || 0) +
+                                       (dec.voting_results?.no_votes?.length || 0) +
+                                       (dec.voting_results?.abstain_votes?.length || 0);
+                    const yesVotes = dec.voting_results?.yes_votes?.length || 0;
+                    const noVotes = dec.voting_results?.no_votes?.length || 0;
+                    const abstainVotes = dec.voting_results?.abstain_votes?.length || 0;
+
+                    return (
+                      <Card key={dec.id} className="border-l-4 border-red-500">
+                        <CardHeader className="pb-2">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CardTitle className="text-lg">{dec.decision_title}</CardTitle>
+                              <p className="text-sm text-slate-600 mt-1">{dec.description}</p>
+                            </div>
+                            <Badge className="bg-red-600">Awaiting Veto</Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="grid grid-cols-4 gap-3 text-sm">
+                            <div>
+                              <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Proposed By</p>
+                              <p>{dec.proposed_by}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Owner</p>
+                              <p>{dec.implementation_owner || '—'}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-slate-600 uppercase mb-1">Yes Votes</p>
+                              <p className="font-bold text-green-600">{yesVotes}/{totalVotes}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-slate-600 uppercase mb-1">No Votes</p>
+                              <p className="font-bold text-red-600">{noVotes}/{totalVotes}</p>
+                            </div>
+                          </div>
+                          {dec.notes && (
+                            <div className="bg-slate-100 rounded p-3">
+                              <p className="text-xs font-semibold text-slate-700 uppercase mb-1">Notes</p>
+                              <p className="text-sm text-slate-700">{dec.notes}</p>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         )}
 
