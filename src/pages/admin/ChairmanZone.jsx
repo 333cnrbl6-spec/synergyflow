@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,36 +9,44 @@ import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, Thumbs
 import { toast } from 'sonner';
 
 export default function ChairmanZone() {
-  const [messages, setMessages] = useState([]);
-  const [proposals, setProposals] = useState([]);
-  const [decisions, setDecisions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('transcript');
   const [chairmanNotes, setChairmanNotes] = useState('');
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [saving, setSaving] = useState(false);
   const [proposalFilter, setProposalFilter] = useState('all');
 
-  const loadData = async () => {
-    try {
-      const [propRes, decRes] = await Promise.all([
-        base44.functions.invoke('boardCommunications', { action: 'get_proposals' }),
-        base44.functions.invoke('boardCommunications', { action: 'get_decisions' })
-      ]);
-      setProposals(propRes.data.proposals || []);
-      setDecisions(decRes.data.decisions || []);
-    } catch (e) {
-      console.error('Error loading data:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // React Query for proposals with 30s polling
+  const { data: proposalData = {}, isLoading: loadingProposals, error: proposalError } = useQuery({
+    queryKey: ['boardProposals'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      return res.data;
+    },
+    refetchInterval: 30000, // 30s instead of 5s
+    staleTime: 25000,
+  });
 
-  useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // React Query for decisions - only fetch when tab is active
+  const { data: decisionData = {}, isLoading: loadingDecisions } = useQuery({
+    queryKey: ['boardDecisions'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_decisions' });
+      return res.data;
+    },
+    enabled: activeTab === 'decisions', // Lazy load
+    refetchInterval: activeTab === 'decisions' ? 30000 : false,
+    staleTime: 25000,
+  });
+
+  const proposals = proposalData.proposals || [];
+  const decisions = decisionData.decisions || [];
+  const loading = loadingProposals;
+
+  // Memoize filtered proposals
+  const filteredProposals = useMemo(() => {
+    return proposals.filter((p) => proposalFilter === 'all' || p.status === proposalFilter);
+  }, [proposals, proposalFilter]);
 
   const handleApproveProposal = async () => {
     if (!selectedProposal) return;
@@ -52,18 +61,9 @@ export default function ChairmanZone() {
       toast.success('Proposal approved');
       setChairmanNotes('');
       
-      // Update local state and auto-select next pending proposal
-      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'approved', chairman_notes: chairmanNotes } : p);
-      setProposals(updatedProposals);
-      
-      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      await queryClient.invalidateQueries({ queryKey: ['boardProposals'] });
+      const nextPending = proposals.find(p => p.status === 'pending_chairman' && p.id !== selectedProposal.id);
       setSelectedProposal(nextPending || null);
-      
-      // Refresh from backend
-      setTimeout(async () => {
-        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-        setProposals(res.data.proposals || []);
-      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to approve proposal');
@@ -85,18 +85,9 @@ export default function ChairmanZone() {
       toast.success('Proposal rejected');
       setChairmanNotes('');
       
-      // Update local state and auto-select next pending proposal
-      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'rejected', chairman_notes: chairmanNotes } : p);
-      setProposals(updatedProposals);
-      
-      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      await queryClient.invalidateQueries({ queryKey: ['boardProposals'] });
+      const nextPending = proposals.find(p => p.status === 'pending_chairman' && p.id !== selectedProposal.id);
       setSelectedProposal(nextPending || null);
-      
-      // Refresh from backend
-      setTimeout(async () => {
-        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-        setProposals(res.data.proposals || []);
-      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to reject proposal');
@@ -118,18 +109,9 @@ export default function ChairmanZone() {
       toast.success('Proposal deferred');
       setChairmanNotes('');
       
-      // Update local state and auto-select next pending proposal
-      const updatedProposals = proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'deferred', chairman_notes: chairmanNotes } : p);
-      setProposals(updatedProposals);
-      
-      const nextPending = updatedProposals.find(p => p.status === 'pending_chairman');
+      await queryClient.invalidateQueries({ queryKey: ['boardProposals'] });
+      const nextPending = proposals.find(p => p.status === 'pending_chairman' && p.id !== selectedProposal.id);
       setSelectedProposal(nextPending || null);
-      
-      // Refresh from backend
-      setTimeout(async () => {
-        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-        setProposals(res.data.proposals || []);
-      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to defer proposal');
@@ -159,10 +141,7 @@ export default function ChairmanZone() {
       );
       toast.success(`${pending.length} proposal(s) approved`);
       setSelectedProposal(null);
-      
-      // Refresh from backend
-      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-      setProposals(res.data.proposals || []);
+      await queryClient.invalidateQueries({ queryKey: ['boardProposals'] });
     } catch (e) {
       console.error(e);
       toast.error('Failed to approve proposals');
@@ -274,14 +253,12 @@ export default function ChairmanZone() {
 
               {/* Proposals List */}
               <div className="flex-1 space-y-3 overflow-y-auto max-h-[70vh]">
-              {proposals.length === 0 ? (
+              {filteredProposals.length === 0 ? (
                 <Card className="text-center py-8">
                   <p className="text-slate-500 text-sm">No proposals yet.</p>
                 </Card>
               ) : (
-                proposals
-                  .filter((p) => proposalFilter === 'all' || p.status === proposalFilter)
-                  .map((prop) => (
+                filteredProposals.map((prop) => (
                   <Card
                     key={prop.id}
                     className={`cursor-pointer transition-all ${
