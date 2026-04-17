@@ -38,6 +38,7 @@ export default function BoardCommunication() {
   const [showBoardDialogue, setShowBoardDialogue] = useState(false);
   const [initiatingMeeting, setInitiatingMeeting] = useState(false);
   const [executingVoting, setExecutingVoting] = useState(false);
+  const [executingFullBuild, setExecutingFullBuild] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -244,6 +245,21 @@ export default function BoardCommunication() {
     }
   };
 
+  const executeFullBuildProcess = async () => {
+    setExecutingFullBuild(true);
+    try {
+      const response = await base44.functions.invoke('executeAndBuildChairmanApprovedProposals', {});
+      await loadMessages(selectedChannel.id);
+      await loadProposals();
+      toast.success(`🚀 Complete - ${response.proposals_voted.toLocaleString()} voted, ${response.builds_triggered.toLocaleString()} builds triggered`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || 'Failed to execute full build process');
+    } finally {
+      setExecutingFullBuild(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
@@ -370,6 +386,20 @@ export default function BoardCommunication() {
             <CheckCircle2 className="w-4 h-4" />
           )}
           {executingVoting ? 'Voting...' : 'Execute Chairman Approved'}
+        </Button>
+        <Button
+          onClick={executeFullBuildProcess}
+          disabled={executingFullBuild}
+          variant="default"
+          size="sm"
+          className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold"
+        >
+          {executingFullBuild ? (
+            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Zap className="w-4 h-4" />
+          )}
+          {executingFullBuild ? 'Processing 3000+...' : '🔥 Vote + Build 3000+'}
         </Button>
       </div>
 
