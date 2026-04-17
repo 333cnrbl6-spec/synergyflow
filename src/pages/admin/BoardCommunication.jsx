@@ -124,13 +124,13 @@ export default function BoardCommunication() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 flex flex-col">
       {/* Top bar */}
-      <div className="border-b border-slate-800 px-6 py-3 flex items-center gap-4 bg-slate-900">
+      <div className="border-b border-slate-200 px-6 py-3 flex items-center gap-4 bg-white">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-sm font-bold text-white tracking-wide">THE BOARDROOM</span>
-          <span className="text-xs text-slate-500 ml-1">— Permanently Convened</span>
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-sm font-bold text-slate-900 tracking-wide">THE BOARDROOM</span>
+          <span className="text-xs text-slate-600 ml-1">— Permanently Convened</span>
         </div>
         <div className="flex gap-2 ml-4">
           {channels.map(ch => (
@@ -140,7 +140,7 @@ export default function BoardCommunication() {
               className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                 selectedChannel?.id === ch.id
                   ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
               }`}
             >
               <Hash className="w-3 h-3" />
@@ -154,7 +154,7 @@ export default function BoardCommunication() {
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
 
         {/* Left: Boardroom Table */}
-        <div className="w-[480px] flex-shrink-0 p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-800">
+        <div className="w-[480px] flex-shrink-0 p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-200 bg-white">
           <BoardroomTable
             members={boardMembers}
             products={products}
@@ -168,16 +168,16 @@ export default function BoardCommunication() {
         {/* Right: Channel Discussion */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
-          <div className="px-5 py-3 border-b border-slate-800 bg-slate-900/60 flex items-center gap-3">
-            <Hash className="w-4 h-4 text-slate-500" />
-            <span className="font-semibold text-white">{selectedChannel?.display_name}</span>
-            <span className="text-xs text-slate-500">{selectedChannel?.description}</span>
+          <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
+            <Hash className="w-4 h-4 text-slate-600" />
+            <span className="font-semibold text-slate-900">{selectedChannel?.display_name}</span>
+            <span className="text-xs text-slate-600">{selectedChannel?.description}</span>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-slate-600 gap-2">
+              <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2">
                 <div className="text-4xl">🪑</div>
                 <p className="text-sm">The board is seated. Start the discussion.</p>
               </div>
@@ -201,26 +201,26 @@ export default function BoardCommunication() {
                       {!isUser && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-semibold" style={{ color: memberColor }}>{msg.from_member}</span>
-                          <Badge variant="outline" className="text-xs border-slate-700 text-slate-400 py-0">{msg.message_type}</Badge>
+                          <Badge variant="outline" className="text-xs border-slate-300 text-slate-600 py-0">{msg.message_type}</Badge>
                         </div>
                       )}
                       <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                         isUser
                           ? 'bg-blue-600 text-white rounded-tr-sm'
                           : isCollective
-                          ? 'bg-indigo-900/60 border border-indigo-500/30 text-indigo-100 rounded-tl-sm italic'
+                          ? 'bg-indigo-100 border border-indigo-300 text-indigo-900 rounded-tl-sm italic'
                           : isChairman
-                          ? 'bg-amber-900/60 border border-amber-500/40 text-amber-100 rounded-tl-sm font-semibold'
-                          : 'bg-slate-800 text-slate-100 rounded-tl-sm'
+                          ? 'bg-amber-100 border border-amber-300 text-amber-900 rounded-tl-sm font-semibold'
+                          : 'bg-slate-100 text-slate-900 rounded-tl-sm border border-slate-200'
                       }`}>
                         {msg.message_content}
                       </div>
-                      <span className="text-xs text-slate-600">
+                      <span className="text-xs text-slate-500">
                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                     {isUser && (
-                      <div className="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">
+                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">
                         {user?.full_name?.slice(0, 2).toUpperCase() || 'ME'}
                       </div>
                     )}
@@ -232,12 +232,12 @@ export default function BoardCommunication() {
           </div>
 
           {/* Input */}
-          <div className="px-5 py-4 border-t border-slate-800 bg-slate-900/60 space-y-2">
+          <div className="px-5 py-4 border-t border-slate-200 bg-slate-50 space-y-2">
             <div className="flex gap-2 items-end">
               <select
                 value={messageType}
                 onChange={e => setMessageType(e.target.value)}
-                className="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-2 h-10"
+                className="bg-white border border-slate-300 text-slate-900 text-xs rounded-lg px-2 py-2 h-10"
               >
                 <option value="perspective">Perspective</option>
                 <option value="proposal">Proposal</option>
@@ -250,7 +250,7 @@ export default function BoardCommunication() {
                 value={messageContent}
                 onChange={e => setMessageContent(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-1 resize-none h-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-600 rounded-xl"
+                className="flex-1 resize-none h-10 bg-white border-slate-300 text-slate-900 placeholder:text-slate-500 rounded-xl"
                 rows={1}
               />
               <Button

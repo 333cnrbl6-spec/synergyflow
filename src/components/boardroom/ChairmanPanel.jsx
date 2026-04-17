@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 const STATUS_STYLES = {
-  pending_chairman: { label: 'Awaiting Chairman', bg: 'bg-yellow-500/15', text: 'text-yellow-400', border: 'border-yellow-500/30' },
-  approved: { label: 'Approved', bg: 'bg-green-500/15', text: 'text-green-400', border: 'border-green-500/30' },
-  rejected: { label: 'Rejected', bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-500/30' },
-  deferred: { label: 'Deferred', bg: 'bg-slate-500/15', text: 'text-slate-400', border: 'border-slate-500/30' },
+  pending_chairman: { label: 'Awaiting Chairman', bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-300' },
+  approved: { label: 'Approved', bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-300' },
+  rejected: { label: 'Rejected', bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-300' },
+  deferred: { label: 'Deferred', bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-300' },
 };
 
 const TYPE_LABELS = {
@@ -45,16 +45,16 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
   };
 
   return (
-    <div className="bg-slate-900 border border-amber-700/40 rounded-xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-amber-900/20 border-b border-amber-700/30 flex items-center gap-3">
+      <div className="px-4 py-3 bg-amber-50 border-b border-amber-200 flex items-center gap-3">
         <span className="text-lg">👑</span>
         <div>
-          <h3 className="text-amber-300 font-bold text-sm tracking-wide">CHAIRMAN'S DESK</h3>
-          <p className="text-amber-600 text-xs">Board proposals awaiting approval or build sign-off</p>
+          <h3 className="text-amber-900 font-bold text-sm tracking-wide">CHAIRMAN'S DESK</h3>
+          <p className="text-amber-700 text-xs">Board proposals awaiting approval or build sign-off</p>
         </div>
         {pending.length > 0 && (
-          <span className="ml-auto bg-amber-500 text-black text-xs font-black px-2 py-0.5 rounded-full">
+          <span className="ml-auto bg-amber-500 text-white text-xs font-black px-2 py-0.5 rounded-full">
             {pending.length} pending
           </span>
         )}
@@ -67,20 +67,20 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
         )}
 
         {pending.map(proposal => (
-          <div key={proposal.id} className="bg-slate-800 border border-amber-700/20 rounded-lg p-3 space-y-3">
+          <div key={proposal.id} className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-3">
             <div className="flex items-start justify-between gap-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs text-amber-400 font-semibold">{TYPE_LABELS[proposal.proposal_type] || proposal.proposal_type}</span>
+                  <span className="text-xs text-amber-700 font-semibold">{TYPE_LABELS[proposal.proposal_type] || proposal.proposal_type}</span>
                   {proposal.products_involved?.length > 0 && (
-                    <span className="text-xs text-slate-500">{proposal.products_involved.join(', ')}</span>
+                    <span className="text-xs text-slate-600">{proposal.products_involved.join(', ')}</span>
                   )}
                 </div>
-                <p className="text-white font-semibold text-sm">{proposal.title}</p>
+                <p className="text-slate-900 font-semibold text-sm">{proposal.title}</p>
                 {proposal.summary !== proposal.title && (
-                  <p className="text-slate-400 text-xs">{proposal.summary}</p>
+                  <p className="text-slate-700 text-xs">{proposal.summary}</p>
                 )}
-                <p className="text-slate-500 text-xs">Raised by: {proposal.raised_by}</p>
+                <p className="text-slate-600 text-xs">Raised by: {proposal.raised_by}</p>
               </div>
             </div>
 
@@ -90,13 +90,13 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
               placeholder="Chairman's notes (optional)..."
               value={notes[proposal.id] || ''}
               onChange={e => setNotes(n => ({ ...n, [proposal.id]: e.target.value }))}
-              className="w-full bg-slate-700 border border-slate-600 text-white text-xs rounded px-3 py-1.5 placeholder:text-slate-500"
+              className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded px-3 py-1.5 placeholder:text-slate-500"
             />
 
             <div className="flex gap-2">
               <Button
                 size="sm"
-                className="flex-1 h-7 text-xs bg-green-700 hover:bg-green-600 text-white"
+                className="flex-1 h-7 text-xs bg-green-600 hover:bg-green-700 text-white"
                 disabled={processing === proposal.id}
                 onClick={() => handleDecision(proposal, 'approved')}
               >
@@ -105,7 +105,7 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
               <Button
                 size="sm"
                 variant="outline"
-                className="flex-1 h-7 text-xs border-amber-600 text-amber-400 hover:bg-amber-900/30"
+                className="flex-1 h-7 text-xs border-amber-400 text-amber-700 hover:bg-amber-50"
                 disabled={processing === proposal.id}
                 onClick={() => handleDecision(proposal, 'deferred')}
               >
@@ -114,7 +114,7 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
               <Button
                 size="sm"
                 variant="outline"
-                className="flex-1 h-7 text-xs border-red-700 text-red-400 hover:bg-red-900/30"
+                className="flex-1 h-7 text-xs border-red-300 text-red-700 hover:bg-red-50"
                 disabled={processing === proposal.id}
                 onClick={() => handleDecision(proposal, 'rejected')}
               >
@@ -127,16 +127,16 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
         {/* Recently decided */}
         {decided.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-semibold">Recently Decided</p>
+            <p className="text-xs text-slate-700 uppercase tracking-wide font-semibold">Recently Decided</p>
             {decided.slice(0, 5).map(proposal => {
               const style = STATUS_STYLES[proposal.status] || STATUS_STYLES.deferred;
               return (
                 <div key={proposal.id} className={`rounded-lg p-2.5 border ${style.bg} ${style.border} flex items-center justify-between gap-2`}>
                   <div>
                     <p className={`text-xs font-semibold ${style.text}`}>{proposal.title}</p>
-                    <p className="text-slate-500 text-xs">{proposal.raised_by}</p>
+                    <p className="text-slate-600 text-xs">{proposal.raised_by}</p>
                     {proposal.chairman_notes && (
-                      <p className="text-slate-400 text-xs italic mt-0.5">"{proposal.chairman_notes}"</p>
+                      <p className="text-slate-700 text-xs italic mt-0.5">"{proposal.chairman_notes}"</p>
                     )}
                   </div>
                   <span className={`text-xs font-bold whitespace-nowrap ${style.text}`}>{style.label}</span>
