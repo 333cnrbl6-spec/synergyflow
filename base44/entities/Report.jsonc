@@ -1,0 +1,92 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "report_name": {
+      "type": "string",
+      "description": "Name of the report"
+    },
+    "description": {
+      "type": "string",
+      "description": "Report description"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly"
+      ],
+      "description": "Report frequency"
+    },
+    "day_of_week": {
+      "type": "integer",
+      "description": "0-6 for weekly (0=Sunday). Null for monthly"
+    },
+    "day_of_month": {
+      "type": "integer",
+      "description": "1-31 for monthly. Null for weekly"
+    },
+    "send_time": {
+      "type": "string",
+      "description": "Time to send in HH:MM format (24-hour)"
+    },
+    "recipients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Email addresses to send to"
+    },
+    "include_portfolio_metrics": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include MRR, subscriptions, growth"
+    },
+    "include_churn_analysis": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include churn rates and analysis"
+    },
+    "include_benchmark_comparison": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include benchmark comparisons"
+    },
+    "include_product_breakdown": {
+      "type": "boolean",
+      "default": false,
+      "description": "Include per-product metrics"
+    },
+    "include_action_items": {
+      "type": "boolean",
+      "default": true,
+      "description": "Include open action items"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "archived"
+      ],
+      "default": "active",
+      "description": "Report status"
+    },
+    "last_sent": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last send timestamp"
+    },
+    "next_scheduled": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Next scheduled send"
+    }
+  },
+  "required": [
+    "report_name",
+    "frequency",
+    "send_time",
+    "recipients"
+  ]
+}
