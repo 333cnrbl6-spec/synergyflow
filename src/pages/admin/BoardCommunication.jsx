@@ -88,6 +88,15 @@ export default function BoardCommunication() {
   const handleSend = async () => {
     if (!messageContent.trim() || !selectedChannel || sending) return;
     setSending(true);
+    const tempMessage = {
+      id: Date.now().toString(),
+      channel_id: selectedChannel.id,
+      from_member: user?.full_name || 'You',
+      message_content: messageContent,
+      message_type: messageType,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, tempMessage]);
     try {
       await base44.functions.invoke('boardCommunications', {
         action: 'send_message',
@@ -101,6 +110,7 @@ export default function BoardCommunication() {
       toast.success('Message posted to the board');
     } catch (e) {
       console.error(e);
+      setMessages(prev => prev.filter(m => m.id !== tempMessage.id));
       toast.error('Failed to post message');
     } finally {
       setSending(false);
