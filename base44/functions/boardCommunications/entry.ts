@@ -9,7 +9,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { action, channel_id, message_content, message_type, from_member } = await req.json();
+    const body = await req.json();
+    const { action, channel_id, message_content, message_type, from_member } = body;
 
     if (action === 'send_message') {
       const message = await base44.asServiceRole.entities.BoardMessage.create({
@@ -66,7 +67,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'mark_notification_read') {
-      const { notification_id } = await req.json();
+      const { notification_id } = body;
       await base44.asServiceRole.entities.BoardNotification.update(notification_id, {
         read: true
       });
@@ -74,19 +75,19 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'propose_decision') {
-      const { decision_title, description, proposed_by, channel_id } = await req.json();
+      const { decision_title, description, proposed_by, channel_id: decisionChannelId } = body;
       const decision = await base44.asServiceRole.entities.BoardDecision.create({
         decision_title,
         description,
         proposed_by,
-        channel_id,
+        channel_id: decisionChannelId,
         status: 'proposed'
       });
       return Response.json({ success: true, decision });
     }
 
     if (action === 'vote_decision') {
-      const { decision_id, member, vote } = await req.json();
+      const { decision_id, member, vote } = body;
       const decision = await base44.asServiceRole.entities.BoardDecision.get(decision_id);
       
       if (!decision.voting_results) {
@@ -111,7 +112,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'chairman_review') {
-      const { proposal_id, status, chairman_notes } = await req.json();
+      const { proposal_id, status, chairman_notes } = body;
       await base44.asServiceRole.entities.BoardProposal.update(proposal_id, {
         status,
         chairman_notes: chairman_notes || ''
@@ -131,7 +132,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'submit_proposal') {
-      const { title, summary, raised_by, proposal_type, products_involved } = await req.json();
+      const { title, summary, raised_by, proposal_type, products_involved } = body;
       const proposal = await base44.asServiceRole.entities.BoardProposal.create({
         title,
         summary,
