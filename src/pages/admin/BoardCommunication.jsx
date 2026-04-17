@@ -13,6 +13,7 @@ import NotificationCenter from '@/components/NotificationCenter';
 import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard';
 import ConsolidationOverview from '@/components/ConsolidationOverview';
 import ImplementationTimeline from '@/components/ImplementationTimeline';
+import BoardActionsMetrics from '@/components/BoardActionsMetrics';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -34,6 +35,7 @@ export default function BoardCommunication() {
   const [postingConsolidation, setPostingConsolidation] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [initiatingValuation, setInitiatingValuation] = useState(false);
+  const [showBoardDialogue, setShowBoardDialogue] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -297,13 +299,26 @@ export default function BoardCommunication() {
           <Zap className="w-4 h-4" />
           {showTimeline ? 'Hide' : 'Show'} Timeline
         </Button>
+        <Button
+          onClick={() => setShowBoardDialogue(!showBoardDialogue)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <Vote className="w-4 h-4" />
+          {showBoardDialogue ? 'Hide' : 'Show'} Dialogue
+        </Button>
       </div>
 
       {/* Main: Notifications or table + chat side by side */}
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
         
         {/* Side Panels */}
-        {showTimeline ? (
+        {showBoardDialogue ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <BoardActionsMetrics />
+          </div>
+        ) : showTimeline ? (
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <ImplementationTimeline />
           </div>
@@ -337,7 +352,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showTimeline && !showNotifications && !showStrategicProposal && !showConsolidation && (
+        {!showBoardDialogue && !showTimeline && !showNotifications && !showStrategicProposal && !showConsolidation && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
