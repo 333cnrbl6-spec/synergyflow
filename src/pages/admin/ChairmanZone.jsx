@@ -240,10 +240,12 @@ export default function ChairmanZone() {
                               ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
                               : prop.status === 'approved'
                               ? 'bg-green-50 text-green-700 border-green-200'
+                              : prop.status === 'deferred'
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
                               : 'bg-red-50 text-red-700 border-red-200'
                           }
                         >
-                          {prop.status === 'pending_chairman' ? 'Pending' : prop.status}
+                          {prop.status === 'pending_chairman' ? 'Pending' : prop.status.charAt(0).toUpperCase() + prop.status.slice(1)}
                         </Badge>
                       </div>
                       <p className="text-xs text-slate-500 mt-1">
