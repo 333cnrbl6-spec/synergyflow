@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Award, Target, Zap } from 'lucide-react';
+import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
 
 export default function BoardImpactAnalytics() {
@@ -76,37 +76,12 @@ export default function BoardImpactAnalytics() {
           <p className="text-slate-600 mt-2">How autonomous board decisions create competitive value</p>
         </div>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard
-            icon={<TrendingUp className="w-6 h-6" />}
-            label="Combined MRR Potential"
-            value={`£${Math.round(metrics.totalMRR).toLocaleString()}`}
-            detail="Across all products & tiers"
-            color="#3b82f6"
-          />
-          <MetricCard
-            icon={<Target className="w-6 h-6" />}
-            label="Pricing Sophistication"
-            value={`${metrics.totalTiers} tiers`}
-            detail={`Avg ${metrics.avgTiersPerProduct.toFixed(1)} per product`}
-            color="#22c55e"
-          />
-          <MetricCard
-            icon={<Zap className="w-6 h-6" />}
-            label="Approved Decisions"
-            value={approvedProposals.length}
-            detail="Board consensus implemented"
-            color="#f59e0b"
-          />
-          <MetricCard
-            icon={<Award className="w-6 h-6" />}
-            label="Board Parity Focus"
-            value="Active"
-            detail="Weakest product drives progress"
-            color="#a855f7"
-          />
-        </div>
+        {/* High-Level Summary */}
+        <BoardMetricsSummary 
+          approvedProposals={approvedProposals} 
+          products={products}
+          decisions={[]}
+        />
 
         {/* Proposal Breakdown */}
         <Card className="p-6 bg-white border border-slate-200">
@@ -232,21 +207,5 @@ export default function BoardImpactAnalytics() {
         </Card>
       </div>
     </div>
-  );
-}
-
-function MetricCard({ icon, label, value, detail, color }) {
-  return (
-    <Card className="p-4 bg-white border border-slate-200 hover:shadow-lg transition">
-      <div className="flex items-start justify-between mb-2">
-        <div style={{ color }} className="opacity-80">
-          {icon}
-        </div>
-        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-      </div>
-      <div className="text-sm text-slate-600 font-medium">{label}</div>
-      <div className="text-2xl font-black text-slate-900 mt-1">{value}</div>
-      <div className="text-xs text-slate-500 mt-1">{detail}</div>
-    </Card>
   );
 }
