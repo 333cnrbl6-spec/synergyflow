@@ -25,6 +25,7 @@ import BoardUnifiedLaunch from './pages/admin/BoardUnifiedLaunch';
 import PortfolioMetrics from './pages/admin/PortfolioMetrics';
 import ReportsManager from './pages/admin/ReportsManager';
 import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
+import ProductVerificationDashboard from './pages/admin/ProductVerificationDashboard';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/portfolio" element={<PortfolioMetrics />} />
         <Route path="/admin/reports" element={<ReportsManager />} />
         <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
+        <Route path="/admin/verification" element={<ProductVerificationDashboard />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

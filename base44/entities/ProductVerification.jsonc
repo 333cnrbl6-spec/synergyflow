@@ -1,0 +1,148 @@
+{
+  "name": "ProductVerification",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Related product ID"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "board_member_app": {
+      "type": "string",
+      "description": "App/board member responsible for verification"
+    },
+    "related_proposal_id": {
+      "type": "string",
+      "description": "Related board proposal that triggered verification"
+    },
+    "verification_phase": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "in_progress",
+        "completed",
+        "issues_found",
+        "resolved"
+      ],
+      "default": "planning",
+      "description": "Current phase of verification"
+    },
+    "test_categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Test category (e.g., 'Core Functionality', 'User Flows', 'Edge Cases', 'Performance')"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "test_name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "passed",
+                    "failed"
+                  ]
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Organized test results by category"
+    },
+    "end_to_end_flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "flow_name": {
+            "type": "string",
+            "description": "Name of end-to-end flow (e.g., 'User Signup \u2192 Payment \u2192 Dashboard')"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "passed",
+              "failed"
+            ]
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "End-to-end user flow tests"
+    },
+    "issues_found": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue_id": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "in_progress",
+              "resolved"
+            ]
+          }
+        }
+      },
+      "description": "Issues discovered during verification"
+    },
+    "coverage_percentage": {
+      "type": "number",
+      "description": "Percentage of tests passed (0-100)"
+    },
+    "verified_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When verification was completed"
+    }
+  },
+  "required": [
+    "product_id",
+    "product_name",
+    "board_member_app"
+  ]
+}
