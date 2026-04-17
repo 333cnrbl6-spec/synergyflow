@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash } from 'lucide-react';
+import { Send, Hash, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -121,6 +121,26 @@ export default function BoardCommunication() {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSend();
   };
 
+  const handleExportPDF = async () => {
+    if (!selectedChannel) return;
+    try {
+      const res = await base44.functions.invoke('exportBoardDiscussionPDF', {
+        channel_id: selectedChannel.id,
+      });
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `board-discussion-${new Date().toISOString().split('T')[0]}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success('Board discussion exported as PDF');
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to export PDF');
+    }
+  };
+
   const MEMBER_COLORS = {
     'Premiso': '#3b82f6',
     'Species Explorer': '#22c55e',
@@ -161,6 +181,15 @@ export default function BoardCommunication() {
             </button>
           ))}
         </div>
+        <Button
+          onClick={handleExportPDF}
+          variant="outline"
+          size="sm"
+          className="ml-auto flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <Download className="w-4 h-4" />
+          Export PDF
+        </Button>
       </div>
 
       {/* Main: table + chat side by side */}
