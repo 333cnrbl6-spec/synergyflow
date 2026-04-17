@@ -17,24 +17,22 @@ export default function ChairmanZone() {
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  const loadData = async () => {
+    try {
+      const propRes = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      console.log('Loaded proposals:', propRes.data.proposals);
+      setProposals(propRes.data.proposals || []);
+      setDecisions([]);
+    } catch (e) {
+      console.error('Error loading data:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const init = async () => {
-      try {
-        const [propRes, decRes] = await Promise.all([
-          base44.functions.invoke('boardCommunications', { action: 'get_proposals' }),
-          base44.functions.invoke('boardCommunications', { action: 'get_decisions' }),
-        ]);
-        setProposals(propRes.data.proposals || []);
-        setDecisions(decRes.data.decisions || []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    init();
-    // Auto-refresh every 5 seconds
-    const interval = setInterval(init, 5000);
+    loadData();
+    const interval = setInterval(loadData, 3000);
     return () => clearInterval(interval);
   }, []);
 
