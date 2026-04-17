@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Award, Target, Zap } from 'lucide-react';
+import SellNowValuation from '@/components/SellNowValuation';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -196,6 +197,11 @@ export default function BoardImpactAnalytics() {
             )}
           </div>
         </Card>
+
+        {/* Sell Now Valuation */}
+        <div>
+          <SellNowValuation />
+        </div>
 
         {/* Competitive Differentiation */}
         <Card className="p-6 bg-white border border-slate-200 bg-gradient-to-br from-slate-50 to-white">
