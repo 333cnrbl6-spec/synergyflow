@@ -3,13 +3,16 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, CheckCircle2, Activity } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Activity, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
+import { format, formatDistanceToNow, isWithinInterval, subDays } from 'date-fns';
 
 export default function ProductReadinessMonitor() {
   const [readiness, setReadiness] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checking, setChecking] = useState(false);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [lastCheckTime, setLastCheckTime] = useState(null);
 
   useEffect(() => {
     fetchReadinessData();
@@ -19,6 +22,7 @@ export default function ProductReadinessMonitor() {
     try {
       const data = await base44.entities.ProductReadiness.list('-last_assessed');
       setReadiness(data);
+      setLastCheckTime(new Date());
     } catch (error) {
       console.error(error);
       toast.error('Failed to load readiness data');
@@ -58,6 +62,22 @@ export default function ProductReadinessMonitor() {
     return <Badge className="bg-red-600">Low Readiness</Badge>;
   };
 
+  const isRecentlyUpdated = (lastAssessedDate) => {
+    if (!lastAssessedDate || !lastCheckTime) return false;
+    const assessmentDate = new Date(lastAssessedDate);
+    return isWithinInterval(assessmentDate, { start: subDays(lastCheckTime, 1), end: lastCheckTime });
+  };
+
+  const sortedReadiness = [...readiness].sort((a, b) => {
+    const aVal = a.overall_readiness_percentage || 0;
+    const bVal = b.overall_readiness_percentage || 0;
+    return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+  });
+
+  const toggleSort = () => {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -76,14 +96,26 @@ export default function ProductReadinessMonitor() {
           <h2 className="text-2xl font-bold">Product Readiness Monitor</h2>
           <p className="text-sm text-slate-600">Track readiness across portfolio and auto-trigger alerts</p>
         </div>
-        <Button
-          onClick={triggerMonitoring}
-          disabled={checking}
-          className="gap-2"
-        >
-          <Activity className="w-4 h-4" />
-          {checking ? 'Monitoring...' : 'Run Check'}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={toggleSort}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            title={`Sort by readiness: ${sortOrder === 'asc' ? 'ascending' : 'descending'}`}
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            {sortOrder === 'asc' ? 'Low→High' : 'High→Low'}
+          </Button>
+          <Button
+            onClick={triggerMonitoring}
+            disabled={checking}
+            className="gap-2"
+          >
+            <Activity className="w-4 h-4" />
+            {checking ? 'Monitoring...' : 'Run Check'}
+          </Button>
+        </div>
       </div>
 
       {/* Alert Summary */}
@@ -105,8 +137,8 @@ export default function ProductReadinessMonitor() {
 
       {/* Readiness Grid */}
       <div className="grid gap-3">
-        {readiness.map((product) => (
-          <Card key={product.id} className={`border-2 ${getStatusColor(product.overall_readiness_percentage)}`}>
+        {sortedReadiness.map((product) => (
+          <Card key={product.id} className={`border-2 ${getStatusColor(product.overall_readiness_percentage)} ${isRecentlyUpdated(product.updated_date) ? 'ring-2 ring-blue-400 shadow-md' : ''}`}>
             <CardContent className="pt-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
@@ -114,7 +146,21 @@ export default function ProductReadinessMonitor() {
                     {getStatusIcon(product.overall_readiness_percentage)}
                     <h3 className="font-semibold text-slate-900">{product.product_name}</h3>
                     {getStatusBadge(product.overall_readiness_percentage)}
+                    {isRecentlyUpdated(product.updated_date) && (
+                      <div className="flex items-center gap-1.5 ml-auto">
+                        <span className="text-xs text-blue-600 font-medium">Updated</span>
+                        <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                      </div>
+                    )}
                   </div>
+
+                  {/* Last Updated Timestamp */}
+                  <p className="text-xs text-slate-500 mb-2">
+                    Last assessed: {product.last_assessed ? 
+                      `${format(new Date(product.last_assessed), 'MMM dd, yyyy')} (${formatDistanceToNow(new Date(product.last_assessed), { addSuffix: true })})`
+                      : 'Never'
+                    }
+                  </p>
 
                   {/* Readiness Metrics */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-3">
