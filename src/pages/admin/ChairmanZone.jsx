@@ -229,16 +229,19 @@ export default function ChairmanZone() {
             {/* Proposal Detail & Commentary */}
             <div className="lg:col-span-2">
               {selectedProposal ? (
-                <Card className="h-full flex flex-col">
+                <Card className="h-full flex flex-col overflow-hidden">
+                  <div className={`px-6 py-3 text-white font-semibold text-lg ${
+                    selectedProposal.status === 'approved' ? 'bg-green-600' :
+                    selectedProposal.status === 'rejected' ? 'bg-red-600' :
+                    selectedProposal.status === 'deferred' ? 'bg-amber-600' :
+                    'bg-yellow-500'
+                  }`}>
+                    Status: {selectedProposal.status === 'pending_chairman' ? 'Awaiting Decision' : selectedProposal.status.charAt(0).toUpperCase() + selectedProposal.status.slice(1)}
+                  </div>
                   <CardHeader className="border-b">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle>{selectedProposal.title}</CardTitle>
-                        <p className="text-sm text-slate-600 mt-2">{selectedProposal.summary}</p>
-                      </div>
-                      <Badge className={selectedProposal.status === 'approved' ? 'bg-green-600' : 'bg-yellow-600'}>
-                        {selectedProposal.status}
-                      </Badge>
+                    <div>
+                      <CardTitle>{selectedProposal.title}</CardTitle>
+                      <p className="text-sm text-slate-600 mt-2">{selectedProposal.summary}</p>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 py-4 overflow-y-auto">
