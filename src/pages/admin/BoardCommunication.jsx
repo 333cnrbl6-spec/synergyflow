@@ -12,6 +12,7 @@ import ValueImpactTracker from '@/components/ValueImpactTracker';
 import NotificationCenter from '@/components/NotificationCenter';
 import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard';
 import ConsolidationOverview from '@/components/ConsolidationOverview';
+import ImplementationTimeline from '@/components/ImplementationTimeline';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -31,6 +32,7 @@ export default function BoardCommunication() {
   const [showConsolidation, setShowConsolidation] = useState(false);
   const [postingStrategic, setPostingStrategic] = useState(false);
   const [postingConsolidation, setPostingConsolidation] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -260,13 +262,26 @@ export default function BoardCommunication() {
           <Download className="w-4 h-4" />
           Export PDF
         </Button>
+        <Button
+          onClick={() => setShowTimeline(!showTimeline)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <Zap className="w-4 h-4" />
+          {showTimeline ? 'Hide' : 'Show'} Timeline
+        </Button>
       </div>
 
       {/* Main: Notifications or table + chat side by side */}
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
         
         {/* Side Panels */}
-        {showNotifications ? (
+        {showTimeline ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <ImplementationTimeline />
+          </div>
+        ) : showNotifications ? (
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <NotificationCenter />
           </div>
@@ -296,7 +311,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showNotifications && !showStrategicProposal && !showConsolidation && (
+        {!showTimeline && !showNotifications && !showStrategicProposal && !showConsolidation && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
