@@ -3,12 +3,13 @@ import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CheckCircle2, Zap, AlertTriangle } from 'lucide-react';
+import { Download, CheckCircle2, Zap, AlertTriangle, Scale } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { toast } from 'sonner';
 import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
 import IntegrationConflictMonitor from '@/components/IntegrationConflictMonitor';
+import CapacityManagementTool from '@/components/CapacityManagementTool';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -18,6 +19,7 @@ export default function BoardImpactAnalytics() {
   const [actioningProposals, setActioningProposals] = useState(false);
   const [bulkActioning, setBulkActioning] = useState(false);
   const [showConflictMonitor, setShowConflictMonitor] = useState(false);
+  const [showCapacityTool, setShowCapacityTool] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -243,6 +245,14 @@ export default function BoardImpactAnalytics() {
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             <Button 
+              onClick={() => setShowCapacityTool(!showCapacityTool)}
+              variant="outline"
+              className="gap-2 border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              <Scale className="w-4 h-4" />
+              {showCapacityTool ? 'Hide' : 'Show'} Capacity
+            </Button>
+            <Button 
               onClick={() => setShowConflictMonitor(!showConflictMonitor)}
               variant="outline"
               className="gap-2 border-red-300 text-red-700 hover:bg-red-50"
@@ -288,6 +298,11 @@ export default function BoardImpactAnalytics() {
             </Button>
           </div>
         </div>
+
+        {/* Capacity Management Tool */}
+        {showCapacityTool && (
+          <CapacityManagementTool />
+        )}
 
         {/* Integration Conflict Monitor */}
         {showConflictMonitor && (
