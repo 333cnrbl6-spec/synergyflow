@@ -11,7 +11,7 @@ export default function BoardImpactAnalytics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
+    const loadData = async () => {
       try {
         const [proposals, prods] = await Promise.all([
           base44.entities.BoardProposal.filter({ status: 'approved' }),
@@ -25,7 +25,10 @@ export default function BoardImpactAnalytics() {
         setLoading(false);
       }
     };
-    init();
+    
+    loadData();
+    const interval = setInterval(loadData, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   // Calculate metrics
