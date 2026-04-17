@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
 import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
+import GanttChart from '@/components/boardroom/GanttChart';
 import ValueImpactTracker from '@/components/ValueImpactTracker';
 import NotificationCenter from '@/components/NotificationCenter';
 import JointVenturesProposalBoard from '@/components/JointVenturesProposalBoard';
@@ -41,6 +42,7 @@ export default function BoardCommunication() {
   const [executingVoting, setExecutingVoting] = useState(false);
   const [executingFullBuild, setExecutingFullBuild] = useState(false);
   const [showExecutionMetrics, setShowExecutionMetrics] = useState(false);
+  const [showGantt, setShowGantt] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -362,6 +364,15 @@ export default function BoardCommunication() {
           {showExecutionMetrics ? 'Hide' : 'Show'} Metrics
         </Button>
         <Button
+          onClick={() => setShowGantt(!showGantt)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <Zap className="w-4 h-4" />
+          {showGantt ? 'Hide' : 'Show'} Gantt
+        </Button>
+        <Button
           onClick={() => setShowBoardDialogue(!showBoardDialogue)}
           variant="outline"
           size="sm"
@@ -426,6 +437,10 @@ export default function BoardCommunication() {
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <ImplementationTimeline />
           </div>
+        ) : showGantt ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <GanttChart />
+          </div>
         ) : showExecutionMetrics ? (
           <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
             <ExecutionMetricsDashboard />
@@ -460,7 +475,7 @@ export default function BoardCommunication() {
         )}
 
         {/* Right: Channel Discussion */}
-        {!showBoardDialogue && !showTimeline && !showExecutionMetrics && !showNotifications && !showStrategicProposal && !showConsolidation && (
+        {!showBoardDialogue && !showTimeline && !showGantt && !showExecutionMetrics && !showNotifications && !showStrategicProposal && !showConsolidation && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
