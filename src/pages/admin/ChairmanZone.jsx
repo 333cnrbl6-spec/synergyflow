@@ -20,10 +20,12 @@ export default function ChairmanZone() {
 
   const loadData = async () => {
     try {
-      const propRes = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-      console.log('Loaded proposals:', propRes.data.proposals);
+      const [propRes, decRes] = await Promise.all([
+        base44.functions.invoke('boardCommunications', { action: 'get_proposals' }),
+        base44.functions.invoke('boardCommunications', { action: 'get_decisions' })
+      ]);
       setProposals(propRes.data.proposals || []);
-      setDecisions([]);
+      setDecisions(decRes.data.decisions || []);
     } catch (e) {
       console.error('Error loading data:', e);
     } finally {
@@ -209,7 +211,7 @@ export default function ChairmanZone() {
             className="gap-2"
           >
             <Clock className="w-4 h-4" />
-            Proposals ({proposals.length})
+            Proposals ({proposals.filter(p => p.status === 'pending_chairman').length})
           </Button>
           <Button
             variant={activeTab === 'decisions' ? 'default' : 'outline'}
