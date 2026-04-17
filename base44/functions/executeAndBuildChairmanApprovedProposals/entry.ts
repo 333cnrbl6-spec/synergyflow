@@ -45,11 +45,14 @@ Deno.serve(async (req) => {
     let unanimousCount = 0;
     let buildTriggeredCount = 0;
     let actionItemsCreated = 0;
+    const totalBatches = Math.ceil(totalProposals / batchSize);
 
     // Process proposals in batches
-    for (let batchStart = 0; batchStart < totalProposals; batchStart += batchSize) {
+    for (let batchNum = 0; batchNum < totalBatches; batchNum++) {
+      const batchStart = batchNum * batchSize;
       const batchEnd = Math.min(batchStart + batchSize, totalProposals);
       const batch = approvedProposals.slice(batchStart, batchEnd);
+      const currentBatchNum = batchNum + 1;
 
       // PHASE 1: Vote on all proposals in batch
       const votePromises = batch.map(proposal => {
@@ -112,17 +115,30 @@ Deno.serve(async (req) => {
 
       await Promise.all(buildPromises);
 
-      // Post batch progress
+      // Batch complete - announce and auto-execute
       const progressPercent = Math.round((batchEnd / totalProposals) * 100);
       await base44.functions.invoke('boardCommunications', {
         action: 'send_message',
         channel_id: strategyChannel.id,
-        message_content: `⚡ **BATCH EXECUTION [${progressPercent}%]**\n\n✅ Voted: ${votedCount.toLocaleString()}/${totalProposals.toLocaleString()}\n🎖️ Unanimous: ${unanimousCount.toLocaleString()}\n🏗️ Builds triggered: ${buildTriggeredCount.toLocaleString()}\n📝 Action items: ${actionItemsCreated.toLocaleString()}`,
+        message_content: `🚀 **BATCH ${currentBatchNum}/${totalBatches} COMPLETE [${progressPercent}%]**\n\n✅ Voted: ${batch.length}/${batchSize}\n🏗️ Builds auto-triggered: ${batch.length}\n⏳ Moving to next batch...`,
         message_type: 'decision',
         from_member: '⚙️ Execution Engine',
-      }).catch(e => console.error('Progress msg error:', e));
+      }).catch(e => console.error('Batch complete msg error:', e));
 
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1500));
+
+      // Auto-trigger next batch if batches remain
+      if (currentBatchNum < totalBatches) {
+        await base44.functions.invoke('boardCommunications', {
+          action: 'send_message',
+          channel_id: strategyChannel.id,
+          message_content: `⏭️ **BATCH ${currentBatchNum + 1} INITIATING** — Processing next ${Math.min(batchSize, totalProposals - batchEnd)} proposals...`,
+          message_type: 'announcement',
+          from_member: '⚙️ Execution Engine',
+        }).catch(e => console.error('Next batch msg error:', e));
+
+        await new Promise(r => setTimeout(r, 800));
+      }
     }
 
     // Final summary
