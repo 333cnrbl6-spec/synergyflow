@@ -1,0 +1,55 @@
+{
+  "name": "ValuationSnapshot",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "monthly_mrr": {
+      "type": "number",
+      "description": "Monthly Recurring Revenue in pounds"
+    },
+    "annual_arr": {
+      "type": "number",
+      "description": "Annual Recurring Revenue in pounds"
+    },
+    "valuation_multiple": {
+      "type": "number",
+      "description": "Revenue multiple (e.g., 12.0x)"
+    },
+    "sell_now_value": {
+      "type": "number",
+      "description": "Calculated sell-now valuation in millions"
+    },
+    "snapshot_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of valuation snapshot"
+    },
+    "trigger_proposal_id": {
+      "type": "string",
+      "description": "Board proposal ID that triggered the calculation"
+    },
+    "calculation_method": {
+      "type": "string",
+      "enum": [
+        "mrr_based",
+        "arr_based",
+        "hybrid"
+      ],
+      "description": "How the valuation was calculated"
+    }
+  },
+  "required": [
+    "product_id",
+    "product_name",
+    "monthly_mrr",
+    "sell_now_value",
+    "snapshot_date"
+  ]
+}
