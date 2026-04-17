@@ -136,6 +136,39 @@ export default function ChairmanZone() {
     }
   };
 
+  const handleApproveAllPending = async () => {
+    const pending = proposals.filter(p => p.status === 'pending_chairman');
+    if (pending.length === 0) {
+      toast.info('No pending proposals to approve');
+      return;
+    }
+    
+    setSaving(true);
+    try {
+      await Promise.all(
+        pending.map(p =>
+          base44.functions.invoke('boardCommunications', {
+            action: 'chairman_review',
+            proposal_id: p.id,
+            status: 'approved',
+            chairman_notes: '',
+          })
+        )
+      );
+      toast.success(`${pending.length} proposal(s) approved`);
+      setSelectedProposal(null);
+      
+      // Refresh from backend
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      setProposals(res.data.proposals || []);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to approve proposals');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -194,23 +227,40 @@ export default function ChairmanZone() {
             {/* Proposal List */}
             <div className="lg:col-span-1 flex flex-col gap-3">
               {/* Status Filter */}
-              <div className="flex gap-2">
-                <Button
-                  variant={proposalFilter === 'pending_chairman' ? 'default' : 'outline'}
-                  onClick={() => setProposalFilter('pending_chairman')}
-                  size="sm"
-                  className="text-xs"
-                >
-                  Pending
-                </Button>
-                <Button
-                  variant={proposalFilter === 'all' ? 'default' : 'outline'}
-                  onClick={() => setProposalFilter('all')}
-                  size="sm"
-                  className="text-xs"
-                >
-                  All
-                </Button>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Button
+                    variant={proposalFilter === 'pending_chairman' ? 'default' : 'outline'}
+                    onClick={() => setProposalFilter('pending_chairman')}
+                    size="sm"
+                    className="text-xs"
+                  >
+                    Pending
+                  </Button>
+                  <Button
+                    variant={proposalFilter === 'all' ? 'default' : 'outline'}
+                    onClick={() => setProposalFilter('all')}
+                    size="sm"
+                    className="text-xs"
+                  >
+                    All
+                  </Button>
+                </div>
+                {proposals.filter(p => p.status === 'pending_chairman').length > 0 && (
+                  <Button
+                    onClick={handleApproveAllPending}
+                    disabled={saving}
+                    className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                    size="sm"
+                  >
+                    {saving ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <CheckCircle2 className="w-4 h-4" />
+                    )}
+                    Approve All
+                  </Button>
+                )}
               </div>
 
               {/* Proposals List */}
