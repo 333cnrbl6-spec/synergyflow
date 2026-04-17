@@ -313,7 +313,7 @@ export default function ChairmanZone() {
                         </div>
                       </div>
                       <Textarea
-                        placeholder="Add your chairman commentary or decision…"
+                        placeholder="Add your chairman commentary or decision (optional)…"
                         value={chairmanNotes}
                         onChange={(e) => setChairmanNotes(e.target.value)}
                         className="resize-none h-24"
