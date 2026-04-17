@@ -3,11 +3,12 @@ import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CheckCircle2, Zap } from 'lucide-react';
+import { Download, CheckCircle2, Zap, AlertTriangle } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { toast } from 'sonner';
 import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
+import IntegrationConflictMonitor from '@/components/IntegrationConflictMonitor';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -16,6 +17,7 @@ export default function BoardImpactAnalytics() {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [actioningProposals, setActioningProposals] = useState(false);
   const [bulkActioning, setBulkActioning] = useState(false);
+  const [showConflictMonitor, setShowConflictMonitor] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -241,6 +243,14 @@ export default function BoardImpactAnalytics() {
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             <Button 
+              onClick={() => setShowConflictMonitor(!showConflictMonitor)}
+              variant="outline"
+              className="gap-2 border-red-300 text-red-700 hover:bg-red-50"
+            >
+              <AlertTriangle className="w-4 h-4" />
+              {showConflictMonitor ? 'Hide' : 'Scan'} Conflicts
+            </Button>
+            <Button 
               onClick={bulkActionAllProposals}
               disabled={bulkActioning}
               className="gap-2 bg-red-600 hover:bg-red-700"
@@ -278,6 +288,11 @@ export default function BoardImpactAnalytics() {
             </Button>
           </div>
         </div>
+
+        {/* Integration Conflict Monitor */}
+        {showConflictMonitor && (
+          <IntegrationConflictMonitor />
+        )}
 
         {/* High-Level Summary */}
         <BoardMetricsSummary 
