@@ -3,12 +3,13 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download } from 'lucide-react';
+import { Send, Hash, Download, Bell } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
 import ChairmanPanel from '@/components/boardroom/ChairmanPanel';
 import ValueImpactTracker from '@/components/ValueImpactTracker';
+import NotificationCenter from '@/components/NotificationCenter';
 
 export default function BoardCommunication() {
   const [channels, setChannels] = useState([]);
@@ -23,6 +24,7 @@ export default function BoardCommunication() {
   const [activeMember, setActiveMember] = useState(null);
   const [sending, setSending] = useState(false);
   const [proposals, setProposals] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -183,33 +185,52 @@ export default function BoardCommunication() {
           ))}
         </div>
         <Button
+          onClick={() => setShowNotifications(!showNotifications)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
+        >
+          <Bell className="w-4 h-4" />
+          Alerts
+        </Button>
+        <Button
           onClick={handleExportPDF}
           variant="outline"
           size="sm"
-          className="ml-auto flex items-center gap-2 text-slate-700 border-slate-300"
+          className="flex items-center gap-2 text-slate-700 border-slate-300"
         >
           <Download className="w-4 h-4" />
           Export PDF
         </Button>
       </div>
 
-      {/* Main: table + chat side by side */}
+      {/* Main: Notifications or table + chat side by side */}
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
-
-        {/* Left: Boardroom Table */}
-        <div className="w-[480px] flex-shrink-0 p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-200 bg-white">
-          <ValueImpactTracker proposals={proposals} products={products} />
-          <BoardroomTable
-            members={boardMembers}
-            products={products}
-            activeMember={activeMember}
-            onMemberClick={setActiveMember}
-          />
-          <ReadinessDashboard members={boardMembers} products={products} />
-          <ChairmanPanel proposals={proposals} onRefresh={loadProposals} />
-        </div>
+        
+        {/* Notifications Panel (if shown) */}
+        {showNotifications ? (
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-200 bg-white">
+            <NotificationCenter />
+          </div>
+        ) : (
+          <>
+            {/* Left: Boardroom Table */}
+            <div className="w-[480px] flex-shrink-0 p-4 flex flex-col gap-4 overflow-y-auto border-r border-slate-200 bg-white">
+              <ValueImpactTracker proposals={proposals} products={products} />
+              <BoardroomTable
+                members={boardMembers}
+                products={products}
+                activeMember={activeMember}
+                onMemberClick={setActiveMember}
+              />
+              <ReadinessDashboard members={boardMembers} products={products} />
+              <ChairmanPanel proposals={proposals} onRefresh={loadProposals} />
+            </div>
+          </>
+        )}
 
         {/* Right: Channel Discussion */}
+        {!showNotifications && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Channel header */}
           <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-3">
@@ -309,6 +330,7 @@ export default function BoardCommunication() {
             <p className="text-xs text-slate-600">Board members will respond automatically from their product perspectives.</p>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
