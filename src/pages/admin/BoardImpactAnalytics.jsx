@@ -12,6 +12,7 @@ import IntegrationConflictMonitor from '@/components/IntegrationConflictMonitor'
 import CapacityManagementTool from '@/components/CapacityManagementTool';
 import ExecutionProgressTracker from '@/components/ExecutionProgressTracker';
 import ApprovedBuildMetrics from '@/components/ApprovedBuildMetrics';
+import BuildProposalROI from '@/components/BuildProposalROI';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -398,6 +399,9 @@ export default function BoardImpactAnalytics() {
 
         {/* Approved Build Implementation Metrics */}
         <ApprovedBuildMetrics />
+
+        {/* Build Proposal Financial ROI */}
+        <BuildProposalROI />
 
         {/* High-Level Summary */}
         <BoardMetricsSummary 
