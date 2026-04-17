@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,16 +10,28 @@ export default function ValueImpactTracker({ proposals, products }) {
   const [valueImpact, setValueImpact] = useState(0);
 
   useEffect(() => {
-    const calculateImpact = () => {
+    const calculateImpact = async () => {
       const approvedCount = proposals.filter(p => p.status === 'approved').length;
-      const baseValue = products.reduce((sum, p) => {
-        const avgPrice = p.pricing_tiers?.reduce((acc, t) => acc + t.price, 0) / (p.pricing_tiers?.length || 1) || 0;
-        return sum + avgPrice * 10;
-      }, 0);
       
-      // Each approved proposal increases portfolio value by estimated 3-8%
-      const impactPercentage = approvedCount * 4;
-      setValueImpact((baseValue * impactPercentage) / 100);
+      // Fetch valuation snapshots for approved proposals
+      try {
+        const snapshots = await base44.entities.ValuationSnapshot.list().catch(() => []);
+        const totalValue = snapshots.reduce((sum, s) => sum + (s.sell_now_value || 0), 0);
+        
+        // Use actual valuation data or fallback to calculation
+        if (totalValue > 0) {
+          setValueImpact(totalValue);
+        } else {
+          const baseValue = products.reduce((sum, p) => {
+            const avgPrice = p.pricing_tiers?.reduce((acc, t) => acc + t.price, 0) / (p.pricing_tiers?.length || 1) || 0;
+            return sum + avgPrice * 10;
+          }, 0);
+          const impactPercentage = approvedCount * 4;
+          setValueImpact((baseValue * impactPercentage) / 100);
+        }
+      } catch (e) {
+        console.error('Error calculating value impact:', e);
+      }
     };
     
     calculateImpact();

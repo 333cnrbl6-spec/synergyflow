@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import ProposalValueImpact from '@/components/ProposalValueImpact';
 
 const STATUS_STYLES = {
   pending_chairman: { label: 'Awaiting Chairman', bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-300' },
@@ -83,6 +84,8 @@ export default function ChairmanPanel({ proposals, onRefresh }) {
                 <p className="text-slate-600 text-xs">Raised by: {proposal.raised_by}</p>
               </div>
             </div>
+
+            <ProposalValueImpact proposalId={proposal.id} products={proposal.products_involved || []} />
 
             {/* Chairman notes input */}
             <input
