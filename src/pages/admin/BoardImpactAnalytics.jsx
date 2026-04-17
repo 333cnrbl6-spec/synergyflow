@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
 
@@ -9,6 +12,7 @@ export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -50,6 +54,121 @@ export default function BoardImpactAnalytics() {
 
   const metrics = calculateMetrics();
 
+  const generatePDFReport = async () => {
+    setDownloadingPDF(true);
+    try {
+      const doc = new jsPDF();
+      let yPosition = 20;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 15;
+
+      // Title
+      doc.setFontSize(20);
+      doc.text('Board Impact Analytics Report', margin, yPosition);
+      yPosition += 12;
+
+      // Date
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, margin, yPosition);
+      yPosition += 10;
+
+      // Key Metrics Section
+      doc.setTextColor(0);
+      doc.setFontSize(14);
+      doc.text('Key Performance Metrics', margin, yPosition);
+      yPosition += 8;
+
+      const metricsData = [
+        ['Approved Decisions', approvedProposals.length],
+        ['Total MRR Potential', `£${Math.round(metrics.totalMRR).toLocaleString()}`],
+        ['Pricing Tiers', metrics.totalTiers],
+        ['Active Products', products.filter(p => p.pricing_tiers?.length > 0).length],
+      ];
+
+      doc.setFontSize(11);
+      metricsData.forEach((row) => {
+        doc.text(`${row[0]}: ${row[1]}`, margin + 5, yPosition);
+        yPosition += 7;
+      });
+      yPosition += 5;
+
+      // Proposal Breakdown
+      doc.setFontSize(14);
+      doc.text('Approved Initiatives by Type', margin, yPosition);
+      yPosition += 8;
+
+      doc.setFontSize(10);
+      const typeBreakdown = [
+        ['Pricing Initiatives', metrics.pricingProposals],
+        ['Build Initiatives', metrics.buildProposals],
+        ['Go-to-Market', metrics.gtmProposals],
+      ];
+
+      typeBreakdown.forEach((row) => {
+        doc.text(`• ${row[0]}: ${row[1]}`, margin + 5, yPosition);
+        yPosition += 6;
+      });
+      yPosition += 5;
+
+      // Approved Proposals Timeline
+      if (approvedProposals.length > 0) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.text('Approved Initiatives Timeline', margin, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        approvedProposals.slice(0, 10).forEach((proposal) => {
+          if (yPosition > pageHeight - 20) {
+            doc.addPage();
+            yPosition = 20;
+          }
+
+          // Title
+          doc.setFont(undefined, 'bold');
+          doc.text(proposal.title, margin + 3, yPosition);
+          yPosition += 5;
+
+          // Summary
+          doc.setFont(undefined, 'normal');
+          const summaryLines = doc.splitTextToSize(proposal.summary, pageWidth - margin * 2 - 6);
+          doc.text(summaryLines, margin + 3, yPosition);
+          yPosition += summaryLines.length * 4 + 2;
+
+          // Details
+          doc.setTextColor(100);
+          doc.text(`Type: ${proposal.proposal_type.replace('_', ' ')} | Date: ${new Date(proposal.timestamp).toLocaleDateString()}`, margin + 3, yPosition);
+          yPosition += 4;
+
+          if (proposal.chairman_notes) {
+            doc.text(`Chairman Notes: ${proposal.chairman_notes.substring(0, 60)}...`, margin + 3, yPosition);
+            yPosition += 4;
+          }
+
+          doc.setTextColor(0);
+          yPosition += 3;
+        });
+      }
+
+      // Footer
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text('SynergyFlow Board Impact Analytics', margin, pageHeight - 10);
+
+      doc.save('Board-Impact-Analytics-Report.pdf');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDownloadingPDF(false);
+    }
+  };
+
   const PROPOSAL_COLORS = {
     pricing: '#3b82f6',
     build: '#22c55e',
@@ -71,9 +190,23 @@ export default function BoardImpactAnalytics() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-4xl font-black text-slate-900">Board Impact Analytics</h1>
-          <p className="text-slate-600 mt-2">How autonomous board decisions create competitive value</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-black text-slate-900">Board Impact Analytics</h1>
+            <p className="text-slate-600 mt-2">How autonomous board decisions create competitive value</p>
+          </div>
+          <Button 
+            onClick={generatePDFReport}
+            disabled={downloadingPDF}
+            className="gap-2 bg-slate-700 hover:bg-slate-800"
+          >
+            {downloadingPDF ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {downloadingPDF ? 'Generating...' : 'Download PDF'}
+          </Button>
         </div>
 
         {/* High-Level Summary */}
