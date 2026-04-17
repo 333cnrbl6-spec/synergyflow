@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause, Info, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
 import ChairmanRecommendations from '@/components/ChairmanRecommendations';
+import ChairmanHistoryTab from '@/components/ChairmanHistoryTab';
 
 export default function ChairmanZone() {
   const queryClient = useQueryClient();
@@ -208,6 +209,14 @@ export default function ChairmanZone() {
           >
             <Lightbulb className="w-4 h-4" />
             Board Insights
+          </Button>
+          <Button
+            variant={activeTab === 'history' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('history')}
+            className="gap-2"
+          >
+            <Clock className="w-4 h-4" />
+            History
           </Button>
         </div>
 
@@ -506,6 +515,11 @@ export default function ChairmanZone() {
         {/* Insights Tab */}
         {activeTab === 'insights' && (
           <ChairmanRecommendations />
+        )}
+
+        {/* History Tab */}
+        {activeTab === 'history' && (
+          <ChairmanHistoryTab />
         )}
       </div>
     </div>

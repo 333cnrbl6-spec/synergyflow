@@ -10,78 +10,60 @@ Deno.serve(async (req) => {
       return Response.json({ skipped: true });
     }
 
+    // Check if this proposal has consensus (auto-approved, no veto)
+    const totalVotes = (data.yes_votes?.length || 0) + (data.no_votes?.length || 0) + (data.abstain_votes?.length || 0);
+    const yesVotes = data.yes_votes?.length || 0;
+    const isAutoApproved = totalVotes === 0 || yesVotes === totalVotes || (yesVotes / totalVotes) >= 0.75;
+
+    // Only create action items for auto-approved proposals (consensus)
+    if (!isAutoApproved) {
+      return Response.json({ skipped: true, reason: 'proposal_requires_veto' });
+    }
+
     // Route based on proposal type
     const proposalType = data.proposal_type;
-    
-    switch (proposalType) {
-      case 'readiness':
-        await base44.asServiceRole.functions.invoke('autoExecuteReadinessPlan', { 
-          proposal_id: data.id,
-          product_name: data.products_involved?.[0]
-        });
-        break;
-      
-      case 'build':
-        await base44.asServiceRole.functions.invoke('executeBuildProposal', { 
-          proposal_id: data.id 
-        });
-        break;
-      
-      case 'pricing':
-        // Execute pricing proposal
-        await base44.asServiceRole.entities.ActionItem.create({
-          title: `Implement pricing changes from proposal: ${data.title}`,
-          description: data.summary,
-          category: 'proposal',
-          priority: 'high',
-          trigger_entity_type: 'BoardProposal',
-          trigger_entity_id: data.id,
-          status: 'open',
-          auto_triggered: true
-        });
-        break;
-      
-      case 'go_to_market':
-        // Execute GTM proposal
-        await base44.asServiceRole.entities.ActionItem.create({
-          title: `Execute GTM initiative: ${data.title}`,
-          description: data.summary,
-          category: 'proposal',
-          priority: 'high',
-          trigger_entity_type: 'BoardProposal',
-          trigger_entity_id: data.id,
-          status: 'open',
-          auto_triggered: true
-        });
-        break;
-      
-      case 'partnership':
-        // Execute partnership proposal
-        await base44.asServiceRole.entities.ActionItem.create({
-          title: `Pursue partnership: ${data.title}`,
-          description: data.summary,
-          category: 'proposal',
-          priority: 'medium',
-          trigger_entity_type: 'BoardProposal',
-          trigger_entity_id: data.id,
-          status: 'open',
-          auto_triggered: true
-        });
-        break;
-      
-      case 'governance':
-        // Execute governance proposal
-        await base44.asServiceRole.entities.ActionItem.create({
-          title: `Implement governance change: ${data.title}`,
-          description: data.summary,
-          category: 'proposal',
-          priority: 'high',
-          trigger_entity_type: 'BoardProposal',
-          trigger_entity_id: data.id,
-          status: 'open',
-          auto_triggered: true
-        });
-        break;
+    const categoryMap = {
+      'build': 'proposal',
+      'pricing': 'proposal',
+      'go_to_market': 'proposal',
+      'partnership': 'proposal',
+      'governance': 'proposal',
+      'readiness': 'readiness'
+    };
+
+    const priorityMap = {
+      'build': 'high',
+      'pricing': 'high',
+      'go_to_market': 'high',
+      'partnership': 'medium',
+      'governance': 'high',
+      'readiness': 'critical'
+    };
+
+    // Create action item for consensus-approved proposals
+    await base44.asServiceRole.entities.ActionItem.create({
+      title: `[${proposalType.toUpperCase()}] ${data.title}`,
+      description: data.summary,
+      category: categoryMap[proposalType] || 'proposal',
+      priority: priorityMap[proposalType] || 'medium',
+      trigger_entity_type: 'BoardProposal',
+      trigger_entity_id: data.id,
+      status: 'open',
+      auto_triggered: true,
+      related_product_id: data.products_involved?.[0] || null,
+      related_product_name: data.products_involved?.[0] || null
+    });
+
+    // Route to specific executors if needed
+    if (proposalType === 'readiness' && data.products_involved?.[0]) {
+      await base44.asServiceRole.functions.invoke('autoExecuteReadinessPlan', { 
+        proposal_id: data.id,
+        product_name: data.products_involved[0]
+      });
+    } else if (proposalType === 'build') {
+      await base44.asServiceRole.functions.invoke('executeBuildProposal', { 
+        proposal_id: data.id 
+      });
     }
 
     // Notify board members
