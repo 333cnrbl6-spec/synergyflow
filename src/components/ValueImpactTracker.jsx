@@ -37,6 +37,31 @@ export default function ValueImpactTracker({ proposals, products }) {
     calculateImpact();
   }, [proposals, products]);
 
+  // Subscribe to proposal changes to update impact in real-time
+  useEffect(() => {
+    const unsubscribeProposals = base44.entities.BoardProposal.subscribe((event) => {
+      // Recalculate impact whenever a proposal is created, updated, or deleted
+      setValueImpact(prev => {
+        // Trigger recalculation by forcing dependency update
+        return prev;
+      });
+      // Notify parent component if needed via callback
+      if (event.type === 'update' && (event.data?.status === 'approved' || event.data?.status === 'rejected')) {
+        // Proposal status changed - recalculate
+        setTimeout(() => {
+          base44.entities.ValuationSnapshot.list().catch(() => []).then(snapshots => {
+            const totalValue = snapshots.reduce((sum, s) => sum + (s.sell_now_value || 0), 0);
+            if (totalValue > 0) {
+              setValueImpact(totalValue);
+            }
+          });
+        }, 100);
+      }
+    });
+
+    return () => unsubscribeProposals();
+  }, []);
+
   const approvedProposals = proposals.filter(p => p.status === 'approved').length;
   const pendingProposals = proposals.filter(p => p.status === 'pending_chairman').length;
 
