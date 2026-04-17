@@ -3,8 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, CheckCircle2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
+import { toast } from 'sonner';
 import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
 
@@ -13,6 +14,7 @@ export default function BoardImpactAnalytics() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [actioningProposals, setActioningProposals] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -53,6 +55,33 @@ export default function BoardImpactAnalytics() {
   };
 
   const metrics = calculateMetrics();
+
+  const actionDataMappingProposals = async () => {
+    setActioningProposals(true);
+    try {
+      const response = await base44.functions.invoke('actionPendingDataMappingProposals', {});
+      await loadData();
+      toast.success(`${response.proposals_actioned} data mapping proposals approved and actioned`);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to action proposals');
+    } finally {
+      setActioningProposals(false);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      const [proposals, prods] = await Promise.all([
+        base44.entities.BoardProposal.filter({ status: 'approved' }),
+        base44.entities.Product.list(),
+      ]);
+      setApprovedProposals(proposals.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+      setProducts(prods);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const generatePDFReport = async () => {
     setDownloadingPDF(true);
@@ -195,18 +224,32 @@ export default function BoardImpactAnalytics() {
             <h1 className="text-4xl font-black text-slate-900">Board Impact Analytics</h1>
             <p className="text-slate-600 mt-2">How autonomous board decisions create competitive value</p>
           </div>
-          <Button 
-            onClick={generatePDFReport}
-            disabled={downloadingPDF}
-            className="gap-2 bg-slate-700 hover:bg-slate-800"
-          >
-            {downloadingPDF ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" />
-            )}
-            {downloadingPDF ? 'Generating...' : 'Download PDF'}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={actionDataMappingProposals}
+              disabled={actioningProposals}
+              className="gap-2 bg-green-600 hover:bg-green-700"
+            >
+              {actioningProposals ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4" />
+              )}
+              {actioningProposals ? 'Actioning...' : 'Action Data Mapping'}
+            </Button>
+            <Button 
+              onClick={generatePDFReport}
+              disabled={downloadingPDF}
+              className="gap-2 bg-slate-700 hover:bg-slate-800"
+            >
+              {downloadingPDF ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              {downloadingPDF ? 'Generating...' : 'Download PDF'}
+            </Button>
+          </div>
         </div>
 
         {/* High-Level Summary */}
