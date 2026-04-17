@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Users, DollarSign, Package, Target, Zap } from 'lucide-react';
 import ActionItemsMonitor from '@/components/ActionItemsMonitor';
+import AdvancedAnalytics from '@/components/AdvancedAnalytics';
 
 const PRODUCT_NAMES = ['Premiso', 'Species Explorer', 'Age UK Bury', 'CaseNarrative'];
 const COLORS = ['#0f172a', '#64748b', '#334155', '#1e293b'];
@@ -13,6 +14,7 @@ export default function PortfolioMetrics() {
   const [products, setProducts] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,7 +103,35 @@ export default function PortfolioMetrics() {
         <div className="mb-8">
           <h1 className="text-4xl font-black text-slate-900">Portfolio Dashboard</h1>
           <p className="text-slate-600 mt-2">Cross-product KPI tracking & performance overview</p>
+          
+          {/* Tabs */}
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                activeTab === 'overview'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                activeTab === 'analytics'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+              }`}
+            >
+              Advanced Analytics
+            </button>
+          </div>
         </div>
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+        <>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -276,8 +306,15 @@ export default function PortfolioMetrics() {
 
           {/* Automation & Action Items */}
           <div className="mt-8">
-          <ActionItemsMonitor />
+            <ActionItemsMonitor />
           </div>
+          </>
+          )}
+
+          {/* Analytics Tab */}
+          {activeTab === 'analytics' && (
+            <AdvancedAnalytics products={products} subscriptions={subscriptions} />
+          )}
           </div>
           </div>
           );
