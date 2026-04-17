@@ -49,9 +49,16 @@ export default function ChairmanZone() {
       });
       toast.success('Proposal approved');
       setChairmanNotes('');
-      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-      setProposals(res.data.proposals || []);
-      setSelectedProposal(null);
+      
+      // Update local state immediately for instant feedback
+      setSelectedProposal({ ...selectedProposal, status: 'approved', chairman_notes: chairmanNotes });
+      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'approved', chairman_notes: chairmanNotes } : p));
+      
+      // Refresh from backend after a short delay
+      setTimeout(async () => {
+        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+        setProposals(res.data.proposals || []);
+      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to approve proposal');
@@ -72,9 +79,16 @@ export default function ChairmanZone() {
       });
       toast.success('Proposal rejected');
       setChairmanNotes('');
-      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-      setProposals(res.data.proposals || []);
-      setSelectedProposal(null);
+      
+      // Update local state immediately for instant feedback
+      setSelectedProposal({ ...selectedProposal, status: 'rejected', chairman_notes: chairmanNotes });
+      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'rejected', chairman_notes: chairmanNotes } : p));
+      
+      // Refresh from backend after a short delay
+      setTimeout(async () => {
+        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+        setProposals(res.data.proposals || []);
+      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to reject proposal');
@@ -95,9 +109,16 @@ export default function ChairmanZone() {
       });
       toast.success('Proposal deferred');
       setChairmanNotes('');
-      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
-      setProposals(res.data.proposals || []);
-      setSelectedProposal(null);
+      
+      // Update local state immediately for instant feedback
+      setSelectedProposal({ ...selectedProposal, status: 'deferred', chairman_notes: chairmanNotes });
+      setProposals(proposals.map(p => p.id === selectedProposal.id ? { ...p, status: 'deferred', chairman_notes: chairmanNotes } : p));
+      
+      // Refresh from backend after a short delay
+      setTimeout(async () => {
+        const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+        setProposals(res.data.proposals || []);
+      }, 500);
     } catch (e) {
       console.error(e);
       toast.error('Failed to defer proposal');
