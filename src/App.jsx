@@ -18,6 +18,7 @@ import ChairmanZone from './pages/admin/ChairmanZone';
 import Settings from './pages/admin/Settings';
 import BoardImpactAnalytics from './pages/admin/BoardImpactAnalytics';
 import BoardInsights from './pages/admin/BoardInsights';
+import ApprovalImpactAnalysis from './pages/admin/ApprovalImpactAnalysis';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/chairman-zone" element={<ChairmanZone />} />
         <Route path="/admin/board-impact" element={<BoardImpactAnalytics />} />
         <Route path="/admin/board-insights" element={<BoardInsights />} />
+        <Route path="/admin/approval-impact" element={<ApprovalImpactAnalysis />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
