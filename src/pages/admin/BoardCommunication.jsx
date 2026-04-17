@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell, Target, Zap } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target, Zap, Vote } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -33,6 +33,7 @@ export default function BoardCommunication() {
   const [postingStrategic, setPostingStrategic] = useState(false);
   const [postingConsolidation, setPostingConsolidation] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [initiatingValuation, setInitiatingValuation] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -164,6 +165,21 @@ export default function BoardCommunication() {
     }
   };
 
+  const initiateValuationConsensus = async () => {
+    setInitiatingValuation(true);
+    try {
+      await base44.functions.invoke('initiateValuationConsensus', {});
+      await loadMessages(selectedChannel.id);
+      await loadProposals();
+      toast.success('Valuation consensus process initiated—board voting now open');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to initiate valuation consensus');
+    } finally {
+      setInitiatingValuation(false);
+    }
+  };
+
   const handleExportPDF = async () => {
     if (!selectedChannel) return;
     try {
@@ -252,6 +268,16 @@ export default function BoardCommunication() {
         >
           <Zap className="w-4 h-4" />
           {postingConsolidation ? 'Executing...' : 'Consolidation'}
+        </Button>
+        <Button
+          onClick={initiateValuationConsensus}
+          disabled={initiatingValuation}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-green-700 border-green-300 hover:bg-green-50"
+        >
+          <Vote className="w-4 h-4" />
+          {initiatingValuation ? 'Opening...' : 'Valuation Vote'}
         </Button>
         <Button
           onClick={handleExportPDF}
