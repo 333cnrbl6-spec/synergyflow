@@ -272,6 +272,21 @@ export default function BoardImpactAnalytics() {
           </div>
           <div className="flex gap-2 flex-wrap justify-end">
             <Button 
+              onClick={async () => {
+                try {
+                  const response = await base44.functions.invoke('autoCompleteUnapprovedProposals', {});
+                  await loadData();
+                  toast.success(`${response.initiatives_completed} initiatives caught up and marked complete`);
+                } catch (error) {
+                  toast.error('Catch-up process failed - see logs');
+                }
+              }}
+              className="gap-2 bg-amber-600 hover:bg-amber-700"
+            >
+              <Zap className="w-4 h-4" />
+              Catch Up Unapproved
+            </Button>
+            <Button 
               onClick={() => setShowCapacityTool(!showCapacityTool)}
               variant="outline"
               className="gap-2 border-blue-300 text-blue-700 hover:bg-blue-50"
