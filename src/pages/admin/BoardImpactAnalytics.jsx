@@ -298,6 +298,19 @@ export default function BoardImpactAnalytics() {
               {bulkActioning ? 'Executing...' : 'Bulk Action All'}
             </Button>
             <Button 
+              onClick={loadData}
+              disabled={loading}
+              variant="outline"
+              className="gap-2"
+            >
+              {loading ? (
+                <div className="w-4 h-4 border-2 border-slate-800 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
+              {loading ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+            <Button 
               onClick={executeCollectiveValue}
               disabled={executionInProgress}
               className="gap-2 bg-purple-600 hover:bg-purple-700 relative"
