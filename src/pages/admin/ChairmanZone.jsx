@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send } from 'lucide-react';
+import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, ThumbsDown, Pause } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function ChairmanZone() {
   const [messages, setMessages] = useState([]);
@@ -36,21 +37,70 @@ export default function ChairmanZone() {
     init();
   }, []);
 
-  const handleAddChairmanNote = async () => {
-    if (!selectedProposal || !chairmanNotes.trim()) return;
+  const handleApproveProposal = async () => {
+    if (!selectedProposal) return;
     setSaving(true);
     try {
       await base44.functions.invoke('boardCommunications', {
-        action: 'add_chairman_note',
+        action: 'chairman_review',
         proposal_id: selectedProposal.id,
-        notes: chairmanNotes,
+        status: 'approved',
+        chairman_notes: chairmanNotes,
       });
+      toast.success('Proposal approved');
       setChairmanNotes('');
       const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
       setProposals(res.data.proposals || []);
       setSelectedProposal(null);
     } catch (e) {
       console.error(e);
+      toast.error('Failed to approve proposal');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleRejectProposal = async () => {
+    if (!selectedProposal) return;
+    setSaving(true);
+    try {
+      await base44.functions.invoke('boardCommunications', {
+        action: 'chairman_review',
+        proposal_id: selectedProposal.id,
+        status: 'rejected',
+        chairman_notes: chairmanNotes,
+      });
+      toast.success('Proposal rejected');
+      setChairmanNotes('');
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      setProposals(res.data.proposals || []);
+      setSelectedProposal(null);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to reject proposal');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeferProposal = async () => {
+    if (!selectedProposal) return;
+    setSaving(true);
+    try {
+      await base44.functions.invoke('boardCommunications', {
+        action: 'chairman_review',
+        proposal_id: selectedProposal.id,
+        status: 'deferred',
+        chairman_notes: chairmanNotes,
+      });
+      toast.success('Proposal deferred');
+      setChairmanNotes('');
+      const res = await base44.functions.invoke('boardCommunications', { action: 'get_proposals' });
+      setProposals(res.data.proposals || []);
+      setSelectedProposal(null);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to defer proposal');
     } finally {
       setSaving(false);
     }
@@ -89,7 +139,7 @@ export default function ChairmanZone() {
             className="gap-2"
           >
             <Clock className="w-4 h-4" />
-            Proposals ({proposals.filter(p => p.status === 'pending_chairman').length})
+            Proposals ({proposals.length})
           </Button>
           <Button
             variant={activeTab === 'decisions' ? 'default' : 'outline'}
@@ -236,16 +286,33 @@ export default function ChairmanZone() {
                       />
                       <div className="flex gap-2">
                         <Button
-                          onClick={handleAddChairmanNote}
-                          disabled={saving || !chairmanNotes.trim()}
-                          className="flex-1 gap-2"
+                          onClick={handleApproveProposal}
+                          disabled={saving}
+                          className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
                         >
                           {saving ? (
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
-                            <Send className="w-4 h-4" />
+                            <ThumbsUp className="w-4 h-4" />
                           )}
-                          Add Note
+                          Approve
+                        </Button>
+                        <Button
+                          onClick={handleDeferProposal}
+                          disabled={saving}
+                          className="flex-1 gap-2 bg-amber-600 hover:bg-amber-700"
+                        >
+                          <Pause className="w-4 h-4" />
+                          Defer
+                        </Button>
+                        <Button
+                          onClick={handleRejectProposal}
+                          disabled={saving}
+                          variant="destructive"
+                          className="flex-1 gap-2"
+                        >
+                          <ThumbsDown className="w-4 h-4" />
+                          Reject
                         </Button>
                       </div>
                     </div>
