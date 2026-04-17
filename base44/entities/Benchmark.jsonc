@@ -1,0 +1,51 @@
+{
+  "name": "Benchmark",
+  "type": "object",
+  "properties": {
+    "benchmark_name": {
+      "type": "string",
+      "description": "Name of the benchmark (e.g., 'SaaS Industry Average')"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry or segment (e.g., 'SaaS', 'Enterprise SaaS', 'SMB')"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "churn_rate",
+        "mrr",
+        "arpu",
+        "cltv",
+        "retention_rate"
+      ],
+      "description": "Type of metric being benchmarked"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product ID this benchmark applies to (optional - null for portfolio-wide)"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "value": {
+      "type": "number",
+      "description": "Benchmark value (percentage for churn/retention, dollars for MRR/ARPU/CLTV)"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of benchmark (e.g., 'Stripe', 'SaaStr', 'Internal Research', 'Industry Report')"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional context or assumptions"
+    }
+  },
+  "required": [
+    "benchmark_name",
+    "metric_type",
+    "value",
+    "source"
+  ]
+}

@@ -6,6 +6,8 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { TrendingUp, Users, DollarSign, Package, Target, Zap } from 'lucide-react';
 import ActionItemsMonitor from '@/components/ActionItemsMonitor';
 import AdvancedAnalytics from '@/components/AdvancedAnalytics';
+import BenchmarkForm from '@/components/BenchmarkForm';
+import BenchmarkComparison from '@/components/BenchmarkComparison';
 
 const PRODUCT_NAMES = ['Premiso', 'Species Explorer', 'Age UK Bury', 'CaseNarrative'];
 const COLORS = ['#0f172a', '#64748b', '#334155', '#1e293b'];
@@ -15,16 +17,19 @@ export default function PortfolioMetrics() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [benchmarks, setBenchmarks] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsRes, subsRes] = await Promise.all([
+        const [productsRes, subsRes, benchmarksRes] = await Promise.all([
           base44.entities.Product.list(),
-          base44.entities.Subscription.list()
+          base44.entities.Subscription.list(),
+          base44.entities.Benchmark.list()
         ]);
         setProducts(productsRes);
         setSubscriptions(subsRes);
+        setBenchmarks(benchmarksRes);
       } catch (e) {
         console.error('Error fetching portfolio data:', e);
       } finally {
@@ -125,6 +130,16 @@ export default function PortfolioMetrics() {
               }`}
             >
               Advanced Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('benchmarks')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                activeTab === 'benchmarks'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+              }`}
+            >
+              Benchmarks
             </button>
           </div>
         </div>
@@ -314,6 +329,42 @@ export default function PortfolioMetrics() {
           {/* Analytics Tab */}
           {activeTab === 'analytics' && (
             <AdvancedAnalytics products={products} subscriptions={subscriptions} />
+          )}
+
+          {/* Benchmarks Tab */}
+          {activeTab === 'benchmarks' && (
+            <div className="space-y-6">
+              <BenchmarkForm onSave={() => {
+                const refetchBenchmarks = async () => {
+                  const updated = await base44.entities.Benchmark.list();
+                  setBenchmarks(updated);
+                };
+                refetchBenchmarks();
+              }} products={products} />
+              
+              {benchmarks.length > 0 && (
+                <BenchmarkComparison 
+                  productAnalytics={products.map(p => {
+                    const productSubs = subscriptions.filter(s => s.product_id === p.id);
+                    const activeSubs = productSubs.filter(s => s.status === 'active').length;
+                    const totalMRR = productSubs.filter(s => s.status === 'active').reduce((sum, s) => sum + (s.monthly_price || 0), 0) / 100;
+                    const cancelledSubs = productSubs.filter(s => s.status === 'cancelled').length;
+                    const churnRate = productSubs.length > 0 ? (cancelledSubs / productSubs.length) * 100 : 0;
+                    const arpu = activeSubs > 0 ? totalMRR / activeSubs : 0;
+                    
+                    return {
+                      id: p.id,
+                      name: p.name,
+                      mrr: totalMRR,
+                      churn_rate: churnRate,
+                      arpu: arpu,
+                      active_subs: activeSubs
+                    };
+                  })}
+                  benchmarks={benchmarks}
+                />
+              )}
+            </div>
           )}
           </div>
           </div>
