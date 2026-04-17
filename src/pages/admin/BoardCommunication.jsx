@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Hash, Download, Bell, Target, Zap, Vote } from 'lucide-react';
+import { Send, Hash, Download, Bell, Target, Zap, Vote, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import BoardroomTable from '@/components/boardroom/BoardroomTable';
 import ReadinessDashboard from '@/components/boardroom/ReadinessDashboard';
@@ -36,6 +36,7 @@ export default function BoardCommunication() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [initiatingValuation, setInitiatingValuation] = useState(false);
   const [showBoardDialogue, setShowBoardDialogue] = useState(false);
+  const [initiatingMeeting, setInitiatingMeeting] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -209,6 +210,21 @@ export default function BoardCommunication() {
     'CaseNarrative': '#a855f7',
   };
 
+  const initiateBoardMeeting = async () => {
+    setInitiatingMeeting(true);
+    try {
+      const response = await base44.functions.invoke('initiateBoardMeeting', {});
+      await loadMessages(selectedChannel.id);
+      await loadProposals();
+      toast.success(`Board meeting initiated - ${response.proposals_discussed} proposals under discussion`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || 'Failed to initiate board meeting');
+    } finally {
+      setInitiatingMeeting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
@@ -307,6 +323,20 @@ export default function BoardCommunication() {
         >
           <Vote className="w-4 h-4" />
           {showBoardDialogue ? 'Hide' : 'Show'} Dialogue
+        </Button>
+        <Button
+          onClick={initiateBoardMeeting}
+          disabled={initiatingMeeting}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 text-red-700 border-red-300 hover:bg-red-50"
+        >
+          {initiatingMeeting ? (
+            <div className="w-3 h-3 border-2 border-red-700 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Play className="w-4 h-4" />
+          )}
+          {initiatingMeeting ? 'Meeting...' : 'Initiate Meeting'}
         </Button>
       </div>
 
