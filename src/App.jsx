@@ -28,6 +28,7 @@ import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
 import ProductVerificationDashboard from './pages/admin/ProductVerificationDashboard';
 import StrategicJointVentures from './pages/admin/StrategicJointVentures';
 import BoardConsensus from './pages/admin/BoardConsensus';
+import ImplementationDashboard from './pages/admin/ImplementationDashboard';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/verification" element={<ProductVerificationDashboard />} />
         <Route path="/admin/joint-ventures" element={<StrategicJointVentures />} />
         <Route path="/admin/consensus" element={<BoardConsensus />} />
+        <Route path="/admin/implementation" element={<ImplementationDashboard />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
