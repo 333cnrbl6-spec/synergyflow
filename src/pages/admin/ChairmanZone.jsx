@@ -9,6 +9,7 @@ import { MessageSquare, CheckCircle2, Clock, AlertCircle, Send, ThumbsUp, Thumbs
 import { toast } from 'sonner';
 import ChairmanRecommendations from '@/components/ChairmanRecommendations';
 import ChairmanHistoryTab from '@/components/ChairmanHistoryTab';
+import BoardActionsMetrics from '@/components/BoardActionsMetrics';
 
 export default function ChairmanZone() {
   const queryClient = useQueryClient();
@@ -217,6 +218,14 @@ export default function ChairmanZone() {
           >
             <Clock className="w-4 h-4" />
             History
+          </Button>
+          <Button
+            variant={activeTab === 'voting' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('voting')}
+            className="gap-2"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            Board Voting
           </Button>
         </div>
 
@@ -520,6 +529,11 @@ export default function ChairmanZone() {
         {/* History Tab */}
         {activeTab === 'history' && (
           <ChairmanHistoryTab />
+        )}
+
+        {/* Board Voting Tab */}
+        {activeTab === 'voting' && (
+          <BoardActionsMetrics />
         )}
       </div>
     </div>
