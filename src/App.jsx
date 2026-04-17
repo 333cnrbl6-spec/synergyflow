@@ -22,6 +22,7 @@ import ApprovalImpactAnalysis from './pages/admin/ApprovalImpactAnalysis';
 import BoardResolutionMemo from './pages/admin/BoardResolutionMemo';
 import BoardStrategy from './pages/admin/BoardStrategy';
 import BoardUnifiedLaunch from './pages/admin/BoardUnifiedLaunch';
+import PortfolioMetrics from './pages/admin/PortfolioMetrics';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/board-resolution-memo" element={<BoardResolutionMemo />} />
         <Route path="/admin/strategy" element={<BoardStrategy />} />
         <Route path="/admin/launch" element={<BoardUnifiedLaunch />} />
+        <Route path="/admin/portfolio" element={<PortfolioMetrics />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

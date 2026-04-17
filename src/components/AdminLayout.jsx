@@ -24,6 +24,7 @@ export default function AdminLayout() {
 
   const navItems = [
     { label: 'Admin', href: '/admin', icon: '📊' },
+    { label: 'Portfolio', href: '/admin/portfolio', icon: '💼' },
     { label: 'CRM', href: '/admin/crm', icon: '👥' },
     { label: 'Subscriptions', href: '/admin/subscriptions', icon: '💳' },
     { label: 'Support', href: '/admin/support', icon: '🆘' },
