@@ -38,7 +38,6 @@ export default function BoardCommunication() {
   const [showBoardDialogue, setShowBoardDialogue] = useState(false);
   const [initiatingMeeting, setInitiatingMeeting] = useState(false);
   const [executingVoting, setExecutingVoting] = useState(false);
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const init = async () => {
@@ -77,7 +76,11 @@ export default function BoardCommunication() {
   }, [selectedChannel]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to top when new messages arrive
+    const messagesContainer = document.querySelector('[data-messages-container]');
+    if (messagesContainer) {
+      messagesContainer.scrollTop = 0;
+    }
   }, [messages]);
 
   const loadProposals = async () => {
@@ -422,14 +425,14 @@ export default function BoardCommunication() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white flex flex-col-reverse" data-messages-container>
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2">
                 <div className="text-4xl">🪑</div>
                 <p className="text-sm">The board is seated. Start the discussion.</p>
               </div>
             ) : (
-              messages.map((msg) => {
+              messages.slice().reverse().map((msg) => {
                 const isCollective = msg.from_member === '📋 Board Collective';
                 const isChairman = msg.from_member === '👑 Chairman';
                 const isUser = !boardMembers.some(m => m.member_name === msg.from_member) && !isCollective && !isChairman;
@@ -475,7 +478,6 @@ export default function BoardCommunication() {
                 );
               })
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
