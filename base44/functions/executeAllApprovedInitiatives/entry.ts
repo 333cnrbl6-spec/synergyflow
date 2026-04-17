@@ -1,5 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -23,8 +25,10 @@ Deno.serve(async (req) => {
       executionStarted: []
     };
 
-    // Execute each initiative and create tracking records
-    for (const proposal of approvedProposals) {
+    // Execute each initiative in batches
+    for (let i = 0; i < approvedProposals.length; i++) {
+      const proposal = approvedProposals[i];
+      
       // Count by type
       if (proposal.proposal_type === 'build') executionResults.buildInitiatives++;
       else if (proposal.proposal_type === 'pricing') executionResults.pricingInitiatives++;
@@ -32,68 +36,69 @@ Deno.serve(async (req) => {
       else if (proposal.proposal_type === 'governance') executionResults.governanceInitiatives++;
       else if (proposal.proposal_type === 'partnership') executionResults.partnershipsInitiatives++;
 
-      // Create implementation action item for each initiative
-      const actionItem = await base44.asServiceRole.entities.ActionItem.create({
-        title: proposal.title,
-        description: proposal.summary,
-        category: proposal.proposal_type === 'build' ? 'revenue' : proposal.proposal_type,
+      try {
+        // Create implementation action item
+        const actionItem = await base44.asServiceRole.entities.ActionItem.create({
+          title: proposal.title,
+          description: proposal.summary,
+          category: proposal.proposal_type === 'build' ? 'revenue' : proposal.proposal_type,
+          priority: 'critical',
+          trigger_entity_type: 'BoardProposal',
+          trigger_entity_id: proposal.id,
+          related_product_id: proposal.products_involved?.[0] || null,
+          status: 'in_progress',
+          auto_triggered: true
+        });
+
+        executionResults.executionStarted.push({
+          proposalId: proposal.id,
+          actionItemId: actionItem.id,
+          title: proposal.title,
+          type: proposal.proposal_type
+        });
+
+        executionResults.totalValue++;
+
+        // Stagger requests
+        if (i % 10 === 9) await sleep(500);
+      } catch (itemError) {
+        console.error(`Failed to execute proposal ${proposal.id}:`, itemError);
+      }
+    }
+
+    // Post board announcement (non-blocking)
+    try {
+      await base44.asServiceRole.functions.invoke('boardCommunications', {
+        action: 'send_message',
+        channel_id: 'strategy',
+        message_content: `🚀 EXECUTION: ${executionResults.totalValue} initiatives now executing`,
+        message_type: 'decision',
+        from_member: 'Execution Engine'
+      });
+    } catch (commError) {
+      console.error('Communication error:', commError);
+    }
+
+    // Create batch tracking record
+    try {
+      await base44.asServiceRole.entities.ActionItem.create({
+        title: `Execution Batch - ${executionResults.totalValue} Initiatives`,
+        description: `Autonomous execution of ${executionResults.totalValue} board-approved initiatives initiated`,
+        category: 'compliance',
         priority: 'critical',
         trigger_entity_type: 'BoardProposal',
-        trigger_entity_id: proposal.id,
-        related_product_id: proposal.products_involved?.[0] || null,
         status: 'in_progress',
         auto_triggered: true
       });
-
-      executionResults.executionStarted.push({
-        proposalId: proposal.id,
-        actionItemId: actionItem.id,
-        title: proposal.title,
-        type: proposal.proposal_type
-      });
-
-      executionResults.totalValue++;
+    } catch (batchError) {
+      console.error('Batch record error:', batchError);
     }
-
-    // Post board announcement
-    const timestamp = new Date().toISOString();
-    await base44.asServiceRole.functions.invoke('boardCommunications', {
-      action: 'send_message',
-      channel_id: 'strategy',
-      message_content: `🚀 COLLECTIVE VALUE EXECUTION INITIATED
-
-All ${executionResults.totalValue} approved board initiatives are now in active implementation:
-
-📊 Initiative Breakdown:
-🛠️ Build Initiatives: ${executionResults.buildInitiatives}
-💰 Pricing Initiatives: ${executionResults.pricingInitiatives}
-🚀 Go-to-Market: ${executionResults.goToMarketInitiatives}
-⚖️ Governance: ${executionResults.governanceInitiatives}
-🤝 Partnerships: ${executionResults.partnershipsInitiatives}
-
-Each initiative has been assigned CRITICAL priority and execution tracking has begun. Board-approved value creation is now operationalized across all product teams.
-
-Status: LIVE EXECUTION`,
-      message_type: 'decision',
-      from_member: '🎯 Execution Engine'
-    });
-
-    // Create comprehensive impact record
-    await base44.asServiceRole.entities.ActionItem.create({
-      title: `Collective Value Execution Batch - ${executionResults.totalValue} Initiatives`,
-      description: `Initiated autonomous execution of ${executionResults.totalValue} board-approved initiatives across all product categories. Total competitive advantage value creation now in implementation phase.`,
-      category: 'compliance',
-      priority: 'critical',
-      trigger_entity_type: 'BoardProposal',
-      status: 'in_progress',
-      auto_triggered: true
-    });
 
     return Response.json({
       success: true,
-      timestamp,
+      timestamp: new Date().toISOString(),
       executionResults,
-      message: `${executionResults.totalValue} approved initiatives executing immediately. Collective value creation operationalized.`
+      message: `${executionResults.totalValue} initiatives executing`
     });
   } catch (error) {
     console.error(error);

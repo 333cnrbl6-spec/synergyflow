@@ -19,7 +19,18 @@ export default function ExecutionProgressTracker() {
       const response = await base44.functions.invoke('trackInitiativeProgress', {});
       setProgress(response.metrics);
     } catch (error) {
-      console.error(error);
+      console.error('Failed to track progress:', error);
+      // Set default empty state on error
+      setProgress({
+        totalApprovedInitiatives: 0,
+        initiativesProcessed: 0,
+        initiativesBuilt: 0,
+        initiativesInProgress: 0,
+        initiativesCompleted: 0,
+        conversionRate: 0,
+        percentProcessed: 0,
+        percentBuilt: 0
+      });
     } finally {
       setLoading(false);
     }

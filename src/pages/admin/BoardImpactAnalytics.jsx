@@ -69,10 +69,10 @@ export default function BoardImpactAnalytics() {
     try {
       const response = await base44.functions.invoke('actionPendingDataMappingProposals', {});
       await loadData();
-      toast.success(`${response.proposals_actioned} data mapping proposals approved and actioned`);
+      toast.success(`${response.proposals_actioned || 0} data mapping proposals approved`);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to action proposals');
+      toast.error(error?.message || 'Failed to action proposals - try again later');
     } finally {
       setActioningProposals(false);
     }
@@ -83,10 +83,10 @@ export default function BoardImpactAnalytics() {
     try {
       const response = await base44.functions.invoke('bulkActionAllPendingProposals', {});
       await loadData();
-      toast.success(`${response.proposals_actioned} proposals approved and set to autonomous execution`);
+      toast.success(`${response.proposals_actioned || 0} proposals approved and executing`);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to bulk action proposals');
+      toast.error(error?.message || 'Failed to bulk action - try again in a moment');
     } finally {
       setBulkActioning(false);
     }
@@ -104,10 +104,11 @@ export default function BoardImpactAnalytics() {
       }
       
       await loadData();
-      toast.success(`${response.executionResults.totalValue} initiatives executing - collective value creation live`);
+      const count = response.executionResults?.totalValue || 0;
+      toast.success(`${count} initiatives now executing`);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to execute initiatives');
+      toast.error(error?.message || 'Execution in progress - check status in a moment');
     } finally {
       setExecutionInProgress(false);
       setExecutionProgress(null);
