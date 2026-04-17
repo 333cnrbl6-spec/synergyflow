@@ -20,12 +20,10 @@ export default function ChairmanZone() {
   useEffect(() => {
     const init = async () => {
       try {
-        const [msgRes, propRes, decRes] = await Promise.all([
-          base44.functions.invoke('boardCommunications', { action: 'get_all_messages' }),
+        const [propRes, decRes] = await Promise.all([
           base44.functions.invoke('boardCommunications', { action: 'get_proposals' }),
           base44.functions.invoke('boardCommunications', { action: 'get_decisions' }),
         ]);
-        setMessages(msgRes.data.messages || []);
         setProposals(propRes.data.proposals || []);
         setDecisions(decRes.data.decisions || []);
       } catch (e) {
@@ -35,6 +33,9 @@ export default function ChairmanZone() {
       }
     };
     init();
+    // Auto-refresh every 5 seconds
+    const interval = setInterval(init, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleApproveProposal = async () => {
@@ -153,40 +154,9 @@ export default function ChairmanZone() {
 
         {/* Transcript Tab */}
         {activeTab === 'transcript' && (
-          <div className="space-y-4">
-            {messages.length === 0 ? (
-              <Card className="text-center py-12">
-                <p className="text-slate-500">No board discussions yet. Await first member proposals.</p>
-              </Card>
-            ) : (
-              messages.map((msg) => (
-                <Card key={msg.id} className="border-l-4" style={{ borderLeftColor: msg.from_member === 'You' ? '#3b82f6' : '#6366f1' }}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-base">{msg.from_member}</CardTitle>
-                        <p className="text-xs text-slate-500 mt-1">
-                          {new Date(msg.timestamp).toLocaleString('en-GB', {
-                            weekday: 'short',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="capitalize">
-                        {msg.message_type}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-700 leading-relaxed">{msg.message_content}</p>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+          <Card className="text-center py-12">
+            <p className="text-slate-500">Board discussions appear as proposals. Review them in the Proposals tab.</p>
+          </Card>
         )}
 
         {/* Proposals Tab */}
