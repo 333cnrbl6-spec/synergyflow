@@ -10,6 +10,7 @@ import BoardMetricsSummary from '@/components/BoardMetricsSummary';
 import SellNowValuation from '@/components/SellNowValuation';
 import IntegrationConflictMonitor from '@/components/IntegrationConflictMonitor';
 import CapacityManagementTool from '@/components/CapacityManagementTool';
+import ExecutionProgressTracker from '@/components/ExecutionProgressTracker';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -20,6 +21,8 @@ export default function BoardImpactAnalytics() {
   const [bulkActioning, setBulkActioning] = useState(false);
   const [showConflictMonitor, setShowConflictMonitor] = useState(false);
   const [showCapacityTool, setShowCapacityTool] = useState(false);
+  const [executionProgress, setExecutionProgress] = useState(null);
+  const [executionInProgress, setExecutionInProgress] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -90,16 +93,24 @@ export default function BoardImpactAnalytics() {
   };
 
   const executeCollectiveValue = async () => {
-    setActioningProposals(true);
+    setExecutionInProgress(true);
     try {
       const response = await base44.functions.invoke('executeAllApprovedInitiatives', {});
+      
+      // Track progress
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise(r => setTimeout(r, 200));
+        setExecutionProgress(i);
+      }
+      
       await loadData();
-      toast.success(`${response.executionResults.totalValue} initiatives now executing for collective value creation`);
+      toast.success(`${response.executionResults.totalValue} initiatives executing - collective value creation live`);
     } catch (error) {
       console.error(error);
       toast.error('Failed to execute initiatives');
     } finally {
-      setActioningProposals(false);
+      setExecutionInProgress(false);
+      setExecutionProgress(null);
     }
   };
 
@@ -288,15 +299,20 @@ export default function BoardImpactAnalytics() {
             </Button>
             <Button 
               onClick={executeCollectiveValue}
-              disabled={actioningProposals}
-              className="gap-2 bg-purple-600 hover:bg-purple-700"
+              disabled={executionInProgress}
+              className="gap-2 bg-purple-600 hover:bg-purple-700 relative"
             >
-              {actioningProposals ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              {executionInProgress ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>{executionProgress}%</span>
+                </>
               ) : (
-                <Zap className="w-4 h-4" />
+                <>
+                  <Zap className="w-4 h-4" />
+                  <span>Execute Collective Value</span>
+                </>
               )}
-              {actioningProposals ? 'Executing...' : 'Execute Collective Value'}
             </Button>
             <Button 
               onClick={actionDataMappingProposals}
@@ -324,6 +340,9 @@ export default function BoardImpactAnalytics() {
             </Button>
           </div>
         </div>
+
+        {/* Execution Progress Tracker */}
+        <ExecutionProgressTracker />
 
         {/* Capacity Management Tool */}
         {showCapacityTool && (
