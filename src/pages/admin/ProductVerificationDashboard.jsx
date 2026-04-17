@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle2, AlertCircle, Clock, ChevronDown, ChevronUp, Plus, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
+import ImplementationPanel from '@/components/ImplementationPanel';
 
 export default function ProductVerificationDashboard() {
   const queryClient = useQueryClient();
@@ -291,26 +292,13 @@ export default function ProductVerificationDashboard() {
                       </Button>
                     )}
 
-                    {/* Issues */}
-                    {verification.issues_found && verification.issues_found.length > 0 && (
-                      <div className="border-t pt-4 space-y-2">
-                        <h5 className="font-semibold text-red-700 flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4" />
-                          Issues Found ({verification.issues_found.length})
-                        </h5>
-                        {verification.issues_found.map((issue, idx) => (
-                          <div key={idx} className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Badge className={`bg-${issue.severity === 'critical' ? 'red' : issue.severity === 'high' ? 'orange' : 'yellow'}-600`}>
-                                {issue.severity}
-                              </Badge>
-                              <span className="text-red-900 font-medium">{issue.description}</span>
-                            </div>
-                            <p className="text-xs text-red-800">Status: {issue.status}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {/* Auto-Deploy Implementation */}
+                    <div className="border-t pt-6">
+                      <ImplementationPanel
+                        verification={verification}
+                        onRefresh={() => queryClient.invalidateQueries({ queryKey: ['productVerifications'] })}
+                      />
+                    </div>
                   </CardContent>
                 )}
               </Card>

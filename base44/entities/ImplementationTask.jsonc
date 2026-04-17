@@ -1,0 +1,84 @@
+{
+  "name": "ImplementationTask",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product being fixed"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "board_member_app": {
+      "type": "string",
+      "description": "Board member responsible"
+    },
+    "verification_id": {
+      "type": "string",
+      "description": "Related verification"
+    },
+    "issue_description": {
+      "type": "string",
+      "description": "What needs to be fixed"
+    },
+    "issue_severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Issue severity"
+    },
+    "fix_type": {
+      "type": "string",
+      "enum": [
+        "feature_enhancement",
+        "bug_fix",
+        "performance_improvement",
+        "security_patch",
+        "ui_ux_improvement",
+        "data_validation"
+      ],
+      "description": "Type of fix"
+    },
+    "implementation_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "deployed",
+        "reverted"
+      ],
+      "default": "pending",
+      "description": "Implementation status"
+    },
+    "auto_deploy": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-deploy without approval"
+    },
+    "deployment_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When fix was deployed"
+    },
+    "implementation_notes": {
+      "type": "string",
+      "description": "Notes on implementation"
+    },
+    "rollback_plan": {
+      "type": "string",
+      "description": "Rollback procedure if needed"
+    }
+  },
+  "required": [
+    "product_id",
+    "product_name",
+    "board_member_app",
+    "issue_description",
+    "fix_type"
+  ]
+}
