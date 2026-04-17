@@ -16,7 +16,7 @@ export default function ChairmanZone() {
   const [chairmanNotes, setChairmanNotes] = useState('');
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [proposalFilter, setProposalFilter] = useState('pending_chairman');
+  const [proposalFilter, setProposalFilter] = useState('all');
 
   const loadData = async () => {
     try {
