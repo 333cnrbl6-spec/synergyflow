@@ -34,6 +34,7 @@ export default function AdminLayout() {
     { label: 'Unified Launch', href: '/admin/launch', icon: '🚀' },
     { label: 'Board Impact', href: '/admin/board-impact', icon: '📈' },
     { label: 'Chairman Zone', href: '/admin/chairman-zone', icon: '👑' },
+    { label: 'Implementation Backlog', href: '/admin/backlog', icon: '🗂️' },
     { label: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
