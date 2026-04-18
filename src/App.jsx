@@ -31,6 +31,7 @@ import BoardConsensus from './pages/admin/BoardConsensus';
 import ImplementationDashboard from './pages/admin/ImplementationDashboard';
 import BoardReporting from './pages/admin/BoardReporting';
 import ImplementationBacklog from './pages/admin/ImplementationBacklog';
+import BuyerHandoverPack from './pages/admin/BuyerHandoverPack';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -85,6 +86,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/implementation" element={<ImplementationDashboard />} />
         <Route path="/admin/reporting" element={<BoardReporting />} />
         <Route path="/admin/backlog" element={<ImplementationBacklog />} />
+        <Route path="/admin/buyer-handover" element={<BuyerHandoverPack />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

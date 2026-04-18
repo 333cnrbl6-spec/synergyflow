@@ -35,6 +35,7 @@ export default function AdminLayout() {
     { label: 'Board Impact', href: '/admin/board-impact', icon: '📈' },
     { label: 'Chairman Zone', href: '/admin/chairman-zone', icon: '👑' },
     { label: 'Implementation Backlog', href: '/admin/backlog', icon: '🗂️' },
+    { label: 'Buyer Handover Pack', href: '/admin/buyer-handover', icon: '📋' },
     { label: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
