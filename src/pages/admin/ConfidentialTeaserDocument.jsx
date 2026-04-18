@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronDown, ChevronRight, Shield, TrendingUp, Zap, Users, Lock, DollarSign, Star, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronRight, Shield, TrendingUp, Lock, Star, AlertTriangle, FileDown, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const PRODUCTS = [
   {
@@ -179,16 +181,68 @@ function Section({ title, children, defaultOpen = false }) {
         <span className="font-semibold text-slate-900">{title}</span>
         {open ? <ChevronDown className="w-4 h-4 text-slate-500" /> : <ChevronRight className="w-4 h-4 text-slate-500" />}
       </button>
-      {open && <div className="p-6">{children}</div>}
+      <div className={open ? 'p-6' : 'hidden'}>{children}</div>
     </div>
   );
 }
 
 export default function ConfidentialTeaserDocument() {
   const [activeScenario, setActiveScenario] = useState('outright');
+  const [exporting, setExporting] = useState(false);
+  const contentRef = useRef(null);
+
+  const handleExportPDF = async () => {
+    setExporting(true);
+    try {
+      // Expand all sections by capturing the full scrollable content
+      const el = contentRef.current;
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f8fafc',
+        logging: false,
+        windowWidth: 1100,
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = pageW;
+      const imgH = (canvas.height * imgW) / canvas.width;
+      let heightLeft = imgH;
+      let position = 0;
+      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      heightLeft -= pageH;
+      while (heightLeft > 0) {
+        position -= pageH;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+        heightLeft -= pageH;
+      }
+      pdf.save(`Portfolio-Teaser-Confidential-${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 max-w-5xl mx-auto space-y-6">
+
+      {/* Export Button */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleExportPDF}
+          disabled={exporting}
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold shadow-lg flex items-center gap-2"
+        >
+          {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+          {exporting ? 'Generating PDF...' : 'Export Full-Colour PDF'}
+        </Button>
+      </div>
+
+      <div ref={contentRef} className="space-y-6">
 
       {/* Header */}
       <div className="bg-gradient-to-r from-slate-900 to-slate-700 rounded-2xl p-8 text-white">
@@ -227,7 +281,7 @@ export default function ConfidentialTeaserDocument() {
       </div>
 
       {/* What We Have — Safe Description */}
-      <Section title="📋 What Is Being Offered" defaultOpen={true}>
+      <Section title="📋 What Is Being Offered" defaultOpen={true} >
         <div className="space-y-4">
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
             <strong>Note to Buyer:</strong> The following describes the <em>output and market position</em> of this portfolio. The underlying creation methodology is a protected trade secret and will not be disclosed prior to completion of legal agreements.
@@ -505,6 +559,7 @@ export default function ConfidentialTeaserDocument() {
         <p>The proprietary development methodology referenced herein is a protected trade secret under the Trade Secrets (Enforcement, etc.) Regulations 2018. Unauthorised disclosure constitutes a civil and potentially criminal matter.</p>
         <p className="text-slate-500">© 2026 — All rights reserved. Reproduction or distribution without written consent is prohibited.</p>
       </div>
+    </div>{/* end contentRef */}
     </div>
   );
 }
