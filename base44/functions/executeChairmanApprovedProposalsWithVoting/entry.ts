@@ -20,6 +20,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No chairman-approved proposals to vote on' }, { status: 400 });
     }
 
+    // Guard: only vote on proposals that haven't already been voted on
+    const unvotedProposals = approvedProposals.filter(p =>
+      p.approval_stage !== 'passed' &&
+      (!p.yes_votes || p.yes_votes.length === 0)
+    );
+
+    if (unvotedProposals.length === 0) {
+      return Response.json({ error: 'All proposals have already been voted on — no action taken.' }, { status: 400 });
+    }
+
+    // Swap the full list for only unvoted ones
+    approvedProposals.splice(0, approvedProposals.length, ...unvotedProposals);
+
     const strategyChannel = channels.find(c => c.channel_type === 'strategy') || channels[0];
     if (!strategyChannel) {
       return Response.json({ error: 'No strategy channel found' }, { status: 400 });
