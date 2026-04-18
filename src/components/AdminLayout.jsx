@@ -45,6 +45,7 @@ const NAV_GROUPS = [
       { label: 'Unified Launch', href: '/admin/launch', icon: '🚀' },
       { label: 'Joint Ventures', href: '/admin/joint-ventures', icon: '🤝' },
       { label: 'Buyer Handover Pack', href: '/admin/buyer-handover', icon: '📦' },
+      { label: 'Confidential Teaser', href: '/admin/teaser', icon: '🔒' },
     ],
   },
   {
