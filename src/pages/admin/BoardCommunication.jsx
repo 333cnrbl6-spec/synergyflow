@@ -73,12 +73,16 @@ export default function BoardCommunication() {
 
   useEffect(() => {
     if (!selectedChannel) return;
-    const interval = setInterval(async () => {
-      await loadMessages(selectedChannel.id);
-      await loadProposals();
-    }, 1000);
+    // Poll messages every 5s (chat needs polling, entity subscriptions handle proposal updates)
+    const interval = setInterval(() => loadMessages(selectedChannel.id), 5000);
     return () => clearInterval(interval);
   }, [selectedChannel]);
+
+  // Real-time proposal updates via entity subscription
+  useEffect(() => {
+    const unsub = base44.entities.BoardProposal.subscribe(() => loadProposals());
+    return () => unsub();
+  }, []);
 
   useEffect(() => {
     // Scroll to top when new messages arrive

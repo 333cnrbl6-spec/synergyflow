@@ -14,8 +14,10 @@ export default function ExecutionMetricsDashboard() {
 
   useEffect(() => {
     loadMetrics();
-    const interval = setInterval(loadMetrics, 3000);
-    return () => clearInterval(interval);
+    // Subscribe to real-time entity changes instead of polling
+    const unsub1 = base44.entities.BoardProposal.subscribe(() => loadMetrics());
+    const unsub2 = base44.entities.ActionItem.subscribe(() => loadMetrics());
+    return () => { unsub1(); unsub2(); };
   }, []);
 
   const loadMetrics = async () => {

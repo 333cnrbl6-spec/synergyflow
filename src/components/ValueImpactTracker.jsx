@@ -37,29 +37,17 @@ export default function ValueImpactTracker({ proposals, products }) {
     calculateImpact();
   }, [proposals, products]);
 
-  // Subscribe to proposal changes to update impact in real-time
+  // Subscribe to real-time changes on proposals and snapshots
   useEffect(() => {
-    const unsubscribeProposals = base44.entities.BoardProposal.subscribe((event) => {
-      // Recalculate impact whenever a proposal is created, updated, or deleted
-      setValueImpact(prev => {
-        // Trigger recalculation by forcing dependency update
-        return prev;
+    const recalc = () => {
+      base44.entities.ValuationSnapshot.list().catch(() => []).then(snapshots => {
+        const totalValue = snapshots.reduce((sum, s) => sum + (s.sell_now_value || 0), 0);
+        if (totalValue > 0) setValueImpact(totalValue);
       });
-      // Notify parent component if needed via callback
-      if (event.type === 'update' && (event.data?.status === 'approved' || event.data?.status === 'rejected')) {
-        // Proposal status changed - recalculate
-        setTimeout(() => {
-          base44.entities.ValuationSnapshot.list().catch(() => []).then(snapshots => {
-            const totalValue = snapshots.reduce((sum, s) => sum + (s.sell_now_value || 0), 0);
-            if (totalValue > 0) {
-              setValueImpact(totalValue);
-            }
-          });
-        }, 100);
-      }
-    });
-
-    return () => unsubscribeProposals();
+    };
+    const unsub1 = base44.entities.BoardProposal.subscribe(recalc);
+    const unsub2 = base44.entities.ValuationSnapshot.subscribe(recalc);
+    return () => { unsub1(); unsub2(); };
   }, []);
 
   const approvedProposals = proposals.filter(p => p.status === 'approved').length;
