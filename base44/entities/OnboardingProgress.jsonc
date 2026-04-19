@@ -1,0 +1,102 @@
+{
+  "name": "OnboardingProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email (links to User entity)"
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "Organization name"
+    },
+    "current_step": {
+      "type": "integer",
+      "default": 0,
+      "description": "Current step in onboarding (0-indexed)"
+    },
+    "completed_steps": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Array of completed step indices"
+    },
+    "total_steps": {
+      "type": "integer",
+      "default": 7,
+      "description": "Total steps in wizard"
+    },
+    "profile_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 0: Profile setup"
+    },
+    "team_invited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 1: Team members invited"
+    },
+    "product_selected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 2: Initial product selected"
+    },
+    "integration_connected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 3: First integration connected"
+    },
+    "data_imported": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 4: Data imported"
+    },
+    "customized": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 5: Dashboard customized"
+    },
+    "training_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Step 6: Training video watched"
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "All steps completed"
+    },
+    "completion_percentage": {
+      "type": "number",
+      "default": 0,
+      "description": "Completion percentage (0-100)"
+    },
+    "last_step_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time a step was completed"
+    },
+    "onboarding_started_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When onboarding began"
+    },
+    "onboarding_completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When onboarding was fully completed"
+    },
+    "skipped_steps": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Steps the user skipped"
+    }
+  },
+  "required": [
+    "user_email",
+    "organization_name"
+  ]
+}

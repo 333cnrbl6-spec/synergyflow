@@ -40,6 +40,7 @@ import AppRolloutWorkbench from './pages/admin/AppRolloutWorkbench';
 import AppBriefs from './pages/admin/AppBriefs';
 import ComplianceDashboard from './pages/admin/ComplianceDashboard';
 import DeadlineDashboard from './pages/admin/DeadlineDashboard';
+import Onboarding from './pages/Onboarding';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/crm" element={<CRMDashboard />} />
