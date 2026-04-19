@@ -12,6 +12,7 @@ import StrategyExecution from '@/components/strategy/StrategyExecution';
 import ValuationProposalBuilder from '@/components/ValuationProposalBuilder';
 import ValuationCalculator from '@/components/ValuationCalculator';
 import CrossSynergyOpportunityAnalyzer from '@/components/CrossSynergyOpportunityAnalyzer';
+import PortfolioSimulationTool from '@/components/PortfolioSimulationTool';
 
 export default function BoardStrategy() {
   const [products, setProducts] = useState([]);
@@ -116,8 +117,9 @@ export default function BoardStrategy() {
 
         {/* Tabs */}
          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
+              <TabsTrigger value="simulation">Simulation</TabsTrigger>
               <TabsTrigger value="synergy">Cross-Synergy</TabsTrigger>
               <TabsTrigger value="valuation">Portfolio Valuation</TabsTrigger>
               <TabsTrigger value="launch">Launch Prep</TabsTrigger>
@@ -197,6 +199,11 @@ export default function BoardStrategy() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Portfolio Simulation */}
+          <TabsContent value="simulation" className="space-y-4">
+            <PortfolioSimulationTool />
           </TabsContent>
 
           {/* Cross-Synergy Opportunities */}
