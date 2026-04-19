@@ -34,6 +34,7 @@ const NAV_GROUPS = [
       { label: 'Board Impact', href: '/admin/board-impact', icon: '📈' },
       { label: 'Board Insights', href: '/admin/board-insights', icon: '🔍' },
       { label: 'Board Consensus', href: '/admin/consensus', icon: '🗳️' },
+      { label: 'Next Series Vote', href: '/admin/next-series', icon: '📋' },
       { label: 'Reporting', href: '/admin/reporting', icon: '📋' },
     ],
   },

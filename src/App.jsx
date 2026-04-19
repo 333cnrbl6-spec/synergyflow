@@ -28,6 +28,7 @@ import AnalyticsDashboard from './pages/admin/AnalyticsDashboard';
 import ProductVerificationDashboard from './pages/admin/ProductVerificationDashboard';
 import StrategicJointVentures from './pages/admin/StrategicJointVentures';
 import BoardConsensus from './pages/admin/BoardConsensus';
+import NextSeriesVoting from './pages/admin/NextSeriesVoting';
 import ImplementationDashboard from './pages/admin/ImplementationDashboard';
 import BoardReporting from './pages/admin/BoardReporting';
 import ImplementationBacklog from './pages/admin/ImplementationBacklog';
@@ -89,6 +90,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/verification" element={<ProductVerificationDashboard />} />
         <Route path="/admin/joint-ventures" element={<StrategicJointVentures />} />
         <Route path="/admin/consensus" element={<BoardConsensus />} />
+        <Route path="/admin/next-series" element={<NextSeriesVoting />} />
         <Route path="/admin/implementation" element={<ImplementationDashboard />} />
         <Route path="/admin/reporting" element={<BoardReporting />} />
         <Route path="/admin/backlog" element={<ImplementationBacklog />} />
