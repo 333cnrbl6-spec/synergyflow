@@ -1,0 +1,114 @@
+{
+  "name": "ComplianceDeadline",
+  "type": "object",
+  "properties": {
+    "deadline_type": {
+      "type": "string",
+      "enum": [
+        "limitation_date",
+        "tenancy_expiry",
+        "grant_deadline",
+        "report_due",
+        "audit_due",
+        "renewal_date",
+        "review_date",
+        "custom"
+      ],
+      "description": "Type of compliance deadline"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Related entity type (e.g., 'Case', 'TenancyAgreement', 'Grant')"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the related entity record"
+    },
+    "deadline_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The compliance deadline date"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "property",
+        "legal",
+        "charity",
+        "conservation",
+        "general"
+      ],
+      "description": "Product domain this deadline belongs to"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium",
+      "description": "Priority level based on regulatory importance"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what needs to be done"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Email of user responsible for this deadline"
+    },
+    "notification_schedule": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "days_before": {
+            "type": "integer",
+            "description": "Days before deadline to send notification"
+          },
+          "sent": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this notification was sent"
+          },
+          "sent_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the notification was sent"
+          }
+        }
+      },
+      "description": "Scheduled notifications (30, 14, 7 days before)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "missed",
+        "dismissed"
+      ],
+      "default": "pending",
+      "description": "Current status of the deadline"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the deadline was met/completed"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or context"
+    }
+  },
+  "required": [
+    "deadline_type",
+    "entity_name",
+    "entity_id",
+    "deadline_date",
+    "domain",
+    "priority"
+  ]
+}
