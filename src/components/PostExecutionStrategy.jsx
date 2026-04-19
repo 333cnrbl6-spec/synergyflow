@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { toast } from 'sonner';
+import CrossSynergyDashboard from './CrossSynergyDashboard';
 
 const APP_CONFIG = {
   species_explorer: { 
@@ -136,6 +137,9 @@ export default function PostExecutionStrategy() {
   return (
     <div className="space-y-8">
       
+      {/* Cross-Synergy Dashboard */}
+      <CrossSynergyDashboard />
+
       {/* Executive Summary */}
       <Card className="p-6 bg-gradient-to-r from-slate-900 to-slate-800 border-slate-700 text-white">
         <div className="flex items-start justify-between mb-4">
