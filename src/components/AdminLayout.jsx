@@ -47,6 +47,7 @@ const NAV_GROUPS = [
       { label: 'Buyer Handover Pack', href: '/admin/buyer-handover', icon: '📦' },
       { label: 'Confidential Teaser', href: '/admin/teaser', icon: '🔒' },
       { label: 'Architecture Principles', href: '/admin/architecture', icon: '🏗️' },
+      { label: 'App Rollout Workbench', href: '/admin/rollout', icon: '🚀' },
     ],
   },
   {
