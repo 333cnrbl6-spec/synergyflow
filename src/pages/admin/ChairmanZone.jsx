@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import ChairmanRecommendations from '@/components/ChairmanRecommendations';
 import ChairmanHistoryTab from '@/components/ChairmanHistoryTab';
 import BoardActionsMetrics from '@/components/BoardActionsMetrics';
+import ChairmanDashboardMonitor from '@/components/ChairmanDashboardMonitor';
 
 export default function ChairmanZone() {
   const queryClient = useQueryClient();
@@ -163,7 +164,10 @@ export default function ChairmanZone() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Real-Time Monitor */}
+        <ChairmanDashboardMonitor />
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -178,7 +182,14 @@ export default function ChairmanZone() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-3 mb-6 flex-wrap">
+        <div className="flex gap-3 mb-6 flex-wrap border-b border-slate-200 pb-3">
+          <Button
+            variant={activeTab === 'monitor' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('monitor')}
+            className="gap-2"
+          >
+            🔴 Real-Time Monitor
+          </Button>
           <Button
             variant={activeTab === 'transcript' ? 'default' : 'outline'}
             onClick={() => setActiveTab('transcript')}
@@ -228,6 +239,13 @@ export default function ChairmanZone() {
             Board Voting
           </Button>
         </div>
+
+        {/* Real-Time Monitor Tab */}
+        {activeTab === 'monitor' && (
+          <div className="space-y-6">
+            <ChairmanDashboardMonitor />
+          </div>
+        )}
 
         {/* Transcript Tab */}
         {activeTab === 'transcript' && (

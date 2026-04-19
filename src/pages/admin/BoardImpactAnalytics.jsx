@@ -14,6 +14,7 @@ import ExecutionProgressTracker from '@/components/ExecutionProgressTracker';
 import ApprovedBuildMetrics from '@/components/ApprovedBuildMetrics';
 import BuildProposalROI from '@/components/BuildProposalROI';
 import BoardActionsMetrics from '@/components/BoardActionsMetrics';
+import SynergyFlowProgress from '@/components/SynergyFlowProgress';
 
 export default function BoardImpactAnalytics() {
   const [approvedProposals, setApprovedProposals] = useState([]);
@@ -287,6 +288,9 @@ export default function BoardImpactAnalytics() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
       <div className="max-w-7xl mx-auto space-y-8">
+        {/* SynergyFlow Progress - TOP SECTION */}
+        <SynergyFlowProgress />
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
