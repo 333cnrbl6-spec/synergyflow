@@ -36,6 +36,7 @@ import ConfidentialTeaserDocument from './pages/admin/ConfidentialTeaserDocument
 import ArchitecturePrinciples from './pages/admin/ArchitecturePrinciples';
 import AppRolloutWorkbench from './pages/admin/AppRolloutWorkbench';
 import AppBriefs from './pages/admin/AppBriefs';
+import ComplianceDashboard from './pages/admin/ComplianceDashboard';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/architecture" element={<ArchitecturePrinciples />} />
         <Route path="/admin/rollout" element={<AppRolloutWorkbench />} />
         <Route path="/admin/app-briefs" element={<AppBriefs />} />
+        <Route path="/admin/compliance" element={<ComplianceDashboard />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
