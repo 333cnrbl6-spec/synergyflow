@@ -35,6 +35,7 @@ const NAV_GROUPS = [
       { label: 'Board Insights', href: '/admin/board-insights', icon: '🔍' },
       { label: 'Board Consensus', href: '/admin/consensus', icon: '🗳️' },
       { label: 'Next Series Vote', href: '/admin/next-series', icon: '📋' },
+      { label: 'Post-Execution Strategy', href: '/admin/post-execution', icon: '📊' },
       { label: 'Reporting', href: '/admin/reporting', icon: '📋' },
     ],
   },
