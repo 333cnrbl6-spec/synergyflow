@@ -13,6 +13,7 @@ import ValuationProposalBuilder from '@/components/ValuationProposalBuilder';
 import ValuationCalculator from '@/components/ValuationCalculator';
 import CrossSynergyOpportunityAnalyzer from '@/components/CrossSynergyOpportunityAnalyzer';
 import PortfolioSimulationTool from '@/components/PortfolioSimulationTool';
+import CompetitivePricingAdvisor from '@/components/CompetitivePricingAdvisor';
 
 export default function BoardStrategy() {
   const [products, setProducts] = useState([]);
@@ -117,10 +118,11 @@ export default function BoardStrategy() {
 
         {/* Tabs */}
          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
               <TabsTrigger value="simulation">Simulation</TabsTrigger>
               <TabsTrigger value="synergy">Cross-Synergy</TabsTrigger>
+              <TabsTrigger value="pricing">Pricing</TabsTrigger>
               <TabsTrigger value="valuation">Portfolio Valuation</TabsTrigger>
               <TabsTrigger value="launch">Launch Prep</TabsTrigger>
               <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
@@ -209,6 +211,11 @@ export default function BoardStrategy() {
           {/* Cross-Synergy Opportunities */}
           <TabsContent value="synergy" className="space-y-4">
             <CrossSynergyOpportunityAnalyzer />
+          </TabsContent>
+
+          {/* Competitive Pricing */}
+          <TabsContent value="pricing" className="space-y-4">
+            <CompetitivePricingAdvisor />
           </TabsContent>
 
           {/* Portfolio Valuation */}
