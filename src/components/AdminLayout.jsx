@@ -48,6 +48,7 @@ const NAV_GROUPS = [
       { label: 'Confidential Teaser', href: '/admin/teaser', icon: '🔒' },
       { label: 'Architecture Principles', href: '/admin/architecture', icon: '🏗️' },
       { label: 'App Rollout Workbench', href: '/admin/rollout', icon: '🚀' },
+      { label: 'App Implementation Briefs', href: '/admin/app-briefs', icon: '📋' },
     ],
   },
   {

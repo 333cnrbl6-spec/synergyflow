@@ -35,6 +35,7 @@ import BuyerHandoverPack from './pages/admin/BuyerHandoverPack';
 import ConfidentialTeaserDocument from './pages/admin/ConfidentialTeaserDocument';
 import ArchitecturePrinciples from './pages/admin/ArchitecturePrinciples';
 import AppRolloutWorkbench from './pages/admin/AppRolloutWorkbench';
+import AppBriefs from './pages/admin/AppBriefs';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/teaser" element={<ConfidentialTeaserDocument />} />
         <Route path="/admin/architecture" element={<ArchitecturePrinciples />} />
         <Route path="/admin/rollout" element={<AppRolloutWorkbench />} />
+        <Route path="/admin/app-briefs" element={<AppBriefs />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
