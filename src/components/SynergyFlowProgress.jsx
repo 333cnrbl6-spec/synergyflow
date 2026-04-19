@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, AlertCircle, CheckCircle2, Clock, Zap } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import SynergyFlowGrowthSimulator from './SynergyFlowGrowthSimulator';
 
 export default function SynergyFlowProgress() {
   const [synergyMetrics, setSynergyMetrics] = useState(null);
@@ -231,6 +232,9 @@ export default function SynergyFlowProgress() {
           </AreaChart>
         </ResponsiveContainer>
       </Card>
+
+      {/* Growth Simulator */}
+      <SynergyFlowGrowthSimulator />
 
       {/* Collaboration Benefits */}
       <Card className="p-6 bg-gradient-to-r from-emerald-50 to-cyan-50 border border-emerald-200">
