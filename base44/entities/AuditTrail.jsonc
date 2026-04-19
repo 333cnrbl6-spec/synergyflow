@@ -1,0 +1,96 @@
+{
+  "name": "AuditTrail",
+  "type": "object",
+  "properties": {
+    "entity_name": {
+      "type": "string",
+      "description": "Name of the entity that was modified (e.g., 'TenancyAgreement', 'Case')"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the record that was modified"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": "Type of modification"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of user who made the change"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the modification occurred"
+    },
+    "changed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of field names that changed (for updates)"
+    },
+    "changes_summary": {
+      "type": "string",
+      "description": "Human-readable summary of what changed"
+    },
+    "old_snapshot": {
+      "type": "object",
+      "description": "Complete previous record data (for updates/deletes)"
+    },
+    "new_snapshot": {
+      "type": "object",
+      "description": "Complete new record data (for creates/updates)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Optional reason for the change (compliance notes)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the user (optional)"
+    },
+    "compliance_flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of compliance concern (e.g., 'rent_change', 'limitation_date_change')"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Description of the compliance concern"
+          },
+          "regulation": {
+            "type": "string",
+            "description": "Relevant regulation or standard"
+          }
+        }
+      },
+      "description": "Automatically detected compliance concerns requiring attention"
+    }
+  },
+  "required": [
+    "entity_name",
+    "entity_id",
+    "action",
+    "user_email",
+    "timestamp"
+  ]
+}
