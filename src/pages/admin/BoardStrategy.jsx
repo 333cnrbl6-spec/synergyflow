@@ -11,6 +11,7 @@ import StrategyRoadmap from '@/components/strategy/StrategyRoadmap';
 import StrategyExecution from '@/components/strategy/StrategyExecution';
 import ValuationProposalBuilder from '@/components/ValuationProposalBuilder';
 import ValuationCalculator from '@/components/ValuationCalculator';
+import CrossSynergyOpportunityAnalyzer from '@/components/CrossSynergyOpportunityAnalyzer';
 
 export default function BoardStrategy() {
   const [products, setProducts] = useState([]);
@@ -115,13 +116,14 @@ export default function BoardStrategy() {
 
         {/* Tabs */}
          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-           <TabsList className="grid w-full grid-cols-5">
-             <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
-             <TabsTrigger value="valuation">Portfolio Valuation</TabsTrigger>
-             <TabsTrigger value="launch">Launch Prep</TabsTrigger>
-             <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
-             <TabsTrigger value="execution">Execution</TabsTrigger>
-           </TabsList>
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="overview">Strategy Overview</TabsTrigger>
+              <TabsTrigger value="synergy">Cross-Synergy</TabsTrigger>
+              <TabsTrigger value="valuation">Portfolio Valuation</TabsTrigger>
+              <TabsTrigger value="launch">Launch Prep</TabsTrigger>
+              <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+              <TabsTrigger value="execution">Execution</TabsTrigger>
+            </TabsList>
 
           {/* Strategy Overview */}
           <TabsContent value="overview" className="space-y-4">
@@ -195,6 +197,11 @@ export default function BoardStrategy() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Cross-Synergy Opportunities */}
+          <TabsContent value="synergy" className="space-y-4">
+            <CrossSynergyOpportunityAnalyzer />
           </TabsContent>
 
           {/* Portfolio Valuation */}
