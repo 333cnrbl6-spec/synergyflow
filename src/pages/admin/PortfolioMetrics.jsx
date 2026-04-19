@@ -8,6 +8,7 @@ import ActionItemsMonitor from '@/components/ActionItemsMonitor';
 import AdvancedAnalytics from '@/components/AdvancedAnalytics';
 import BenchmarkForm from '@/components/BenchmarkForm';
 import BenchmarkComparison from '@/components/BenchmarkComparison';
+import ChurnRiskDashboard from '@/components/ChurnRiskDashboard';
 
 const PRODUCT_NAMES = ['Premiso', 'Species Explorer', 'Age UK Bury', 'CaseNarrative'];
 const COLORS = ['#0f172a', '#64748b', '#334155', '#1e293b'];
@@ -112,6 +113,16 @@ export default function PortfolioMetrics() {
           {/* Tabs */}
           <div className="flex gap-3 mt-6">
             <button
+              onClick={() => setActiveTab('churn')}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                activeTab === 'churn'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+              }`}
+            >
+              Churn Risk
+            </button>
+            <button
               onClick={() => setActiveTab('overview')}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 activeTab === 'overview'
@@ -143,6 +154,11 @@ export default function PortfolioMetrics() {
             </button>
           </div>
         </div>
+
+        {/* Churn Risk Tab */}
+        {activeTab === 'churn' && (
+          <ChurnRiskDashboard />
+        )}
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
