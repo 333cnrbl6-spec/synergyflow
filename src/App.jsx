@@ -6,6 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { SubscriptionProvider } from '@/lib/SubscriptionContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import OnboardingGate from '@/components/OnboardingGate';
 import Landing from './pages/Landing';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CRMDashboard from './pages/admin/CRMDashboard';
@@ -70,7 +71,8 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
+    <OnboardingGate>
+      <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/products/:slug" element={<ProductPage />} />
@@ -110,7 +112,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
-    </Routes>
+      </Routes>
+    </OnboardingGate>
   );
 };
 
