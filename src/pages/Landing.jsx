@@ -2,28 +2,28 @@ import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, CheckCircle2, Users, BarChart3, Settings, Mail, Lock, Download, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, CheckCircle2, Users, BarChart3, Settings, Mail, Lock, Download, X, Play, Zap, Globe, TrendingUp } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+const PRODUCT_CARDS = [
+  { slug: 'case-tracker', name: 'Case Tracker Pro', emoji: '📋', color: 'blue', market: 'Solicitors & Law Firms' },
+  { slug: 'base44-ai', name: 'Base44 AI', emoji: '🧠', color: 'purple', market: 'Legal Automation' },
+  { slug: 'case-narrative', name: 'CaseNarrative', emoji: '📖', color: 'amber', market: 'Litigation Briefs' },
+  { slug: 'premiso', name: 'Premiso', emoji: '🏠', color: 'green', market: 'Conveyancing' },
+  { slug: 'charity-hub', name: 'CharityHub', emoji: '❤️', color: 'rose', market: 'Charity Governance' },
+  { slug: 'species-explorer', name: 'Species Explorer', emoji: '🦁', color: 'emerald', market: 'Conservation' }
+];
+
 export default function Landing() {
-  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showPricingComparison, setShowPricingComparison] = useState(false);
   const [generatingPDF, setGeneratingPDF] = useState(false);
+  const [tourStep, setTourStep] = useState(-1);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await base44.entities.Product.list();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
+    setIsLoading(false);
   }, []);
 
   const generatePricingPDF = async () => {
@@ -59,99 +59,111 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b bg-card sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold text-primary">SaaS Hub</div>
+      <nav className="border-b bg-white sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="text-2xl font-bold text-slate-900">SynergyFlow</div>
           <div className="flex gap-4">
+            <Button variant="ghost" onClick={() => setTourStep(0)}>Take Tour</Button>
             <Link to="/admin">
-              <Button variant="outline">Admin Dashboard</Button>
+              <Button variant="outline" size="sm">Admin</Button>
             </Link>
-            <Button className="bg-primary hover:bg-primary/90">Contact Sales</Button>
+            <Button className="bg-slate-900 hover:bg-slate-800" size="sm">Sign Up</Button>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl font-bold mb-6 text-foreground">
-          All Your Software Solutions in One Place
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Powerful tools for property management, research, charity operations, and legal case management.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
-            Start Free Trial
-          </Button>
-          <Button size="lg" variant="outline">
-            Request Demo <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <div className="inline-block mb-6 px-4 py-2 bg-slate-700/50 rounded-full text-sm font-semibold">
+            🚀 6 Industry-Specific SaaS Products in One Platform
+          </div>
+          <h1 className="text-6xl font-bold mb-6 leading-tight">
+            Your Industry's Complete Software Suite
+          </h1>
+          <p className="text-xl text-slate-300 mb-8 max-w-3xl mx-auto">
+            From legal case management to conservation research. Choose the products you need, add more as you grow. All powered by SynergyFlow's unified intelligence backbone.
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
+              Explore All Products
+            </Button>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10" onClick={() => setTourStep(0)}>
+              <Play className="w-4 h-4 mr-2" /> Take a Tour
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Products Grid */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-12 text-center">Our Products</h2>
-        {isLoading ? (
-          <div className="text-center py-8">Loading products...</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <Card key={product.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  {product.icon_url && (
-                    <img src={product.icon_url} alt={product.name} className="w-12 h-12 mb-2" />
-                  )}
-                  <CardTitle className="text-lg">{product.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
-                  <p className="text-xs text-primary font-semibold mb-4">{product.target_market}</p>
-                  {product.features && (
-                    <ul className="space-y-2 mb-4">
-                      {product.features.slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-xs">
-                          <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <Button className="w-full" variant="outline" size="sm">
-                    Learn More
+      {/* Products Showcase Grid */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <h2 className="text-4xl font-bold mb-4 text-center">Six Powerful Products</h2>
+        <p className="text-center text-slate-600 mb-16 max-w-2xl mx-auto">
+          Each built for a specific industry. Each packed with specialized features. All working together seamlessly.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {PRODUCT_CARDS.map((prod) => (
+            <Card key={prod.slug} className="hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer overflow-hidden group" onClick={() => navigate(`/products/${prod.slug}`)}>
+              <div className={`h-1 bg-gradient-to-r from-${prod.color}-400 to-${prod.color}-600`} />
+              <CardHeader>
+                <div className="text-5xl mb-3">{prod.emoji}</div>
+                <CardTitle className="text-xl group-hover:text-slate-900">{prod.name}</CardTitle>
+                <p className="text-sm text-slate-600 mt-2">{prod.market}</p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <p className="text-sm text-slate-600 line-clamp-2">Industry-specific features designed for maximum impact and ease of use.</p>
+                  <Button variant="outline" className="w-full group-hover:bg-slate-50">
+                    Explore <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-secondary/50 py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-12 text-center">Why Choose Us</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-primary" />
+      {/* Value Props */}
+      <section className="bg-slate-50 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-bold mb-16 text-center">Why SynergyFlow Wins</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Zap className="w-6 h-6 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Integrated Solutions</h3>
-              <p className="text-muted-foreground">All tools work seamlessly together</p>
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Industry-Specific Design</h3>
+                <p className="text-slate-600">Each product is purpose-built for its industry—no compromises, no bloat.</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-8 h-8 text-primary" />
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Real-Time Analytics</h3>
-              <p className="text-muted-foreground">Track performance and growth instantly</p>
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Scale As You Grow</h3>
+                <p className="text-slate-600">Start with one product. Add more as your business evolves. Pay only for what you use.</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-8 h-8 text-primary" />
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Globe className="w-6 h-6 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Enterprise Security</h3>
-              <p className="text-muted-foreground">Your data is safe and secure</p>
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Unified Data Intelligence</h3>
+                <p className="text-slate-600">All products share a unified analytics backend—see the bigger picture instantly.</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center">
+                <Lock className="w-6 h-6 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Enterprise-Grade Security</h3>
+                <p className="text-slate-600">ISO 27001 certified. GDPR compliant. Your data, completely protected.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -314,58 +326,76 @@ export default function Landing() {
         )}
       </section>
 
-      {/* CTA */}
-      <section className="bg-primary text-primary-foreground py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-lg mb-8 opacity-90">
-            Join hundreds of organizations using our platform.
+      {/* Social Proof */}
+      <section className="bg-slate-50 py-16">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h3 className="text-lg font-semibold text-slate-600 mb-8">Trusted by leading organizations worldwide</h3>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 items-center opacity-60">
+            {['TechCorp', 'LegalPlus', 'ConserveLabs', 'CharityNet', 'PropViz', 'ScienceHub'].map((org) => (
+              <div key={org} className="font-semibold text-slate-400">{org}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="bg-slate-900 text-white py-20">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Industry?</h2>
+          <p className="text-lg text-slate-300 mb-8">
+            Join companies already using SynergyFlow to streamline operations and scale faster.
           </p>
-          <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
-            Start Your Free Trial Today
-          </Button>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
+              Start Free Trial Now
+            </Button>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+              Schedule a Demo
+            </Button>
+          </div>
+          <p className="text-sm text-slate-400 mt-6">No credit card required. 14-day free trial on all plans.</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <footer className="bg-slate-950 border-t border-slate-800 text-slate-400">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="font-semibold mb-4">Products</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Property Management</a></li>
-                <li><a href="#" className="hover:text-foreground">Research Tools</a></li>
-                <li><a href="#" className="hover:text-foreground">Charity Management</a></li>
-                <li><a href="#" className="hover:text-foreground">Legal Case Builder</a></li>
+              <h4 className="font-semibold text-white mb-4">Products</h4>
+              <ul className="space-y-2 text-sm">
+                {PRODUCT_CARDS.map((p) => (
+                  <li key={p.slug}><button onClick={() => navigate(`/products/${p.slug}`)} className="hover:text-white">{p.name}</button></li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">About Us</a></li>
-                <li><a href="#" className="hover:text-foreground">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground">Careers</a></li>
+              <h4 className="font-semibold text-white mb-4">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">About</a></li>
+                <li><a href="#" className="hover:text-white">Blog</a></li>
+                <li><a href="#" className="hover:text-white">Careers</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Help Center</a></li>
-                <li><a href="#" className="hover:text-foreground">Documentation</a></li>
-                <li><a href="#" className="hover:text-foreground">Contact</a></li>
+              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Docs</a></li>
+                <li><a href="#" className="hover:text-white">Contact</a></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-foreground">Terms of Service</a></li>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white">Privacy</a></li>
+                <li><a href="#" className="hover:text-white">Terms</a></li>
+                <li><a href="#" className="hover:text-white">Security</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 SaaS Hub. All rights reserved.</p>
+          <div className="border-t border-slate-800 pt-8 text-center text-sm">
+            <p>&copy; 2026 SynergyFlow. All rights reserved.</p>
           </div>
         </div>
       </footer>
