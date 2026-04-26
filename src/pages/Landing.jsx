@@ -67,7 +67,7 @@ export default function Landing() {
             <Link to="/admin">
               <Button variant="outline" size="sm">Admin</Button>
             </Link>
-            <Button className="bg-slate-900 hover:bg-slate-800" size="sm">Sign Up</Button>
+            <Button onClick={() => navigate('/onboarding')} className="bg-slate-900 hover:bg-slate-800" size="sm">Sign Up</Button>
           </div>
         </div>
       </nav>
@@ -85,7 +85,7 @@ export default function Landing() {
             From legal case management to conservation research. Choose the products you need, add more as you grow. All powered by SynergyFlow's unified intelligence backbone.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
+            <Button size="lg" onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' })} className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
               Explore All Products
             </Button>
             <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10" onClick={() => setTourStep(0)}>
@@ -96,7 +96,7 @@ export default function Landing() {
       </section>
 
       {/* Products Showcase Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
+      <section id="products-section" className="max-w-7xl mx-auto px-6 py-20">
         <h2 className="text-4xl font-bold mb-4 text-center">Six Powerful Products</h2>
         <p className="text-center text-slate-600 mb-16 max-w-2xl mx-auto">
           Each built for a specific industry. Each packed with specialized features. All working together seamlessly.
@@ -243,16 +243,16 @@ export default function Landing() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2.5 mb-6">
-                  {plan.features.map((feature, fidx) => (
-                    <li key={fidx} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full" variant={plan.highlighted ? 'default' : 'outline'}>
-                  Get Started
-                </Button>
+                   {plan.features.map((feature, fidx) => (
+                     <li key={fidx} className="flex items-start gap-2 text-sm">
+                       <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                       <span>{feature}</span>
+                     </li>
+                   ))}
+                 </ul>
+                 <Button onClick={() => navigate('/onboarding')} className="w-full" variant={plan.highlighted ? 'default' : 'outline'}>
+                   Get Started
+                 </Button>
               </CardContent>
             </Card>
           ))}
@@ -346,10 +346,10 @@ export default function Landing() {
             Join companies already using SynergyFlow to streamline operations and scale faster.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
+            <Button onClick={() => navigate('/onboarding')} size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
               Start Free Trial Now
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+            <Button onClick={() => setTourStep(0)} size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
               Schedule a Demo
             </Button>
           </div>
