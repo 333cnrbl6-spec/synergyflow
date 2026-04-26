@@ -192,6 +192,56 @@ export default function ImplementationBacklog() {
   const actionDone = actionItems.filter(a => a.status === 'completed').length;
   const tasksDone = tasks.filter(t => t.implementation_status === 'deployed').length;
 
+  // Group by product/app
+  const groupByProduct = () => {
+    const groups = {};
+    
+    [...proposals, ...actionItems, ...tasks].forEach(item => {
+      const product = item.product_name || item.products_involved?.[0] || 'General';
+      if (!groups[product]) groups[product] = { proposals: [], actions: [], tasks: [] };
+      
+      if (item.title && item.summary) groups[product].proposals.push(item);
+      else if (item.title && item.description) groups[product].actions.push(item);
+      else if (item.issue_description) groups[product].tasks.push(item);
+    });
+    
+    return groups;
+  };
+
+  const productGroups = groupByProduct();
+  const products = Object.keys(productGroups).sort();
+
+  const copyAppBuild = (appName) => {
+    const group = productGroups[appName];
+    let text = `# 🚀 ${appName} Build Backlog\n\n`;
+    
+    if (group.proposals.length > 0) {
+      text += `## Proposals\n`;
+      group.proposals.forEach(p => {
+        text += `- **${p.title}**: ${p.summary.substring(0, 60)}...\n`;
+      });
+      text += '\n';
+    }
+    
+    if (group.actions.length > 0) {
+      text += `## Action Items\n`;
+      group.actions.forEach(a => {
+        text += `- **${a.title}** (${a.priority}): ${a.description?.substring(0, 60) || ''}\n`;
+      });
+      text += '\n';
+    }
+    
+    if (group.tasks.length > 0) {
+      text += `## Implementation Tasks\n`;
+      group.tasks.forEach(t => {
+        text += `- **${t.issue_description}** (${t.issue_severity}): ${t.fix_type}\n`;
+      });
+    }
+    
+    navigator.clipboard.writeText(text);
+    toast.success(`Copied ${appName} build backlog`);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -243,6 +293,21 @@ export default function ImplementationBacklog() {
             </CardContent>
           </Card>
         </div>
+
+        {/* App-Specific Build Tab */}
+        <button
+          onClick={() => setActiveTab('by-app')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all mb-4 ${
+            activeTab === 'by-app'
+              ? 'bg-slate-900 text-white'
+              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+          }`}
+        >
+          📦 App Builds
+          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === 'by-app' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'}`}>
+            {products.length}
+          </span>
+        </button>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-4">
@@ -372,6 +437,124 @@ export default function ImplementationBacklog() {
                   </div>
                 </div>
               ))
+            )}
+          </div>
+        )}
+
+        {/* App-Specific Builds Tab */}
+        {activeTab === 'by-app' && (
+          <div className="space-y-6">
+            {products.length === 0 ? (
+              <div className="text-center py-16 text-slate-500">
+                <Layers className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p>No backlog items yet.</p>
+              </div>
+            ) : (
+              products.map(product => {
+                const group = productGroups[product];
+                const totalItems = group.proposals.length + group.actions.length + group.tasks.length;
+                
+                return (
+                  <Card key={product} className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <div>
+                        <CardTitle className="text-lg">{product}</CardTitle>
+                        <p className="text-xs text-slate-500 mt-1">{totalItems} items to build</p>
+                      </div>
+                      <Button
+                        onClick={() => copyAppBuild(product)}
+                        className="gap-2 bg-blue-600 hover:bg-blue-700"
+                        size="sm"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy All
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {group.proposals.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                            <Layers className="w-4 h-4" /> Proposals ({group.proposals.length})
+                          </h4>
+                          <div className="space-y-2">
+                            {group.proposals.map(p => (
+                              <div key={p.id} className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-slate-900">{p.title}</p>
+                                  <p className="text-xs text-slate-600 mt-1 line-clamp-2">{p.summary}</p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(`**${p.title}**\n\n${p.summary}`);
+                                    toast.success('Copied');
+                                  }}
+                                  className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded shrink-0"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {group.actions.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                            <ListTodo className="w-4 h-4" /> Actions ({group.actions.length})
+                          </h4>
+                          <div className="space-y-2">
+                            {group.actions.map(a => (
+                              <div key={a.id} className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-slate-900">{a.title}</p>
+                                  <p className="text-xs text-slate-600 mt-1 line-clamp-1">{a.description}</p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(`**${a.title}**\n\n${a.description}`);
+                                    toast.success('Copied');
+                                  }}
+                                  className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded shrink-0"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {group.tasks.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                            <Wrench className="w-4 h-4" /> Tasks ({group.tasks.length})
+                          </h4>
+                          <div className="space-y-2">
+                            {group.tasks.map(t => (
+                              <div key={t.id} className="flex items-start gap-3 p-3 bg-white border border-slate-200 rounded-lg">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-slate-900">{t.issue_description}</p>
+                                  <p className="text-xs text-slate-600 mt-1">{t.fix_type} • {t.issue_severity}</p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(`**${t.issue_description}**\n\nType: ${t.fix_type}\nSeverity: ${t.issue_severity}`);
+                                    toast.success('Copied');
+                                  }}
+                                  className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded shrink-0"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })
             )}
           </div>
         )}
