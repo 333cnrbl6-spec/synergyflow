@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle2, Clock, AlertTriangle, Search, Filter, ChevronDown, ChevronRight, Layers, ListTodo, Wrench } from 'lucide-react';
+import { CheckCircle2, Clock, AlertTriangle, Search, Filter, ChevronDown, ChevronRight, Layers, ListTodo, Wrench, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PRIORITY_CONFIG = {
@@ -61,13 +61,20 @@ function ProposalRow({ proposal, onStatusAdvance, expanded, onToggle }) {
   const typeConf = TYPE_CONFIG[proposal.proposal_type] || { label: proposal.proposal_type, icon: '📋' };
   const voteCount = (proposal.yes_votes || []).length;
 
+  const copyToClipboard = (e) => {
+    e.stopPropagation();
+    const text = `**${proposal.title}**\n\n${proposal.summary}\n\nType: ${typeConf.label} | Status: ${proposal.approval_stage || 'pending'}`;
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
+  };
+
   return (
     <div className="border border-slate-200 rounded-lg mb-2 bg-white hover:shadow-sm transition-shadow">
-      <div className="flex items-start gap-3 p-4 cursor-pointer" onClick={onToggle}>
-        <button className="mt-0.5 text-slate-400">
+      <div className="flex items-start gap-3 p-4">
+        <button onClick={onToggle} className="mt-0.5 text-slate-400 cursor-pointer">
           {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </button>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 cursor-pointer" onClick={onToggle}>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-semibold text-slate-900 truncate">{proposal.title}</span>
             <Badge className="text-xs border bg-transparent">{typeConf.icon} {typeConf.label}</Badge>
@@ -80,10 +87,13 @@ function ProposalRow({ proposal, onStatusAdvance, expanded, onToggle }) {
           </div>
           <StatusStepper currentStatus={proposal.approval_stage} onAdvance={onStatusAdvance} id={proposal.id} />
         </div>
-        <div className="text-xs text-slate-500 shrink-0 text-right">
-          <div>{proposal.raised_by}</div>
-          <div className="mt-0.5">{proposal.channel_name || '—'}</div>
-        </div>
+        <button
+          onClick={copyToClipboard}
+          className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition shrink-0"
+          title="Copy to clipboard"
+        >
+          <Copy className="w-4 h-4" />
+        </button>
       </div>
       {expanded && (
         <div className="px-10 pb-4 text-sm text-slate-600 border-t border-slate-100 pt-3">
@@ -340,13 +350,25 @@ export default function ImplementationBacklog() {
                       <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{item.description}</p>
                     )}
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    {item.priority && (
-                      <Badge className={`text-xs border ${PRIORITY_CONFIG[item.priority]?.color}`}>
-                        {PRIORITY_CONFIG[item.priority]?.label || item.priority}
-                      </Badge>
-                    )}
-                    <span className="text-xs text-slate-400">{item.category}</span>
+                  <div className="flex gap-1 shrink-0">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`**${item.title}**\n\n${item.description}\n\nCategory: ${item.category} | Priority: ${item.priority}`);
+                        toast.success('Copied to clipboard');
+                      }}
+                      className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                      title="Copy to clipboard"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                    <div className="flex flex-col items-end gap-1">
+                      {item.priority && (
+                        <Badge className={`text-xs border ${PRIORITY_CONFIG[item.priority]?.color}`}>
+                          {PRIORITY_CONFIG[item.priority]?.label || item.priority}
+                        </Badge>
+                      )}
+                      <span className="text-xs text-slate-400">{item.category}</span>
+                    </div>
                   </div>
                 </div>
               ))
@@ -378,11 +400,23 @@ export default function ImplementationBacklog() {
                     </p>
                     <p className="text-xs text-slate-500 mt-0.5">{task.product_name} · {task.board_member_app}</p>
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <Badge className={`text-xs border ${PRIORITY_CONFIG[task.issue_severity]?.color || 'bg-slate-100 text-slate-600 border-slate-200'}`}>
-                      {task.issue_severity || 'medium'}
-                    </Badge>
-                    <span className="text-xs text-slate-400">{task.fix_type}</span>
+                  <div className="flex gap-1 shrink-0">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`**${task.issue_description}**\n\nProduct: ${task.product_name}\nAssigned: ${task.board_member_app}\nType: ${task.fix_type} | Severity: ${task.issue_severity}`);
+                        toast.success('Copied to clipboard');
+                      }}
+                      className="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition"
+                      title="Copy to clipboard"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                    <div className="flex flex-col items-end gap-1">
+                      <Badge className={`text-xs border ${PRIORITY_CONFIG[task.issue_severity]?.color || 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                        {task.issue_severity || 'medium'}
+                      </Badge>
+                      <span className="text-xs text-slate-400">{task.fix_type}</span>
+                    </div>
                   </div>
                 </div>
               ))
