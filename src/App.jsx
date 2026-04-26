@@ -41,12 +41,7 @@ import AppBriefs from './pages/admin/AppBriefs';
 import ComplianceDashboard from './pages/admin/ComplianceDashboard';
 import DeadlineDashboard from './pages/admin/DeadlineDashboard';
 import Onboarding from './pages/Onboarding';
-import CaseTrackerPro from './pages/products/CaseTrackerPro';
-import Base44AI from './pages/products/Base44AI';
-import CaseNarrative from './pages/products/CaseNarrative';
-import Premiso from './pages/products/Premiso';
-import CharityHub from './pages/products/CharityHub';
-import SpeciesExplorer from './pages/products/SpeciesExplorer';
+import ProductPage from './pages/ProductPage';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -78,12 +73,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/products/case-tracker" element={<CaseTrackerPro />} />
-      <Route path="/products/base44-ai" element={<Base44AI />} />
-      <Route path="/products/case-narrative" element={<CaseNarrative />} />
-      <Route path="/products/premiso" element={<Premiso />} />
-      <Route path="/products/charity-hub" element={<CharityHub />} />
-      <Route path="/products/species-explorer" element={<SpeciesExplorer />} />
+      <Route path="/products/:slug" element={<ProductPage />} />
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/crm" element={<CRMDashboard />} />
