@@ -43,6 +43,7 @@ const NAV_GROUPS = [
     label: 'Strategy & Launch',
     icon: '🚀',
     items: [
+      { label: 'Market Analysis', href: '/admin/market-strategy', icon: '🎯' },
       { label: 'Strategy', href: '/admin/strategy', icon: '📋' },
       { label: 'Unified Launch', href: '/admin/launch', icon: '🚀' },
       { label: 'Joint Ventures', href: '/admin/joint-ventures', icon: '🤝' },

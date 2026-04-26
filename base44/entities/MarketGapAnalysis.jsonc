@@ -1,0 +1,122 @@
+{
+  "name": "MarketGapAnalysis",
+  "type": "object",
+  "properties": {
+    "gap_title": {
+      "type": "string",
+      "description": "Name of identified market gap"
+    },
+    "gap_description": {
+      "type": "string",
+      "description": "Detailed description of the gap"
+    },
+    "market_segment": {
+      "type": "string",
+      "enum": [
+        "legal_tech",
+        "property_management",
+        "conservation",
+        "healthcare",
+        "education",
+        "non_profit",
+        "fintech",
+        "hr_tech",
+        "sustainability",
+        "other"
+      ],
+      "description": "Target market segment"
+    },
+    "gap_size_estimate": {
+      "type": "string",
+      "enum": [
+        "small",
+        "medium",
+        "large",
+        "enterprise"
+      ],
+      "description": "Estimated market size"
+    },
+    "identified_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Board members who identified gap"
+    },
+    "problem_statement": {
+      "type": "string",
+      "description": "Core problem being solved"
+    },
+    "current_solutions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Existing competitors/solutions"
+    },
+    "competitor_weaknesses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Gaps in existing solutions"
+    },
+    "synergy_opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opportunity": {
+            "type": "string",
+            "description": "How SynergyFlow products can combine"
+          },
+          "products_involved": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unique_advantage": {
+            "type": "string",
+            "description": "Competitive advantage from synergy"
+          }
+        }
+      },
+      "description": "How existing products can synergize"
+    },
+    "estimated_tam": {
+      "type": "number",
+      "description": "Total addressable market (GBP millions)"
+    },
+    "target_user_persona": {
+      "type": "string",
+      "description": "Primary user type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "under_discussion",
+        "ready_for_proposal",
+        "proposed",
+        "approved"
+      ],
+      "default": "identified",
+      "description": "Analysis status"
+    },
+    "discussion_thread_id": {
+      "type": "string",
+      "description": "Link to board communication thread"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "gap_title",
+    "gap_description",
+    "market_segment",
+    "problem_statement"
+  ]
+}

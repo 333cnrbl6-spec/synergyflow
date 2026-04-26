@@ -1,0 +1,177 @@
+{
+  "name": "NewSAASProposal",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string",
+      "description": "Name of proposed new SaaS platform"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Product tagline/elevator pitch"
+    },
+    "gap_analysis_id": {
+      "type": "string",
+      "description": "Related market gap analysis"
+    },
+    "vision": {
+      "type": "string",
+      "description": "Product vision and mission"
+    },
+    "core_features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "powered_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Which SynergyFlow products power this"
+          }
+        }
+      },
+      "description": "Core product features"
+    },
+    "competitive_advantages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Why this beats competitors"
+    },
+    "target_market": {
+      "type": "object",
+      "properties": {
+        "primary_persona": {
+          "type": "string"
+        },
+        "secondary_personas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tam_gbp_millions": {
+          "type": "number"
+        },
+        "sam_gbp_millions": {
+          "type": "number",
+          "description": "Serviceable addressable market"
+        },
+        "som_gbp_millions": {
+          "type": "number",
+          "description": "Serviceable obtainable market (year 1)"
+        }
+      },
+      "description": "Market sizing"
+    },
+    "synergyflow_integration": {
+      "type": "object",
+      "properties": {
+        "integration_strategy": {
+          "type": "string",
+          "description": "How it integrates with existing products"
+        },
+        "products_combined": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unique_strength": {
+          "type": "string",
+          "description": "Unique advantage from combination"
+        }
+      },
+      "description": "SynergyFlow integration plan"
+    },
+    "build_timeline": {
+      "type": "object",
+      "properties": {
+        "mvp_months": {
+          "type": "integer",
+          "description": "Months to MVP"
+        },
+        "public_launch_months": {
+          "type": "integer",
+          "description": "Months to public launch"
+        },
+        "phase_1_description": {
+          "type": "string"
+        },
+        "phase_2_description": {
+          "type": "string"
+        }
+      },
+      "description": "Development timeline"
+    },
+    "financial_projections": {
+      "type": "object",
+      "properties": {
+        "year_1_mrr_target": {
+          "type": "number",
+          "description": "Projected Year 1 MRR (GBP)"
+        },
+        "year_3_mrr_target": {
+          "type": "number",
+          "description": "Projected Year 3 MRR (GBP)"
+        },
+        "estimated_development_cost": {
+          "type": "number",
+          "description": "Development cost to launch (GBP)"
+        },
+        "breakeven_month": {
+          "type": "integer",
+          "description": "Months to breakeven"
+        }
+      },
+      "description": "Financial projections"
+    },
+    "lead_advocate": {
+      "type": "string",
+      "description": "Board member championing this"
+    },
+    "supporting_members": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Other board members supporting"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_discussion",
+        "ready_for_vote",
+        "approved",
+        "in_development",
+        "launched"
+      ],
+      "default": "draft",
+      "description": "Proposal status"
+    },
+    "board_proposal_id": {
+      "type": "string",
+      "description": "Link to formal board proposal for voting"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "product_name",
+    "tagline",
+    "vision",
+    "core_features"
+  ]
+}
