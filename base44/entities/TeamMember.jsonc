@@ -1,0 +1,89 @@
+{
+  "name": "TeamMember",
+  "type": "object",
+  "properties": {
+    "organization_email": {
+      "type": "string",
+      "description": "Email of the organization admin who added this member"
+    },
+    "member_email": {
+      "type": "string",
+      "description": "Email address of the team member"
+    },
+    "member_name": {
+      "type": "string",
+      "description": "Full name of the team member"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "manager",
+        "user"
+      ],
+      "default": "user",
+      "description": "Role within the organization"
+    },
+    "assigned_products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "product_role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "editor",
+              "viewer"
+            ]
+          }
+        }
+      },
+      "description": "Products assigned with specific roles"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "inactive"
+      ],
+      "default": "pending",
+      "description": "Invitation and activation status"
+    },
+    "invitation_sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the invitation was sent"
+    },
+    "activation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the member activated their account"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last login timestamp"
+    },
+    "invitation_token": {
+      "type": "string",
+      "description": "Secure token for activation link"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes about this team member"
+    }
+  },
+  "required": [
+    "organization_email",
+    "member_email",
+    "role"
+  ]
+}

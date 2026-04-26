@@ -65,9 +65,10 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Settings',
+    label: 'Administration',
     icon: '⚙️',
     items: [
+      { label: 'Team Management', href: '/admin/team', icon: '👥' },
       { label: 'Settings', href: '/admin/settings', icon: '⚙️' },
     ],
   },
