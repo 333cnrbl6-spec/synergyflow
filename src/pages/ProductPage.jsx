@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight } from 'lucide-react';
+import DemoSlideshow from '@/components/DemoSlideshow';
 
 const PRODUCTS = {
   'case-tracker': {
@@ -371,6 +373,7 @@ const PRODUCTS = {
 export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [showDemo, setShowDemo] = useState(false);
   const product = PRODUCTS[slug];
 
   if (!product) {
@@ -410,7 +413,7 @@ export default function ProductPage() {
           <Button size="lg" onClick={() => navigate('/onboarding')} className={`gap-2 ${product.buttonColor}`}>
             Start Free Trial <ArrowRight className="w-4 h-4" />
           </Button>
-          <Button size="lg" variant="outline" onClick={() => window.open(`https://yourdomain.com/demo/${product.slug}`, '_blank')}>Watch Demo</Button>
+          <Button size="lg" variant="outline" onClick={() => setShowDemo(true)}>Watch Demo</Button>
         </div>
       </section>
 
@@ -479,6 +482,15 @@ export default function ProductPage() {
           <p>© 2026 {product.name}. Part of the SynergyFlow Portfolio.</p>
         </div>
       </footer>
+
+      {/* Demo Modal */}
+      {showDemo && (
+        <DemoSlideshow
+          productSlug={slug}
+          productName={product.name}
+          onClose={() => setShowDemo(false)}
+        />
+      )}
     </div>
   );
 }
