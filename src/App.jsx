@@ -44,6 +44,8 @@ import ComplianceDashboard from './pages/admin/ComplianceDashboard';
 import DeadlineDashboard from './pages/admin/DeadlineDashboard';
 import Onboarding from './pages/Onboarding';
 import ProductPage from './pages/ProductPage';
+import UserAnalyticsDashboard from './pages/UserAnalyticsDashboard';
+import ProtectedAnalyticsRoute from './components/ProtectedAnalyticsRoute';
 import AdminLayout from './components/AdminLayout';
 // Add page imports here
 
@@ -77,6 +79,7 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/products/:slug" element={<ProductPage />} />
+      <Route path="/analytics" element={<ProtectedAnalyticsRoute><UserAnalyticsDashboard /></ProtectedAnalyticsRoute>} />
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/crm" element={<CRMDashboard />} />

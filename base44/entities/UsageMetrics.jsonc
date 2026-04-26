@@ -1,0 +1,79 @@
+{
+  "name": "UsageMetrics",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email (owner of this usage data)"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Which product this metric is for"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "metric_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the metric"
+    },
+    "api_calls": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of API calls made"
+    },
+    "data_processed_gb": {
+      "type": "number",
+      "default": 0,
+      "description": "Data processed in GB"
+    },
+    "active_sessions": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of concurrent sessions"
+    },
+    "documents_created": {
+      "type": "integer",
+      "default": 0,
+      "description": "Documents/records created"
+    },
+    "reports_generated": {
+      "type": "integer",
+      "default": 0,
+      "description": "Reports generated"
+    },
+    "automation_runs": {
+      "type": "integer",
+      "default": 0,
+      "description": "Automation workflow runs"
+    },
+    "storage_used_gb": {
+      "type": "number",
+      "default": 0,
+      "description": "Storage used in GB"
+    },
+    "users_active": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of active team members"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "daily",
+      "description": "Type of metric aggregation"
+    }
+  },
+  "required": [
+    "user_email",
+    "product_id",
+    "product_name",
+    "metric_date"
+  ]
+}

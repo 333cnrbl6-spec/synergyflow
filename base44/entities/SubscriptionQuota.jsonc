@@ -1,0 +1,110 @@
+{
+  "name": "SubscriptionQuota",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email who owns this subscription"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product this quota applies to"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Subscription tier level"
+    },
+    "api_calls_limit": {
+      "type": "integer",
+      "description": "Monthly API call limit"
+    },
+    "data_processing_limit_gb": {
+      "type": "number",
+      "description": "Monthly data processing limit in GB"
+    },
+    "storage_limit_gb": {
+      "type": "number",
+      "description": "Total storage limit in GB"
+    },
+    "team_members_limit": {
+      "type": "integer",
+      "description": "Maximum team members allowed"
+    },
+    "concurrent_sessions_limit": {
+      "type": "integer",
+      "description": "Maximum concurrent sessions"
+    },
+    "documents_limit": {
+      "type": "integer",
+      "description": "Maximum documents allowed"
+    },
+    "automation_runs_limit": {
+      "type": "integer",
+      "description": "Monthly automation runs limit"
+    },
+    "reports_limit": {
+      "type": "integer",
+      "description": "Monthly reports generation limit"
+    },
+    "current_api_calls_month": {
+      "type": "integer",
+      "default": 0,
+      "description": "API calls used this month"
+    },
+    "current_data_processed_gb": {
+      "type": "number",
+      "default": 0,
+      "description": "Data processed this month in GB"
+    },
+    "current_storage_used_gb": {
+      "type": "number",
+      "default": 0,
+      "description": "Current storage used in GB"
+    },
+    "current_team_members": {
+      "type": "integer",
+      "default": 0,
+      "description": "Current active team members"
+    },
+    "current_automation_runs": {
+      "type": "integer",
+      "default": 0,
+      "description": "Automation runs this month"
+    },
+    "current_reports": {
+      "type": "integer",
+      "default": 0,
+      "description": "Reports generated this month"
+    },
+    "reset_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When monthly quotas reset"
+    },
+    "alerts_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable quota alerts"
+    },
+    "alert_threshold_percent": {
+      "type": "integer",
+      "default": 80,
+      "description": "Alert when usage reaches this percentage"
+    }
+  },
+  "required": [
+    "user_email",
+    "product_id",
+    "product_name",
+    "subscription_tier"
+  ]
+}
