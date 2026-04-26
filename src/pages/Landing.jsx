@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, CheckCircle2, Users, BarChart3, Settings, Mail, Lock, Download, X, Play, Zap, Globe, TrendingUp } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import LandingTour from '@/components/LandingTour';
 
 const PRODUCT_CARDS = [
   { slug: 'case-tracker', name: 'Case Tracker Pro', emoji: '📋', color: 'blue', market: 'Solicitors & Law Firms' },
@@ -73,7 +74,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24">
+      <section id="hero-section" className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <div className="inline-block mb-6 px-4 py-2 bg-slate-700/50 rounded-full text-sm font-semibold">
             🚀 6 Industry-Specific SaaS Products in One Platform
@@ -125,7 +126,7 @@ export default function Landing() {
       </section>
 
       {/* Value Props */}
-      <section className="bg-slate-50 py-20">
+      <section id="value-props-section" className="bg-slate-50 py-20">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl font-bold mb-16 text-center">Why SynergyFlow Wins</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -170,7 +171,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section id="pricing-section" className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-bold">Transparent, Flexible Pricing</h2>
           <Button onClick={generatePricingPDF} disabled={generatingPDF} className="gap-2" variant="outline">
@@ -339,7 +340,7 @@ export default function Landing() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-slate-900 text-white py-20">
+      <section id="final-cta-section" className="bg-slate-900 text-white py-20">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Industry?</h2>
           <p className="text-lg text-slate-300 mb-8">
@@ -399,6 +400,16 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* Tour Modal */}
+      {tourStep >= 0 && (
+        <LandingTour
+          currentStep={tourStep}
+          onClose={() => setTourStep(-1)}
+          onNext={() => setTourStep(tourStep + 1)}
+          onPrev={() => setTourStep(tourStep - 1)}
+        />
+      )}
     </div>
   );
 }
