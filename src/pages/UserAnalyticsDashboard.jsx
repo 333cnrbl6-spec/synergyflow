@@ -7,6 +7,7 @@ import { AlertCircle, Download, RefreshCw, TrendingUp, Database, Zap, FileText }
 import { toast } from 'sonner';
 import UsageChart from '@/components/Analytics/UsageChart';
 import QuotaUsageCard from '@/components/Analytics/QuotaUsageCard';
+import UpsellRecommendation from '@/components/Analytics/UpsellRecommendation';
 
 export default function UserAnalyticsDashboard() {
   const [user, setUser] = useState(null);
@@ -14,12 +15,22 @@ export default function UserAnalyticsDashboard() {
   const [products, setProducts] = useState([]);
   const [metrics, setMetrics] = useState([]);
   const [quota, setQuota] = useState(null);
+  const [upsellRecommendations, setUpsellRecommendations] = useState([]);
+  const [visibleRecommendations, setVisibleRecommendations] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d');
 
   useEffect(() => {
     loadDashboardData();
   }, [selectedProduct, timeRange]);
+
+  // Show recommendations on first load
+  useEffect(() => {
+    if (upsellRecommendations.length > 0 && visibleRecommendations.size === 0) {
+      const visible = new Set(upsellRecommendations.map(r => r.id));
+      setVisibleRecommendations(visible);
+    }
+  }, [upsellRecommendations]);
 
   const loadDashboardData = async () => {
     setIsLoading(true);
@@ -54,6 +65,20 @@ export default function UserAnalyticsDashboard() {
         if (quotaData.length > 0) {
           setQuota(quotaData[0]);
         }
+
+        // Load upsell recommendations
+        const recsData = await base44.entities.UpsellRecommendation.filter({
+          user_email: currentUser.email,
+          status: 'active'
+        });
+        setUpsellRecommendations(recsData);
+        
+        // Track that user viewed recommendations
+        recsData.forEach(rec => {
+          base44.entities.UpsellRecommendation.update(rec.id, {
+            click_count: (rec.click_count || 0) + 1
+          }).catch(console.error);
+        });
       }
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
@@ -165,6 +190,35 @@ export default function UserAnalyticsDashboard() {
           </Button>
         </div>
       </div>
+
+      {/* Upsell Recommendations */}
+      {upsellRecommendations.length > 0 && (
+        <div className="space-y-3">
+          {upsellRecommendations.map((rec) => (
+            visibleRecommendations.has(rec.id) && (
+              <UpsellRecommendation
+                key={rec.id}
+                recommendation={rec}
+                onDismiss={() => {
+                  setVisibleRecommendations(prev => {
+                    const next = new Set(prev);
+                    next.delete(rec.id);
+                    return next;
+                  });
+                  setUpsellRecommendations(prev => 
+                    prev.filter(r => r.id !== rec.id)
+                  );
+                }}
+                onUpgrade={() => {
+                  toast.success('Redirecting to upgrade...');
+                  // In real app, navigate to upgrade flow
+                  window.location.href = `/upgrade?product=${rec.product_id}&tier=${rec.recommended_tier}`;
+                }}
+              />
+            )
+          ))}
+        </div>
+      )}
 
       {/* Alerts */}
       {criticalAlerts.length > 0 && (

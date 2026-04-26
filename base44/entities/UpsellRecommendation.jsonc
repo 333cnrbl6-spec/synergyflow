@@ -1,0 +1,125 @@
+{
+  "name": "UpsellRecommendation",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User email for this recommendation"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product being upsold"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "current_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Current subscription tier"
+    },
+    "recommended_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Recommended next tier"
+    },
+    "trigger_metric": {
+      "type": "string",
+      "enum": [
+        "api_calls",
+        "data_processing",
+        "storage",
+        "team_members",
+        "automation_runs",
+        "reports",
+        "multiple"
+      ],
+      "description": "Which metric triggered the recommendation"
+    },
+    "current_usage_percent": {
+      "type": "number",
+      "description": "Current usage as percentage of limit (0-100)"
+    },
+    "projected_upgrade_benefit": {
+      "type": "string",
+      "description": "How much headroom the upgrade provides"
+    },
+    "monthly_price_increase": {
+      "type": "number",
+      "description": "Price difference monthly (GBP)"
+    },
+    "roi_months": {
+      "type": "number",
+      "description": "Estimated ROI payback period (months)"
+    },
+    "usage_analysis": {
+      "type": "object",
+      "properties": {
+        "growth_rate": {
+          "type": "number",
+          "description": "Monthly growth percentage"
+        },
+        "days_until_limit": {
+          "type": "number",
+          "description": "Estimated days until hitting 100%"
+        },
+        "peak_usage_hour": {
+          "type": "string",
+          "description": "Time of day with highest usage"
+        },
+        "most_used_feature": {
+          "type": "string",
+          "description": "Feature driving most usage"
+        }
+      },
+      "description": "Detailed usage analysis data"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "dismissed",
+        "converted",
+        "expired"
+      ],
+      "default": "active",
+      "description": "Status of recommendation"
+    },
+    "click_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Times user viewed recommendation"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When recommendation was generated"
+    },
+    "expires_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When recommendation expires if not converted"
+    },
+    "dismissal_reason": {
+      "type": "string",
+      "description": "User's reason for dismissing (if dismissed)"
+    }
+  },
+  "required": [
+    "user_email",
+    "product_id",
+    "product_name",
+    "current_tier",
+    "recommended_tier",
+    "trigger_metric"
+  ]
+}
