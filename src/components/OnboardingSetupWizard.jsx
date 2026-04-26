@@ -67,36 +67,61 @@ export default function OnboardingSetupWizard({ userId, onComplete, onSkip }) {
   const handleComplete = async () => {
     setIsLoading(true);
     try {
-      // Save onboarding progress to database
+      // Validate data
+      if (!formData.organization_name?.trim()) {
+        throw new Error('Organization name is required');
+      }
+      if (!formData.selected_product) {
+        throw new Error('Product selection is required');
+      }
+
       const user = await base44.auth.me();
-      if (user) {
-        const existingProgress = await base44.entities.OnboardingProgress.filter({
-          user_email: user.email
-        });
+      if (!user) {
+        throw new Error('User session lost. Please refresh and try again.');
+      }
 
-        const progressData = {
-          user_email: user.email,
-          organization_name: formData.organization_name,
-          product_selected: true,
-          profile_completed: true,
-          customized: formData.email_notifications && formData.auto_backup,
-          onboarding_completed: true,
-          completion_percentage: 100,
-          onboarding_completed_date: new Date().toISOString()
-        };
+      // Fetch existing progress with error handling
+      const existingProgress = await base44.entities.OnboardingProgress.filter({
+        user_email: user.email
+      }).catch(() => []);
 
-        if (existingProgress.length > 0) {
+      const progressData = {
+        user_email: user.email,
+        organization_name: formData.organization_name.trim(),
+        product_selected: true,
+        profile_completed: true,
+        customized: formData.email_notifications && formData.auto_backup,
+        onboarding_completed: true,
+        completion_percentage: 100,
+        onboarding_completed_date: new Date().toISOString()
+      };
+
+      // Save with retry logic
+      let saved = false;
+      if (existingProgress?.length > 0) {
+        try {
           await base44.entities.OnboardingProgress.update(existingProgress[0].id, progressData);
-        } else {
+          saved = true;
+        } catch (updateError) {
+          console.warn('Update failed, attempting create:', updateError);
           await base44.entities.OnboardingProgress.create(progressData);
+          saved = true;
         }
+      } else {
+        await base44.entities.OnboardingProgress.create(progressData);
+        saved = true;
+      }
+
+      if (!saved) {
+        throw new Error('Failed to save onboarding data');
       }
 
       toast.success('Welcome! Your account is ready to go.');
       onComplete?.();
     } catch (e) {
-      console.error(e);
-      toast.error('Failed to complete setup');
+      console.error('Onboarding completion error:', e);
+      const message = e.message || 'Failed to complete setup. Please try again.';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -104,10 +129,24 @@ export default function OnboardingSetupWizard({ userId, onComplete, onSkip }) {
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, data_file: file });
-      toast.success(`File ready to import: ${file.name}`);
+    if (!file) return;
+
+    // Validate file size (max 50MB)
+    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('File is too large (max 50MB). Please choose a smaller file.');
+      return;
     }
+
+    // Validate file type
+    const validTypes = ['text/csv', 'application/json', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|json|xlsx|xls)$/i)) {
+      toast.error('Invalid file type. Please upload CSV, JSON, or Excel files only.');
+      return;
+    }
+
+    setFormData({ ...formData, data_file: file });
+    toast.success(`File ready to import: ${file.name}`);
   };
 
   const renderStepContent = () => {
@@ -294,7 +333,7 @@ export default function OnboardingSetupWizard({ userId, onComplete, onSkip }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-xl shadow-2xl">
+      <Card className="w-full max-w-xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Progress Bar */}
         <div className="bg-slate-50 border-b p-6">
           <div className="flex items-center justify-between mb-4">
@@ -331,7 +370,7 @@ export default function OnboardingSetupWizard({ userId, onComplete, onSkip }) {
         </div>
 
         {/* Content */}
-        <CardContent className="p-8">
+        <CardContent className="p-8 flex-1 overflow-y-auto">
           {renderStepContent()}
         </CardContent>
 

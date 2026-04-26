@@ -46,30 +46,49 @@ const TOUR_STEPS = [
 ];
 
 export default function LandingTour({ currentStep, onClose, onNext, onPrev }) {
-  const [scrollPosition, setScrollPosition] = useState({ top: 0, left: 0 });
   const [targetRect, setTargetRect] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   const step = TOUR_STEPS[currentStep];
+  const isValidStep = step && currentStep >= 0 && currentStep < TOUR_STEPS.length;
 
   useEffect(() => {
-    if (!step) return;
-
-    const target = document.getElementById(step.target);
-    if (target) {
-      const rect = target.getBoundingClientRect();
-      setTargetRect({
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height
-      });
-
-      // Smooth scroll to target
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setIsReady(false);
+    if (!isValidStep) {
+      setTargetRect(null);
+      return;
     }
-  }, [step]);
 
-  if (!step) return null;
+    // Debounce to avoid excessive DOM queries
+    const timeoutId = setTimeout(() => {
+      const target = document.getElementById(step.target);
+      if (target) {
+        try {
+          const rect = target.getBoundingClientRect();
+          setTargetRect({
+            top: rect.top + window.scrollY,
+            left: rect.left + window.scrollX,
+            width: Math.max(rect.width, 1),
+            height: Math.max(rect.height, 1)
+          });
+
+          // Smooth scroll with error handling
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setIsReady(true);
+        } catch (e) {
+          console.warn('Tour scroll error:', e);
+          setIsReady(true);
+        }
+      } else {
+        console.warn(`Tour target not found: ${step.target}`);
+        setIsReady(true);
+      }
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [step, isValidStep]);
+
+  if (!isValidStep) return null;
 
   const isFirst = currentStep === 0;
   const isLast = currentStep === TOUR_STEPS.length - 1;
@@ -77,17 +96,17 @@ export default function LandingTour({ currentStep, onClose, onNext, onPrev }) {
   return (
     <>
       {/* Overlay */}
-      <div className="fixed inset-0 z-40 bg-black/30 pointer-events-none" />
+      <div className="fixed inset-0 z-40 bg-black/30 pointer-events-none transition-opacity" />
 
-      {/* Spotlight */}
-      {targetRect && (
+      {/* Spotlight - only render if ready and has rect */}
+      {targetRect && isReady && (
         <div
-          className="fixed z-40 pointer-events-none border-4 border-blue-500 rounded-lg shadow-lg"
+          className="fixed z-40 pointer-events-none border-4 border-blue-500 rounded-lg shadow-lg transition-all duration-300"
           style={{
-            top: targetRect.top - 8,
-            left: targetRect.left - 8,
-            width: targetRect.width + 16,
-            height: targetRect.height + 16,
+            top: Math.max(0, targetRect.top - 8),
+            left: Math.max(0, targetRect.left - 8),
+            width: Math.max(targetRect.width + 16, 32),
+            height: Math.max(targetRect.height + 16, 32),
             boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.3)'
           }}
         />

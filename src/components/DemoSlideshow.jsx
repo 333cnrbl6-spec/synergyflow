@@ -49,19 +49,43 @@ const PRODUCT_DEMOS = {
 
 export default function DemoSlideshow({ productSlug, productName, onClose }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = PRODUCT_DEMOS[productSlug] || [];
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  if (slides.length === 0) return null;
+  // Validate product
+  const slides = PRODUCT_DEMOS[productSlug] || [];
+  if (!slides.length) {
+    console.warn(`No demo slides found for product: ${productSlug}`);
+    return null;
+  }
+
+  if (!productName || typeof productName !== 'string') {
+    console.warn('Invalid product name provided to DemoSlideshow');
+    return null;
+  }
+
+  const handleNavigation = (newIndex) => {
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true);
+    setCurrentSlide(newIndex);
+    setTimeout(() => setIsTransitioning(false), 300);
+  };
 
   const handleNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    const nextIndex = (currentSlide + 1) % slides.length;
+    handleNavigation(nextIndex);
   };
 
   const handlePrev = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+    handleNavigation(prevIndex);
   };
 
   const currentSlideData = slides[currentSlide];
+  if (!currentSlideData) {
+    console.error('Slide data missing at index:', currentSlide);
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -78,10 +102,10 @@ export default function DemoSlideshow({ productSlug, productName, onClose }) {
         </div>
 
         {/* Slide Content */}
-        <div className="flex-1 p-8 flex flex-col justify-center">
-          <div className="mb-8">
-            <h3 className="text-3xl font-bold text-slate-900 mb-4">{currentSlideData.title}</h3>
-            <p className="text-lg text-slate-600 leading-relaxed">{currentSlideData.description}</p>
+        <div className="flex-1 p-8 flex flex-col justify-center overflow-y-auto">
+          <div className="mb-8 min-h-[200px] flex flex-col justify-center">
+            <h3 className="text-3xl font-bold text-slate-900 mb-4">{currentSlideData?.title || 'Loading...'}</h3>
+            <p className="text-lg text-slate-600 leading-relaxed">{currentSlideData?.description || ''}</p>
           </div>
 
           {/* Slide Visual */}
@@ -101,8 +125,9 @@ export default function DemoSlideshow({ productSlug, productName, onClose }) {
               variant="outline"
               size="icon"
               onClick={handlePrev}
-              disabled={currentSlide === 0}
-              className="disabled:opacity-50"
+              disabled={currentSlide === 0 || isTransitioning}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Previous slide"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -111,9 +136,11 @@ export default function DemoSlideshow({ productSlug, productName, onClose }) {
               {slides.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`w-2 h-2 rounded-full transition ${
-                    idx === currentSlide ? 'bg-slate-900 w-8' : 'bg-slate-300'
+                  onClick={() => !isTransitioning && handleNavigation(idx)}
+                  disabled={isTransitioning}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-2 rounded-full transition disabled:cursor-not-allowed ${
+                    idx === currentSlide ? 'bg-slate-900 w-8' : 'bg-slate-300 w-2'
                   }`}
                 />
               ))}
@@ -123,8 +150,9 @@ export default function DemoSlideshow({ productSlug, productName, onClose }) {
               variant="outline"
               size="icon"
               onClick={handleNext}
-              disabled={currentSlide === slides.length - 1}
-              className="disabled:opacity-50"
+              disabled={currentSlide === slides.length - 1 || isTransitioning}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Next slide"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
