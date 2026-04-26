@@ -410,7 +410,7 @@ export default function ProductPage() {
           <Button size="lg" onClick={() => navigate('/onboarding')} className={`gap-2 ${product.buttonColor}`}>
             Start Free Trial <ArrowRight className="w-4 h-4" />
           </Button>
-          <Button size="lg" variant="outline">Watch Demo</Button>
+          <Button size="lg" variant="outline" onClick={() => window.open(`https://yourdomain.com/demo/${product.slug}`, '_blank')}>Watch Demo</Button>
         </div>
       </section>
 
@@ -436,8 +436,8 @@ export default function ProductPage() {
         <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">20% discount on annual billing</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {product.tiers.map((tier, i) => (
-            <Card key={i} className={tier.popular ? `ring-2 ring-offset-1 relative` : ''} style={tier.popular ? { ringColor: product.buttonColor.split(' ')[0].replace('bg-', '#') } : {}}>
-              {tier.popular && <Badge className={`absolute -top-3 left-6 ${product.buttonColor.split(' ')[0]} text-white`}>Most Popular</Badge>}
+            <Card key={i} className={tier.popular ? 'ring-2 ring-slate-900 shadow-lg relative' : ''}>
+              {tier.popular && <Badge className="absolute -top-3 left-6 bg-slate-900 text-white">Most Popular</Badge>}
               <CardHeader>
                 <CardTitle>{tier.name}</CardTitle>
                 <p className="text-sm text-slate-600 mt-1">{tier.description}</p>
@@ -447,7 +447,7 @@ export default function ProductPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Button className={`w-full ${product.buttonColor}`}>Get Started</Button>
+                <Button onClick={() => navigate('/onboarding')} className={`w-full ${product.buttonColor}`}>Get Started</Button>
                 <div className="space-y-3">
                   {tier.features.map((f, j) => (
                     <div key={j} className="flex items-start gap-3">
@@ -467,7 +467,7 @@ export default function ProductPage() {
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-3xl font-bold mb-4">{product.cta}</h2>
           <p className="text-lg mb-8 opacity-90">{product.ctaSubtitle}</p>
-          <Button size="lg" variant="outline" className="bg-white hover:bg-slate-100" style={{ color: product.buttonColor.split(' ')[0].replace('bg-', '#') }}>
+          <Button size="lg" onClick={() => navigate('/onboarding')} variant="outline" className="bg-white text-slate-900 hover:bg-slate-100 font-semibold">
             Try {product.name} Free
           </Button>
         </div>
