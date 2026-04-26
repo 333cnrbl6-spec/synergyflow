@@ -68,6 +68,7 @@ const NAV_GROUPS = [
     label: 'Administration',
     icon: '⚙️',
     items: [
+      { label: 'Pricing Manager', href: '/admin/pricing', icon: '💰' },
       { label: 'Team Management', href: '/admin/team', icon: '👥' },
       { label: 'Settings', href: '/admin/settings', icon: '⚙️' },
     ],

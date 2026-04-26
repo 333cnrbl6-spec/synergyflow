@@ -1,0 +1,132 @@
+{
+  "name": "PricingStructure",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Product this pricing applies to"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name for reference"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "proposed",
+        "archived",
+        "pending_board_approval"
+      ],
+      "default": "active",
+      "description": "Current status of pricing"
+    },
+    "tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_id": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "professional",
+              "enterprise"
+            ]
+          },
+          "tier_name": {
+            "type": "string",
+            "description": "User-friendly tier name"
+          },
+          "monthly_price_gbp": {
+            "type": "number",
+            "description": "Monthly price in GBP"
+          },
+          "annual_price_gbp": {
+            "type": "number",
+            "description": "Annual price in GBP (with discount)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tier description"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Key features included"
+          },
+          "api_calls_monthly": {
+            "type": "integer",
+            "description": "API calls limit per month"
+          },
+          "storage_gb": {
+            "type": "integer",
+            "description": "Storage limit in GB"
+          },
+          "team_members": {
+            "type": "integer",
+            "description": "Team member limit"
+          },
+          "support_level": {
+            "type": "string",
+            "enum": [
+              "community",
+              "email",
+              "priority",
+              "dedicated"
+            ],
+            "description": "Support tier included"
+          }
+        },
+        "required": [
+          "tier_id",
+          "tier_name",
+          "monthly_price_gbp"
+        ]
+      },
+      "description": "Pricing tiers available"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP",
+      "description": "Currency for pricing"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When pricing becomes effective"
+    },
+    "proposed_by": {
+      "type": "string",
+      "description": "User email who proposed this pricing"
+    },
+    "board_proposal_id": {
+      "type": "string",
+      "description": "Link to related board proposal"
+    },
+    "version": {
+      "type": "integer",
+      "default": 1,
+      "description": "Pricing version number"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this pricing structure was chosen"
+    },
+    "competitive_analysis": {
+      "type": "string",
+      "description": "Market research and competitor comparison"
+    },
+    "previous_version_id": {
+      "type": "string",
+      "description": "Link to previous pricing version"
+    }
+  },
+  "required": [
+    "product_id",
+    "product_name",
+    "tiers"
+  ]
+}

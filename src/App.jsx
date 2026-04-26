@@ -18,6 +18,7 @@ import BoardCommunication from './pages/admin/BoardCommunication';
 import ChairmanZone from './pages/admin/ChairmanZone';
 import Settings from './pages/admin/Settings';
 import TeamManagement from './pages/admin/TeamManagement';
+import PricingManager from './pages/admin/PricingManager';
 import BoardImpactAnalytics from './pages/admin/BoardImpactAnalytics';
 import BoardInsights from './pages/admin/BoardInsights';
 import ApprovalImpactAnalysis from './pages/admin/ApprovalImpactAnalysis';
@@ -113,6 +114,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/app-briefs" element={<AppBriefs />} />
         <Route path="/admin/compliance" element={<ComplianceDashboard />} />
         <Route path="/admin/deadlines" element={<DeadlineDashboard />} />
+        <Route path="/admin/pricing" element={<PricingManager />} />
         <Route path="/admin/team" element={<TeamManagement />} />
         <Route path="/admin/settings" element={<Settings />} />
       </Route>
