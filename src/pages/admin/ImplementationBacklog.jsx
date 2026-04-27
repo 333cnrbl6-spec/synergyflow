@@ -211,35 +211,65 @@ export default function ImplementationBacklog() {
   const productGroups = groupByProduct();
   const products = Object.keys(productGroups).sort();
 
-  const copyAppBuild = (appName) => {
+  const buildText = (appName) => {
     const group = productGroups[appName];
-    let text = `# 🚀 ${appName} Build Backlog\n\n`;
+    let text = `🚀 **${appName} Build Backlog**\n\n`;
     
     if (group.proposals.length > 0) {
-      text += `## Proposals\n`;
+      text += `📋 **Proposals (${group.proposals.length})**\n`;
       group.proposals.forEach(p => {
-        text += `- **${p.title}**: ${p.summary.substring(0, 60)}...\n`;
+        text += `• ${p.title}: ${(p.summary || '').substring(0, 80)}${p.summary?.length > 80 ? '...' : ''}\n`;
       });
       text += '\n';
     }
     
     if (group.actions.length > 0) {
-      text += `## Action Items\n`;
+      text += `✅ **Action Items (${group.actions.length})**\n`;
       group.actions.forEach(a => {
-        text += `- **${a.title}** (${a.priority}): ${a.description?.substring(0, 60) || ''}\n`;
+        text += `• ${a.title} [${a.priority || 'medium'}]: ${(a.description || '').substring(0, 60)}${a.description?.length > 60 ? '...' : ''}\n`;
       });
       text += '\n';
     }
     
     if (group.tasks.length > 0) {
-      text += `## Implementation Tasks\n`;
+      text += `🔧 **Tasks (${group.tasks.length})**\n`;
       group.tasks.forEach(t => {
-        text += `- **${t.issue_description}** (${t.issue_severity}): ${t.fix_type}\n`;
+        text += `• ${t.issue_description} [${t.issue_severity}] — ${t.fix_type}\n`;
       });
     }
-    
-    navigator.clipboard.writeText(text);
+
+    return text;
+  };
+
+  const copyAppBuild = (appName) => {
+    navigator.clipboard.writeText(buildText(appName));
     toast.success(`Copied ${appName} build backlog`);
+  };
+
+  const postAppBuildToBoard = async (appName) => {
+    const text = buildText(appName);
+    try {
+      // Find a matching channel or use general
+      const channels = await base44.entities.BoardChannel.list().catch(() => []);
+      const match = channels.find(c => 
+        c.name?.toLowerCase().includes(appName.toLowerCase()) ||
+        appName.toLowerCase().includes(c.name?.toLowerCase())
+      );
+      const channelId = match?.id || channels[0]?.id || 'general';
+      const channelName = match?.name || channels[0]?.name || 'General';
+
+      await base44.entities.BoardMessage.create({
+        channel_id: channelId,
+        channel_name: channelName,
+        content: text,
+        message_type: 'announcement',
+        sender_name: 'Implementation Backlog',
+        sender_role: 'system',
+      });
+      toast.success(`Posted ${appName} build backlog to #${channelName}`);
+    } catch (e) {
+      toast.error('Failed to post message');
+    }
   };
 
   if (loading) {
@@ -447,14 +477,24 @@ export default function ImplementationBacklog() {
                         <CardTitle className="text-lg">{product}</CardTitle>
                         <p className="text-xs text-slate-500 mt-1">{totalItems} items to build</p>
                       </div>
-                      <Button
-                        onClick={() => copyAppBuild(product)}
-                        className="gap-2 bg-blue-600 hover:bg-blue-700"
-                        size="sm"
-                      >
-                        <Copy className="w-4 h-4" />
-                        Copy All
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => copyAppBuild(product)}
+                          variant="outline"
+                          size="sm"
+                          className="gap-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          Copy
+                        </Button>
+                        <Button
+                          onClick={() => postAppBuildToBoard(product)}
+                          size="sm"
+                          className="gap-2 bg-blue-600 hover:bg-blue-700"
+                        >
+                          💬 Post to Board
+                        </Button>
+                      </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                       {group.proposals.length > 0 && (
