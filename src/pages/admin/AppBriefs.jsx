@@ -7,14 +7,14 @@ import { toast } from 'sonner';
 const BRIEFS = [
   {
     id: 'species_explorer',
-    name: 'Species Explorer',
+    name: 'DataWinder (Species Explorer)',
     priority: 1,
     priorityLabel: '🌟 Priority Sale — First',
     color: 'green',
-    description: 'Conservation & field research platform',
+    description: 'Conservation & biodiversity intelligence platform',
     path: '/src/docs/app-briefs/SPECIES_EXPLORER_BRIEF.md',
     improvements: ['AI Field Reports', 'Smart Search', 'Analytics Dashboard', 'PDF Export', 'Stripe Paywall', 'Onboarding Wizard', 'Notifications', 'Compliance Dashboard'],
-    instruction: 'Open Species Explorer in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
+    instruction: 'Open DataWinder (Species Explorer) in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
   },
   {
     id: 'premiso',
@@ -60,20 +60,30 @@ const COLOR_STYLES = {
 
 // The actual brief content embedded for copy-to-clipboard
 const BRIEF_CONTENT = {
-  species_explorer: `# 🌿 Species Explorer — Board-Approved Implementation Brief
-Drop this into the Species Explorer app AI assistant as your FIRST message.
+  species_explorer: `# 🌿 DataWinder (Species Explorer) — Board-Approved Implementation Brief
+Drop this into the DataWinder app AI assistant as your FIRST message.
 Date: 27 April 2026 | Priority: #1 (First standalone sale candidate)
 ⚠️ ARCHITECTURE RULE: Build NATIVELY into THIS app only. No shared services. No cross-app API calls. No imports from other portfolio apps. This app must work 100% standalone — independently saleable at any point.
 
-YOU ARE: The AI assistant for Species Explorer — a SaaS platform for UK wildlife conservation professionals, zoos, universities, and environmental consultancies.
-Target customers: UK conservation orgs, zoological societies, Natural England, wildlife trusts, universities.
+YOU ARE: The AI assistant for DataWinder — a SaaS platform for UK wildlife conservation professionals, zoos, universities, and environmental consultancies.
+Brand name: DataWinder. Target customers: UK conservation orgs, zoological societies, Natural England, wildlife trusts, universities.
 Pricing: £39/mo Starter | £99/mo Professional | £249/mo Enterprise
+
+⚠️ AVATAR / HELPER BOT RULES (IMPORTANT):
+The in-app AI helper bot avatar MUST be a generic, friendly cartoon conservation scientist character — NOT based on any real person, photograph, or specific individual's likeness. Use an illustrated owl, a stylised field researcher silhouette, or a friendly abstract scientist icon. Do NOT use any real person's name, image, or biography as the avatar identity. The persona should be: warm, knowledgeable, field-science focused — but entirely fictional and original.
+
+⚠️ CONTENT / IP RULES (IMPORTANT):
+- Do NOT reference specific named researchers, academics, or scientists in the UI, copy, or AI prompts
+- Do NOT cite or reproduce specific published research papers, datasets, or methodologies that would require permission
+- Use general conservation science best practices as the knowledge base — publicly available IUCN, Natural England, and statutory guidance is fine
+- Species conservation status data should reference IUCN Red List categories (publicly available) — not proprietary datasets
+- Any sample/demo data must be entirely fictional (invented species names for demos, fictional survey locations)
 
 IMPLEMENT THESE 8 IMPROVEMENTS IN ORDER. Complete and test each before moving to the next.
 
 1. AI FIELD REPORT GENERATION (CRITICAL)
 Add "AI Generate Report" button on observation/survey detail pages.
-Use: base44.integrations.Core.InvokeLLM({ prompt: "You are a wildlife conservation scientist. Generate a detailed field report for: Species: [name], Location: [loc], Date: [date], Observer: [name], Observations: [notes]. Include: Executive Summary, Detailed Observations, Behavioural Notes, Conservation Status Assessment, Recommended Actions.", response_json_schema: { type: "object", properties: { executive_summary: {type:"string"}, detailed_observations: {type:"string"}, behavioural_notes: {type:"string"}, conservation_assessment: {type:"string"}, recommended_actions: {type:"array",items:{type:"string"}} } } })
+Use: base44.integrations.Core.InvokeLLM({ prompt: "You are an experienced wildlife conservation field scientist. Using standard conservation reporting practices (IUCN guidelines, UK BAP methodology), generate a detailed field survey report for: Species: [name], Location: [loc], Date: [date], Observer: [name], Observations: [notes], Habitat type: [habitat]. Include: Executive Summary, Detailed Field Observations, Behavioural Notes, IUCN Conservation Status Assessment, Habitat Condition Notes, Recommended Conservation Actions.", response_json_schema: { type: "object", properties: { executive_summary: {type:"string"}, detailed_observations: {type:"string"}, behavioural_notes: {type:"string"}, conservation_assessment: {type:"string"}, habitat_notes: {type:"string"}, recommended_actions: {type:"array",items:{type:"string"}} } } })
 Store the generated report on the entity record. Show a loading spinner during generation.
 
 2. SMART SEARCH & FILTERING (HIGH)
