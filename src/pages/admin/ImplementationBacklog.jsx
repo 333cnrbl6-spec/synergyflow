@@ -294,24 +294,10 @@ export default function ImplementationBacklog() {
           </Card>
         </div>
 
-        {/* App-Specific Build Tab */}
-        <button
-          onClick={() => setActiveTab('by-app')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all mb-4 ${
-            activeTab === 'by-app'
-              ? 'bg-slate-900 text-white'
-              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-          }`}
-        >
-          📦 App Builds
-          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === 'by-app' ? 'bg-white/20' : 'bg-slate-100 text-slate-500'}`}>
-            {products.length}
-          </span>
-        </button>
-
         {/* Tabs */}
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 flex-wrap">
           {[
+            { key: 'by-app', label: 'App Builds', icon: '📦', count: products.length },
             { key: 'proposals', label: 'Board Proposals', icon: <Layers className="w-4 h-4" />, count: proposals.length },
             { key: 'actions', label: 'Action Items', icon: <ListTodo className="w-4 h-4" />, count: actionItems.length },
             { key: 'tasks', label: 'Implementation Tasks', icon: <Wrench className="w-4 h-4" />, count: tasks.length },
