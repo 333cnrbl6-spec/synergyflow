@@ -7,6 +7,45 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle2, Clock, AlertTriangle, Search, Filter, ChevronDown, ChevronRight, Layers, ListTodo, Wrench, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
+// Standalone product profiles for separate buyer/marketing identity
+const APP_PROFILES = {
+  'CaseNarrative': {
+    emoji: '⚖️',
+    tagline: 'AI-powered legal case management',
+    market: 'Legal Tech',
+    buyer: 'Law firms, legal departments, barristers',
+    standalone_url: 'casenarrative.com',
+  },
+  'Species Explorer': {
+    emoji: '🦁',
+    tagline: 'Conservation & biodiversity intelligence platform',
+    market: 'Conservation Tech',
+    buyer: 'Zoos, wildlife trusts, conservation NGOs',
+    standalone_url: 'speciesexplorer.io',
+  },
+  'CharityHub': {
+    emoji: '❤️',
+    tagline: 'End-to-end charity operations platform',
+    market: 'Non-Profit Tech',
+    buyer: 'Charities, foundations, grant-making bodies',
+    standalone_url: 'charityhub.org',
+  },
+  'Premiso': {
+    emoji: '🏠',
+    tagline: 'Intelligent property management suite',
+    market: 'PropTech',
+    buyer: 'Property managers, letting agents, landlords',
+    standalone_url: 'premiso.co.uk',
+  },
+  'Base44 AI': {
+    emoji: '🤖',
+    tagline: 'No-code AI app builder platform',
+    market: 'Dev Tools / SaaS Infrastructure',
+    buyer: 'SMEs, solopreneurs, digital agencies',
+    standalone_url: 'base44.com',
+  },
+};
+
 const PRIORITY_CONFIG = {
   critical: { label: 'Critical', color: 'bg-red-100 text-red-700 border-red-200' },
   high:     { label: 'High',     color: 'bg-orange-100 text-orange-700 border-orange-200' },
@@ -213,26 +252,44 @@ export default function ImplementationBacklog() {
 
   const buildText = (appName) => {
     const group = productGroups[appName];
-    let text = `🚀 **${appName} Build Backlog**\n\n`;
-    
+    const profile = APP_PROFILES[appName];
+
+    let text = `🚀 **${appName} — Build Brief**\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    // Standalone identity block
+    if (profile) {
+      text += `## 🏷️ Standalone Product Identity\n`;
+      text += `**Market:** ${profile.market}\n`;
+      text += `**Tagline:** ${profile.tagline}\n`;
+      text += `**Target Buyer:** ${profile.buyer}\n`;
+      text += `**Brand URL:** ${profile.standalone_url}\n`;
+      text += `> Build this app as a fully self-contained product — its own landing page, own pricing, own brand — marketable and sellable independently.\n\n`;
+    }
+
+    // SynergyFlow suite context
+    text += `## 🔗 SynergyFlow Suite Context\n`;
+    text += `> This app is also part of the SynergyFlow portfolio. Build with integration hooks so it can plug into the wider suite. Shared buyer = enterprise/portfolio acquirer or operator.\n\n`;
+
+    // Build items
     if (group.proposals.length > 0) {
-      text += `📋 **Proposals (${group.proposals.length})**\n`;
+      text += `## 📋 Proposals (${group.proposals.length})\n`;
       group.proposals.forEach(p => {
-        text += `• ${p.title}: ${(p.summary || '').substring(0, 80)}${p.summary?.length > 80 ? '...' : ''}\n`;
+        text += `• **${p.title}**: ${(p.summary || '').substring(0, 100)}${(p.summary || '').length > 100 ? '...' : ''}\n`;
       });
       text += '\n';
     }
-    
+
     if (group.actions.length > 0) {
-      text += `✅ **Action Items (${group.actions.length})**\n`;
+      text += `## ✅ Action Items (${group.actions.length})\n`;
       group.actions.forEach(a => {
-        text += `• ${a.title} [${a.priority || 'medium'}]: ${(a.description || '').substring(0, 60)}${a.description?.length > 60 ? '...' : ''}\n`;
+        text += `• ${a.title} [${a.priority || 'medium'}]: ${(a.description || '').substring(0, 80)}${(a.description || '').length > 80 ? '...' : ''}\n`;
       });
       text += '\n';
     }
-    
+
     if (group.tasks.length > 0) {
-      text += `🔧 **Tasks (${group.tasks.length})**\n`;
+      text += `## 🔧 Tasks (${group.tasks.length})\n`;
       group.tasks.forEach(t => {
         text += `• ${t.issue_description} [${t.issue_severity}] — ${t.fix_type}\n`;
       });
@@ -513,12 +570,29 @@ export default function ImplementationBacklog() {
                 const group = productGroups[product];
                 const totalItems = group.proposals.length + group.actions.length + group.tasks.length;
                 
+                const profile = APP_PROFILES[product];
                 return (
                   <Card key={product} className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
                     <CardHeader className="flex flex-row items-center justify-between">
                       <div>
-                        <CardTitle className="text-lg">{product}</CardTitle>
-                        <p className="text-xs text-slate-500 mt-1">{totalItems} items to build</p>
+                        <div className="flex items-center gap-2">
+                          {profile && <span className="text-xl">{profile.emoji}</span>}
+                          <CardTitle className="text-lg">{product}</CardTitle>
+                        </div>
+                        {profile && (
+                          <p className="text-xs text-slate-600 mt-0.5 italic">{profile.tagline}</p>
+                        )}
+                        <div className="flex gap-2 mt-2 flex-wrap">
+                          {profile && (
+                            <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">
+                              🏷️ Standalone: {profile.market}
+                            </span>
+                          )}
+                          <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                            🔗 SynergyFlow Suite
+                          </span>
+                          <span className="text-xs text-slate-400">{totalItems} items</span>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <Button
