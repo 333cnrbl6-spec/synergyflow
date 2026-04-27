@@ -20,47 +20,26 @@ Deno.serve(async (req) => {
     let executedCount = 0;
     let actionItemsCreated = 0;
 
-    // Process in parallel batches of 50
-    const batchSize = 50;
-    for (let i = 0; i < approvedProposals.length; i += batchSize) {
-      const batch = approvedProposals.slice(i, i + batchSize);
-      
-      await Promise.all(batch.map(async (proposal) => {
-        try {
-          // Check if action item already exists
-          const existingActions = await base44.asServiceRole.entities.ActionItem.filter({
-            trigger_entity_id: proposal.id
-          });
-
-          if (existingActions.length === 0) {
-            await base44.asServiceRole.entities.ActionItem.create({
-              title: `Execute: ${proposal.title}`,
-              description: proposal.summary,
-              category: proposal.proposal_type === 'build' ? 'revenue' : proposal.proposal_type,
-              priority: 'high',
-              trigger_entity_type: 'BoardProposal',
-              trigger_entity_id: proposal.id,
-              related_product_id: proposal.products_involved?.[0] || null,
-              status: 'in_progress',
-              implementation_status: 'in_progress',
-              auto_triggered: true
-            });
-            actionItemsCreated++;
-          } else if (existingActions[0].status !== 'in_progress' && existingActions[0].status !== 'completed') {
-            await base44.asServiceRole.entities.ActionItem.update(existingActions[0].id, {
-              status: 'in_progress',
-              implementation_status: 'in_progress'
-            });
-            actionItemsCreated++;
-          }
-          executedCount++;
-        } catch (itemError) {
-          console.error(`Failed to execute proposal ${proposal.id}:`, itemError);
-        }
-      }));
-      
-      // Delay between batches
-      if (i + batchSize < approvedProposals.length) await sleep(200);
+    // Process one at a time with delay to avoid rate limits
+    for (const proposal of approvedProposals) {
+      try {
+        await base44.asServiceRole.entities.ActionItem.create({
+          title: `Execute: ${proposal.title}`,
+          description: proposal.summary,
+          category: proposal.proposal_type === 'build' ? 'revenue' : proposal.proposal_type,
+          priority: 'high',
+          trigger_entity_type: 'BoardProposal',
+          trigger_entity_id: proposal.id,
+          related_product_id: proposal.products_involved?.[0] || null,
+          status: 'in_progress',
+          auto_triggered: true
+        });
+        actionItemsCreated++;
+        executedCount++;
+      } catch (itemError) {
+        console.error(`Failed to execute proposal ${proposal.id}:`, itemError);
+      }
+      await sleep(800); // respect rate limits
     }
 
     // Announce bulk execution
