@@ -159,6 +159,7 @@ export default function ImplementationBacklog() {
   const [filterStage, setFilterStage] = useState('all');
   const [activeTab, setActiveTab] = useState('proposals');
   const [expandedIds, setExpandedIds] = useState({});
+  const [autoExecuted, setAutoExecuted] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -168,13 +169,26 @@ export default function ImplementationBacklog() {
   }, []);
 
   // Auto-execute once data is loaded — consent granted by board
-  const [autoExecuted, setAutoExecuted] = useState(false);
   useEffect(() => {
-    if (!loading && products.length > 0 && !autoExecuted) {
+    if (!loading && (proposals.length > 0 || actionItems.length > 0 || tasks.length > 0) && !autoExecuted) {
       setAutoExecuted(true);
-      postAllAppsToBoard();
+      // Derive products inline to avoid referencing variables declared later
+      const groups = {};
+      [...proposals, ...actionItems, ...tasks].forEach(item => {
+        const product = item.product_name || item.products_involved?.[0] || 'General';
+        if (!groups[product]) groups[product] = true;
+      });
+      const productList = Object.keys(groups).sort();
+      (async () => {
+        toast.success('🚀 Auto-executing build briefs for all apps...');
+        for (const appName of productList) {
+          await postAppBuildToBoard(appName);
+          await new Promise(r => setTimeout(r, 1000));
+        }
+        toast.success('✅ All apps posted to board — autonomous buildouts initiated!');
+      })();
     }
-  }, [loading, products.length]);
+  }, [loading, proposals.length, actionItems.length, tasks.length]);
 
   const loadAll = async () => {
     try {
@@ -313,10 +327,10 @@ export default function ImplementationBacklog() {
   };
 
   const postAllAppsToBoard = async () => {
-    toast.success('🚀 Auto-executing build briefs for all apps...');
+    toast.success('🚀 Posting all apps to board...');
     for (const appName of products) {
       await postAppBuildToBoard(appName);
-      await new Promise(r => setTimeout(r, 1000)); // stagger to avoid rate limits
+      await new Promise(r => setTimeout(r, 1000));
     }
     toast.success('✅ All apps posted to board — autonomous buildouts initiated!');
   };
