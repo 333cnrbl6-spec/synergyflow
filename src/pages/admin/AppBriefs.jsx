@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Copy, CheckCircle2, FileText, ExternalLink } from 'lucide-react';
+import { Copy, CheckCircle2, FileText, Megaphone } from 'lucide-react';
 import { toast } from 'sonner';
+
+// ─── IMPLEMENTATION BRIEFS ───────────────────────────────────────────────────
 
 const BRIEFS = [
   {
@@ -12,8 +14,7 @@ const BRIEFS = [
     priorityLabel: '🌟 Priority Sale — First',
     color: 'green',
     description: 'Conservation & biodiversity intelligence platform',
-    path: '/src/docs/app-briefs/SPECIES_EXPLORER_BRIEF.md',
-    improvements: ['AI Field Reports', 'Smart Search', 'Analytics Dashboard', 'PDF Export', 'Stripe Paywall', 'Onboarding Wizard', 'Notifications', 'Compliance Dashboard'],
+    improvements: ['AI Field Reports', 'Smart Search', 'Analytics Dashboard', 'PDF Export', 'Stripe Connect', 'Onboarding Wizard', 'Notifications', 'Compliance Dashboard'],
     instruction: 'Open DataWinder (Species Explorer) in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
   },
   {
@@ -23,8 +24,7 @@ const BRIEFS = [
     priorityLabel: 'Second',
     color: 'blue',
     description: 'Property portfolio management',
-    path: '/src/docs/app-briefs/PREMISO_BRIEF.md',
-    improvements: ['AI Document Drafting', 'Smart Search', 'Portfolio Analytics', 'PDF Export', 'Stripe Paywall', 'Onboarding Wizard', 'Compliance Alerts', 'Compliance Dashboard'],
+    improvements: ['AI Document Drafting', 'Smart Search', 'Portfolio Analytics', 'PDF Export', 'Stripe Connect', 'Onboarding Wizard', 'Compliance Alerts', 'Compliance Dashboard'],
     instruction: 'Open Premiso in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
   },
   {
@@ -34,8 +34,7 @@ const BRIEFS = [
     priorityLabel: 'Third',
     color: 'orange',
     description: 'Charity operations management',
-    path: '/src/docs/app-briefs/CHARITYHUB_BRIEF.md',
-    improvements: ['AI Grant Assistant', 'Smart Search', 'Impact Analytics', 'PDF Reports', 'Stripe Paywall', 'Onboarding Wizard', 'Deadline Alerts', 'Compliance Dashboard'],
+    improvements: ['AI Grant Assistant', 'Smart Search', 'Impact Analytics', 'PDF Reports', 'Stripe Connect', 'Onboarding Wizard', 'Deadline Alerts', 'Compliance Dashboard'],
     instruction: 'Open CharityHub in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
   },
   {
@@ -45,21 +44,19 @@ const BRIEFS = [
     priorityLabel: 'Fourth',
     color: 'purple',
     description: 'AI-assisted legal case documentation',
-    path: '/src/docs/app-briefs/CASENARRATIVE_BRIEF.md',
-    improvements: ['Enhanced AI Narratives', 'Smart Case Search', 'Practice Analytics', 'PDF Legal Export', 'Stripe Paywall', 'Onboarding Wizard', 'Limitation Alerts', 'Compliance Audit Dashboard'],
+    improvements: ['Enhanced AI Narratives', 'Smart Case Search', 'Practice Analytics', 'PDF Legal Export', 'Stripe Connect', 'Onboarding Wizard', 'Limitation Alerts', 'Compliance Audit Dashboard'],
     instruction: 'Open CaseNarrative in Base44 → click the AI assistant chat → paste the entire brief below as your first message.',
   },
 ];
 
 const COLOR_STYLES = {
-  green: { header: 'bg-green-900', badge: 'bg-green-100 text-green-800', border: 'border-green-300', btn: 'bg-green-700 hover:bg-green-800' },
-  blue: { header: 'bg-blue-900', badge: 'bg-blue-100 text-blue-800', border: 'border-blue-300', btn: 'bg-blue-700 hover:bg-blue-800' },
+  green:  { header: 'bg-green-900',  badge: 'bg-green-100 text-green-800',  border: 'border-green-300',  btn: 'bg-green-700 hover:bg-green-800' },
+  blue:   { header: 'bg-blue-900',   badge: 'bg-blue-100 text-blue-800',    border: 'border-blue-300',   btn: 'bg-blue-700 hover:bg-blue-800' },
   orange: { header: 'bg-orange-900', badge: 'bg-orange-100 text-orange-800', border: 'border-orange-300', btn: 'bg-orange-700 hover:bg-orange-800' },
   purple: { header: 'bg-purple-900', badge: 'bg-purple-100 text-purple-800', border: 'border-purple-300', btn: 'bg-purple-700 hover:bg-purple-800' },
 };
 
-// The actual brief content embedded for copy-to-clipboard
-const BRIEF_CONTENT = {
+const IMPL_BRIEF_CONTENT = {
   species_explorer: `# 🌿 DataWinder (Species Explorer) — Board-Approved Implementation Brief
 Drop this into the DataWinder app AI assistant as your FIRST message.
 Date: 27 April 2026 | Priority: #1 (First standalone sale candidate)
@@ -323,23 +320,249 @@ ARCHITECTURE RULES:
 - PRESERVE ALL existing AI and case management functionality — extend, never replace
 - Test each feature before moving to the next
 
-PACKAGES AVAILABLE (already installed): recharts, html2canvas, jspdf, framer-motion, @tanstack/react-query, base44.integrations.Core.InvokeLLM (use model:"claude_sonnet_4_6" for legal), sonner, lucide-react, @stripe/react-stripe-js`
+PACKAGES AVAILABLE (already installed): recharts, html2canvas, jspdf, framer-motion, @tanstack/react-query, base44.integrations.Core.InvokeLLM (use model:"claude_sonnet_4_6" for legal), sonner, lucide-react, @stripe/react-stripe-js`,
 };
 
-function BriefCard({ brief }) {
-  const [copied, setCopied] = useState(false);
-  const colors = COLOR_STYLES[brief.color];
+// ─── MARKETING ASSET BRIEFS ──────────────────────────────────────────────────
 
+const MARKETING_BRIEFS = [
+  {
+    id: 'species_explorer',
+    name: 'DataWinder (Species Explorer)',
+    emoji: '🌿',
+    color: 'green',
+    instruction: 'Open DataWinder in Base44 → AI assistant chat → paste this as your FIRST message.',
+  },
+  {
+    id: 'premiso',
+    name: 'Premiso',
+    emoji: '🏠',
+    color: 'blue',
+    instruction: 'Open Premiso in Base44 → AI assistant chat → paste this as your FIRST message.',
+  },
+  {
+    id: 'charityhub',
+    name: 'CharityHub',
+    emoji: '💛',
+    color: 'orange',
+    instruction: 'Open CharityHub in Base44 → AI assistant chat → paste this as your FIRST message.',
+  },
+  {
+    id: 'casenarrative',
+    name: 'CaseNarrative',
+    emoji: '⚖️',
+    color: 'purple',
+    instruction: 'Open CaseNarrative in Base44 → AI assistant chat → paste this as your FIRST message.',
+  },
+];
+
+const MARKETING_CONTENT = {
+  species_explorer: `# 🌿 DataWinder — Marketing Assets Brief
+Paste this into the DataWinder app AI assistant as a STANDALONE task. Do not build any features — only generate marketing assets.
+
+YOU ARE generating a complete set of sales and marketing assets for DataWinder — a UK-focused SaaS platform for wildlife conservation professionals, zoological societies, wildlife trusts, universities, and environmental consultancies.
+
+PRODUCT FACTS TO USE:
+- App name: DataWinder
+- Tagline ideas to choose the best from: "The Intelligence Layer for Conservation", "Field Science, Supercharged", "Data-Driven Conservation for UK Professionals"
+- Target customers: Wildlife trusts, zoological societies, Natural England, RSPB-style NGOs, environmental consultancies, universities with ecology departments
+- Pricing: £39/mo Starter | £99/mo Professional | £249/mo Enterprise
+- Key features: AI-generated field survey reports, species observation tracking, IUCN compliance dashboards, smart search & filtering, PDF export, team collaboration, compliance audit trails
+
+GENERATE ALL OF THE FOLLOWING — output each section clearly labelled:
+
+## 1. LANDING PAGE HERO COPY
+Write a hero headline (max 10 words, punchy), sub-headline (1–2 sentences, benefit-led), and 3 supporting bullet points. Tone: professional, scientific credibility, modern.
+
+## 2. FEATURE SECTION COPY (3 FEATURES)
+For each of the 3 main features, write: Feature name, one-line description, 2-sentence benefit paragraph. Features to cover: AI Field Reports, Compliance Dashboard, Smart Search.
+
+## 3. PRICING PAGE COPY
+For each tier (Starter £39/mo, Professional £99/mo, Enterprise £249/mo): tier name, who it's for (1 sentence), 5 bullet point features, CTA button text. Make the Professional tier most compelling.
+
+## 4. EMAIL OUTREACH SEQUENCE (3 EMAILS)
+Write 3 cold outreach emails targeting Wildlife Trust operations managers / Head of Conservation at UK NGOs:
+- Email 1: Problem-focused intro (subject line + body, ~120 words)
+- Email 2: Social proof / feature highlight follow-up (subject + body, ~100 words)  
+- Email 3: Last-chance nudge with free trial offer (subject + body, ~80 words)
+Tone: peer-to-peer, not salesy. Reference real UK conservation sector pain points (manual reporting, IUCN compliance burden, team coordination across field sites).
+
+## 5. LINKEDIN POST (3 VARIATIONS)
+Write 3 LinkedIn posts for organic reach. Mix of: thought leadership, product launch announcement, customer pain point story. Each 150–200 words with relevant hashtags (#UKConservation #WildlifeTrust #FieldScience #BiodiversityNet).
+
+## 6. ONE-PAGE SALES SHEET (TEXT ONLY)
+Structure: Logo placeholder | Headline | Problem statement | Solution | 3 key benefits | Pricing summary | Contact/CTA | Social proof placeholder ("Trusted by [X] conservation teams"). Suitable for PDF formatting.
+
+## 7. OBJECTION HANDLING GUIDE
+List 6 likely sales objections from conservation professionals + a confident, evidence-based response to each. Example objections: "We already use spreadsheets", "Our budget is restricted", "We need regulatory approval to change systems", "Our field staff aren't tech-savvy".
+
+## 8. DEMO SCRIPT (5 MINUTES)
+Write a structured 5-minute demo script for a live or recorded video demo. Sections: Hook (30s), Problem statement (45s), Live feature walkthrough — AI reports, compliance dashboard, search (2.5 min), Pricing + CTA (45s), Q&A prompt (30s).
+
+OUTPUT FORMAT: Use clear markdown headers for each section. Make all copy UK English. Avoid Americanisms. Do not use placeholder "[Company name]" — use "your organisation" instead.`,
+
+  premiso: `# 🏠 Premiso — Marketing Assets Brief
+Paste this into the Premiso app AI assistant as a STANDALONE task. Do not build any features — only generate marketing assets.
+
+YOU ARE generating a complete set of sales and marketing assets for Premiso — a UK property management SaaS for private landlords, letting agencies, and estate managers.
+
+PRODUCT FACTS TO USE:
+- App name: Premiso
+- Tagline ideas: "Property Management, Reimagined", "Your Portfolio, Under Control", "The Smart Way to Manage UK Property"
+- Target customers: UK private landlords (2.65M+), letting agencies (15,000+), estate managers, HMO operators, property companies
+- Pricing: £49/mo Starter | £129/mo Professional | £299/mo Enterprise
+- Key features: AI-drafted tenancy agreements & legal notices, compliance alerts (gas safety, EPC, deposit protection), portfolio analytics, rent collection via Stripe, PDF document export, team access controls
+
+GENERATE ALL OF THE FOLLOWING — output each section clearly labelled:
+
+## 1. LANDING PAGE HERO COPY
+Hero headline (max 10 words), sub-headline (1–2 sentences, benefit-led), 3 supporting bullets. Tone: confident, time-saving, stress-reducing.
+
+## 2. FEATURE SECTION COPY (3 FEATURES)
+Feature name, one-line description, 2-sentence benefit paragraph for: AI Document Drafting, Compliance Dashboard, Portfolio Analytics.
+
+## 3. PRICING PAGE COPY
+For each tier (Starter £49/mo, Professional £129/mo, Enterprise £299/mo): tier name, who it's for, 5 bullet features, CTA text. Professional tier should be the most compelling.
+
+## 4. EMAIL OUTREACH SEQUENCE (3 EMAILS)
+Cold outreach targeting landlords with 3+ properties and letting agency managers:
+- Email 1: Problem-focused (subject + body ~120 words) — focus on compliance risk (missed gas certs, deposit disputes)
+- Email 2: Feature proof follow-up (subject + body ~100 words) — AI document drafting angle
+- Email 3: Free trial nudge (subject + body ~80 words)
+Reference real UK pain points: Section 21 compliance complexity, HMO licensing, right-to-rent checks, deposit scheme deadlines.
+
+## 5. LINKEDIN POST (3 VARIATIONS)
+3 posts for organic reach. Mix: landlord pain point story, product announcement, compliance tip with product mention. 150–200 words each. Hashtags: #UKLandlord #PropertyManagement #LettingAgency #HMO #PropertyTech.
+
+## 6. ONE-PAGE SALES SHEET (TEXT ONLY)
+Logo placeholder | Headline | Problem | Solution | 3 key benefits | Pricing summary | CTA | Social proof placeholder.
+
+## 7. OBJECTION HANDLING GUIDE
+6 objections from landlords/agents + confident responses. Example objections: "I only have a few properties", "My accountant handles everything", "What about GDPR?", "I don't trust cloud software with tenancy data", "I already use Rightmove/Zoopla".
+
+## 8. DEMO SCRIPT (5 MINUTES)
+Structured script: Hook (30s — compliance horror story), Problem (45s), Feature walkthrough — AI tenancy draft, compliance alerts, analytics (2.5 min), Pricing + CTA (45s), Q&A prompt (30s).
+
+OUTPUT FORMAT: Clear markdown headers per section. UK English throughout. Use "your portfolio" not "your company".`,
+
+  charityhub: `# 💛 CharityHub — Marketing Assets Brief
+Paste this into the CharityHub app AI assistant as a STANDALONE task. Do not build any features — only generate marketing assets.
+
+YOU ARE generating a complete set of sales and marketing assets for CharityHub — a UK charity operations SaaS for registered charities, CICs, and third-sector organisations.
+
+PRODUCT FACTS TO USE:
+- App name: CharityHub
+- Tagline ideas: "Run Your Charity. Not Your Spreadsheets.", "Built for Charity. Powered by Purpose.", "The Operations Platform for UK Charities"
+- Target customers: UK registered charities (168,000+), community interest companies, grant-making foundations, hospices, housing associations with charitable arms, faith-based organisations
+- Pricing: £29/mo Starter | £79/mo Professional | £199/mo Enterprise
+- Key features: AI grant application drafting, donor & volunteer management, impact analytics dashboard, Stripe Connect for donations, compliance dashboard (Charity Commission, Gift Aid, GDPR), campaign management, PDF impact reports
+
+GENERATE ALL OF THE FOLLOWING — output each section clearly labelled:
+
+## 1. LANDING PAGE HERO COPY
+Hero headline (max 10 words), sub-headline (1–2 sentences), 3 supporting bullets. Tone: warm, mission-aligned, empowering — NOT corporate.
+
+## 2. FEATURE SECTION COPY (3 FEATURES)
+Feature name, one-line description, 2-sentence benefit paragraph for: AI Grant Writing Assistant, Compliance Dashboard, Impact Analytics.
+
+## 3. PRICING PAGE COPY
+For each tier (Starter £29/mo, Professional £79/mo, Enterprise £199/mo): tier name, who it's for, 5 bullet features, CTA. Note the Starter price is accessible for small charities — lead with this.
+
+## 4. EMAIL OUTREACH SEQUENCE (3 EMAILS)
+Cold outreach targeting charity CEOs, operations managers, and fundraising managers:
+- Email 1: Problem-focused (~120 words) — time wasted on admin instead of mission delivery
+- Email 2: AI grant writing angle follow-up (~100 words) — "what if your next application wrote itself?"
+- Email 3: Free trial nudge (~80 words)
+Reference real sector pain points: Charity Commission filing deadlines, Gift Aid claim complexity, volunteer coordination, grant reporting burden.
+
+## 5. LINKEDIN POST (3 VARIATIONS)
+3 posts. Mix: sector pain point, product launch, impact story angle. 150–200 words. Hashtags: #UKCharity #ThirdSector #CharityTech #FundraisingUK #CharityCommission #GiftAid.
+
+## 6. ONE-PAGE SALES SHEET (TEXT ONLY)
+Logo placeholder | Headline | Problem | Solution | 3 key benefits | Pricing | CTA | "Trusted by charities across England & Wales" placeholder.
+
+## 7. OBJECTION HANDLING GUIDE
+6 objections from charity professionals + responses. Examples: "We don't have budget for software", "Our trustees need to approve any new tools", "We use a legacy CRM", "Is our donor data safe?", "We're too small to need this", "GDPR concerns around donor records".
+
+## 8. DEMO SCRIPT (5 MINUTES)
+Hook (30s — grant deadline stress story), Problem (45s), Feature walkthrough — AI grant draft live, compliance dashboard, donation analytics (2.5 min), Pricing + CTA (45s), Q&A (30s).
+
+OUTPUT FORMAT: Clear markdown headers. UK English. Warm, mission-first tone throughout. Avoid corporate language.`,
+
+  casenarrative: `# ⚖️ CaseNarrative — Marketing Assets Brief
+Paste this into the CaseNarrative app AI assistant as a STANDALONE task. Do not build any features — only generate marketing assets.
+
+YOU ARE generating a complete set of sales and marketing assets for CaseNarrative — a UK legal case management SaaS with AI-powered narrative building for solicitors, paralegals, and insurance claims handlers.
+
+PRODUCT FACTS TO USE:
+- App name: CaseNarrative
+- Tagline ideas: "Case Management, Elevated by AI", "Never Miss a Limitation Date Again", "The AI-Powered Case Narrative Platform for UK Law"
+- Target customers: UK solicitors (150,000+ practising), personal injury firms, employment law practices, insurance claims teams, barristers' chambers, paralegals
+- Pricing: £59/mo Starter | £149/mo Professional | £349/mo Enterprise
+- Key features: AI legal narrative builder (Claude Sonnet — senior solicitor quality), limitation date alerts (critical compliance), practice analytics, PDF legal document export, Stripe Connect for client billing, compliance audit dashboard, client care letter tracking
+- Key differentiator: Limitation date alerts alone prevent professional negligence claims — this is the #1 selling point
+
+GENERATE ALL OF THE FOLLOWING — output each section clearly labelled:
+
+## 1. LANDING PAGE HERO COPY
+Hero headline (max 10 words — must reference either AI or limitation date risk), sub-headline (1–2 sentences), 3 bullets. Tone: authoritative, risk-aware, efficiency-focused.
+
+## 2. FEATURE SECTION COPY (3 FEATURES)
+Feature name, one-line description, 2-sentence benefit paragraph for: AI Legal Narrative Builder, Limitation Date Alert System, Case Compliance Audit Dashboard.
+
+## 3. PRICING PAGE COPY
+For each tier (Starter £59/mo, Professional £149/mo, Enterprise £349/mo): tier name, who it's for, 5 bullet features, CTA. Note: Clio = $49–99/user/mo, LEAP = £100+/user/mo — position CaseNarrative as significantly cheaper for the whole firm.
+
+## 4. EMAIL OUTREACH SEQUENCE (3 EMAILS)
+Cold outreach targeting PI firm practice managers, legal operations managers, and managing partners at SME law firms:
+- Email 1: Limitation date risk hook (~120 words) — professional negligence angle, one missed date = SRA complaint
+- Email 2: AI efficiency angle (~100 words) — "What takes your fee earner 3 hours takes CaseNarrative 3 minutes"
+- Email 3: Free trial / ROI nudge (~80 words)
+Reference real sector pain points: SRA compliance, client care letter obligations, court directions deadlines, indemnity insurance costs.
+
+## 5. LINKEDIN POST (3 VARIATIONS)
+3 posts. Mix: limitation date risk warning (educational), AI demo teaser, cost-vs-Clio comparison. 150–200 words each. Hashtags: #UKLaw #LegalTech #SolicitorUK #PILaw #LegalAI #SRACompliance.
+
+## 6. ONE-PAGE SALES SHEET (TEXT ONLY)
+Logo placeholder | Headline ("Never miss a limitation date") | Problem | Solution | 3 key benefits | Pricing vs competitors | CTA | "Trusted by UK law firms" placeholder.
+
+## 7. OBJECTION HANDLING GUIDE
+6 objections from legal professionals + responses. Examples: "We use a legacy case management system", "Our partners are sceptical of AI in legal work", "GDPR / client confidentiality concerns", "SRA compliance — is this approved?", "We can't switch mid-case", "The price is too high compared to our current Excel system".
+
+## 8. DEMO SCRIPT (5 MINUTES)
+Hook (30s — "What happens if you miss a limitation date?"), Problem (45s — compliance risk + time drain), Feature walkthrough — AI narrative generation live, limitation alerts in red, practice analytics (2.5 min), Pricing vs Clio + CTA (45s), Q&A (30s).
+
+OUTPUT FORMAT: Clear markdown headers. UK English. Authoritative, credible legal sector tone. Never use generic phrases like "streamline your workflow" — be specific to legal practice.`,
+};
+
+// ─── SHARED COMPONENTS ───────────────────────────────────────────────────────
+
+function CopyButton({ content, label, colorClass }) {
+  const [copied, setCopied] = useState(false);
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(BRIEF_CONTENT[brief.id]);
+    await navigator.clipboard.writeText(content);
     setCopied(true);
-    toast.success(`${brief.name} brief copied to clipboard — paste into the app's AI assistant`);
+    toast.success(`Copied — paste into the app's AI assistant`);
     setTimeout(() => setCopied(false), 3000);
   };
+  return (
+    <Button
+      onClick={handleCopy}
+      className={`w-full ${copied ? 'bg-green-600 hover:bg-green-700' : colorClass} text-white font-semibold`}
+    >
+      {copied
+        ? <><CheckCircle2 className="w-4 h-4 mr-2" /> Copied! Paste into AI Assistant</>
+        : <><Copy className="w-4 h-4 mr-2" /> {label}</>}
+    </Button>
+  );
+}
 
+// ─── IMPLEMENTATION BRIEF CARD ───────────────────────────────────────────────
+
+function ImplBriefCard({ brief }) {
+  const colors = COLOR_STYLES[brief.color];
   return (
     <div className={`rounded-xl border-2 ${colors.border} overflow-hidden`}>
-      {/* Header */}
       <div className={`${colors.header} text-white px-5 py-4`}>
         <div className="flex items-center justify-between mb-2">
           <div>
@@ -353,8 +576,6 @@ function BriefCard({ brief }) {
         </div>
         <p className="text-sm text-white/80">{brief.description}</p>
       </div>
-
-      {/* Improvements list */}
       <div className="px-5 py-4 bg-white">
         <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">8 Board-Approved Improvements</div>
         <div className="flex flex-wrap gap-1.5 mb-4">
@@ -362,65 +583,141 @@ function BriefCard({ brief }) {
             <Badge key={i} className={`text-xs ${colors.badge}`}>{imp}</Badge>
           ))}
         </div>
-
-        {/* How to use */}
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-600 mb-4">
           <strong>How to use:</strong> {brief.instruction}
         </div>
-
-        {/* Copy button */}
-        <Button
-          onClick={handleCopy}
-          className={`w-full ${copied ? 'bg-green-600 hover:bg-green-700' : colors.btn} text-white font-semibold`}
-        >
-          {copied ? (
-            <><CheckCircle2 className="w-4 h-4 mr-2" /> Copied! Paste into {brief.name} AI Assistant</>
-          ) : (
-            <><Copy className="w-4 h-4 mr-2" /> Copy {brief.name} Brief to Clipboard</>
-          )}
-        </Button>
+        <CopyButton
+          content={IMPL_BRIEF_CONTENT[brief.id]}
+          label={`Copy ${brief.name} Implementation Brief`}
+          colorClass={colors.btn}
+        />
       </div>
     </div>
   );
 }
 
+// ─── MARKETING BRIEF CARD ────────────────────────────────────────────────────
+
+const MARKETING_ASSETS_LIST = [
+  'Hero & landing page copy',
+  '3 feature section descriptions',
+  'Pricing page copy (all tiers)',
+  '3-email cold outreach sequence',
+  '3 LinkedIn posts',
+  'One-page sales sheet (PDF-ready)',
+  'Objection handling guide (6 objections)',
+  '5-minute demo script',
+];
+
+function MarketingBriefCard({ brief }) {
+  const colors = COLOR_STYLES[brief.color];
+  return (
+    <div className={`rounded-xl border-2 ${colors.border} overflow-hidden`}>
+      <div className={`${colors.header} text-white px-5 py-4`}>
+        <div className="flex items-center gap-3 mb-1">
+          <span className="text-2xl">{brief.emoji}</span>
+          <div>
+            <div className="font-bold text-lg">{brief.name}</div>
+            <div className="text-xs text-white/70">Marketing Assets Pack</div>
+          </div>
+          <Megaphone className="w-5 h-5 text-white/40 ml-auto" />
+        </div>
+      </div>
+      <div className="px-5 py-4 bg-white">
+        <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Assets Generated</div>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {MARKETING_ASSETS_LIST.map((a, i) => (
+            <Badge key={i} className={`text-xs ${colors.badge}`}>{a}</Badge>
+          ))}
+        </div>
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-600 mb-4">
+          <strong>How to use:</strong> {brief.instruction} The AI will output all 8 asset sections in one response — copy each into your sales toolkit.
+        </div>
+        <CopyButton
+          content={MARKETING_CONTENT[brief.id]}
+          label={`Copy ${brief.name} Marketing Brief`}
+          colorClass={colors.btn}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN PAGE ───────────────────────────────────────────────────────────────
+
 export default function AppBriefs() {
+  const [tab, setTab] = useState('implementation');
+
   return (
     <div className="min-h-screen bg-slate-50 p-6 space-y-6 max-w-6xl mx-auto">
 
       {/* Header */}
       <div className="bg-gradient-to-r from-slate-900 to-slate-700 rounded-2xl p-6 text-white">
-        <h1 className="text-2xl font-bold mb-1">App Implementation Briefs</h1>
+        <h1 className="text-2xl font-bold mb-1">App Briefs & Marketing Assets</h1>
         <p className="text-slate-300 text-sm max-w-2xl">
-          One-click copy of each app's complete implementation brief — ready to paste directly into that app's AI assistant.
-          Each brief contains the board-approved improvements, exact code patterns adapted for that domain, and architecture rules.
+          One-click copy of implementation briefs and marketing asset prompts — paste directly into each app's AI assistant.
         </p>
-        <div className="mt-4 bg-white/10 rounded-xl p-4 text-sm">
-          <strong className="text-amber-400">How to use:</strong>
-          <ol className="mt-2 space-y-1 text-slate-300 list-decimal list-inside text-xs">
-            <li>Click "Copy Brief" for the app you're working on (start with Species Explorer)</li>
-            <li>Open that app in a new Base44 browser tab</li>
-            <li>Click the AI assistant chat in that app</li>
-            <li>Paste the brief as your first message</li>
-            <li>The AI assistant will implement each improvement in sequence</li>
-            <li>Test each feature, then come back and copy the next app's brief</li>
-          </ol>
-        </div>
       </div>
 
-      {/* App brief cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {BRIEFS.map(brief => (
-          <BriefCard key={brief.id} brief={brief} />
-        ))}
+      {/* Tab selector */}
+      <div className="flex gap-2 bg-white border border-slate-200 rounded-xl p-1.5 w-fit">
+        <button
+          onClick={() => setTab('implementation')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${tab === 'implementation' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+        >
+          <FileText className="w-4 h-4" /> Implementation Briefs
+        </button>
+        <button
+          onClick={() => setTab('marketing')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${tab === 'marketing' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+        >
+          <Megaphone className="w-4 h-4" /> Marketing Assets
+        </button>
       </div>
 
-      {/* Architecture reminder */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
-        <strong>⚠️ Board Architecture Rule (Ratified April 2026):</strong> Every improvement is implemented natively inside each app's own codebase.
-        No shared runtime dependencies. No cross-app API calls. Each app must work completely standalone — independently saleable at any point.
-        Species Explorer is the priority sale candidate and should be completed first.
-      </div>
+      {/* Implementation Briefs tab */}
+      {tab === 'implementation' && (
+        <>
+          <div className="bg-white/80 border border-slate-200 rounded-xl p-4 text-sm text-slate-700">
+            <strong className="text-amber-600">How to use:</strong>
+            <ol className="mt-2 space-y-1 text-slate-600 list-decimal list-inside text-xs">
+              <li>Copy the brief for the app you're building (start with DataWinder)</li>
+              <li>Open that app in a new Base44 browser tab</li>
+              <li>Paste the brief as your FIRST message in the AI assistant</li>
+              <li>The AI will implement each of the 8 improvements in sequence</li>
+              <li>Test each feature, then move to the next app</li>
+            </ol>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {BRIEFS.map(brief => <ImplBriefCard key={brief.id} brief={brief} />)}
+          </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+            <strong>⚠️ Board Architecture Rule (Ratified April 2026):</strong> Every improvement is implemented natively inside each app's own codebase. No shared runtime dependencies. No cross-app API calls. Each app must work completely standalone — independently saleable at any point.
+          </div>
+        </>
+      )}
+
+      {/* Marketing Assets tab */}
+      {tab === 'marketing' && (
+        <>
+          <div className="bg-white/80 border border-slate-200 rounded-xl p-4 text-sm text-slate-700">
+            <strong className="text-purple-600">How to use:</strong>
+            <ol className="mt-2 space-y-1 text-slate-600 list-decimal list-inside text-xs">
+              <li>Copy the marketing brief for the app you want assets for</li>
+              <li>Open that app in a new Base44 browser tab</li>
+              <li>Paste as your FIRST message in the AI assistant (this is a standalone task — not a build task)</li>
+              <li>The AI will generate all 8 asset sections in one response</li>
+              <li>Copy each section into your sales toolkit, email tool, LinkedIn, and Canva/Google Docs</li>
+            </ol>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {MARKETING_BRIEFS.map(brief => <MarketingBriefCard key={brief.id} brief={brief} />)}
+          </div>
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 text-sm text-purple-900">
+            <strong>💡 Note:</strong> These prompts instruct the AI to generate ONLY marketing copy — no code changes. Run these in a separate conversation from your implementation briefs. Each pack produces ~2,000 words of product-specific, UK-market copy ready for email, LinkedIn, sales calls, and PDF formatting.
+          </div>
+        </>
+      )}
     </div>
   );
 }
