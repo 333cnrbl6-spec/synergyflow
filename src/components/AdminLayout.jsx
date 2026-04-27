@@ -52,6 +52,7 @@ const NAV_GROUPS = [
       { label: 'Architecture Principles', href: '/admin/architecture', icon: '🏗️' },
       { label: 'App Rollout Workbench', href: '/admin/rollout', icon: '🚀' },
       { label: 'App Implementation Briefs', href: '/admin/app-briefs', icon: '📋' },
+      { label: 'Trial Readiness Tracker', href: '/admin/trial-tracker', icon: '🎯' },
       { label: 'Compliance Monitor', href: '/admin/compliance', icon: '🛡️' },
       { label: 'Deadline Tracker', href: '/admin/deadlines', icon: '📅' },
     ],

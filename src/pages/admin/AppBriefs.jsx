@@ -105,9 +105,15 @@ Show a 3-step wizard to new users who haven't completed onboarding (check user.o
 Step 1: Create your first survey (name, location, date). Step 2: Add your first species observation. Step 3: Invite a team member.
 On complete: await base44.auth.updateMe({ onboarding_complete: true }). Dismissable but tracked.
 
-6. STRIPE SUBSCRIPTION PAYWALL (CRITICAL)
-Starter £39/mo: 3 surveys, 50 species observations. Professional £99/mo: unlimited surveys + AI reports + PDF export + 5 team seats. Enterprise £249/mo: unlimited everything + API access.
-Gate "AI Generate Report" and "Export PDF" behind Professional+. Show an upgrade modal with pricing for free/starter users who try to access gated features.
+6. SUBSCRIBER STRIPE CONNECT — REVENUE FOR THE ORGANISATION (CRITICAL)
+This app is deployed to organisations (wildlife trusts, zoos, consultancies) who charge their OWN end-users or members. Each subscriber organisation connects THEIR OWN Stripe account.
+Implement a "Connect Stripe Account" step in the admin/settings area using Stripe Connect (OAuth):
+- Show a "Connect your Stripe account" card in Settings for admin users
+- Use Stripe Connect OAuth link: https://connect.stripe.com/oauth/authorize?response_type=code&client_id=[PLATFORM_CLIENT_ID]&scope=read_write
+- Store the returned stripe_account_id on the organisation/user record
+- All payments taken in the app route to the subscriber's connected Stripe account (not the platform)
+- Show connection status: Connected (with last 4 of account) or "Not connected — connect Stripe to accept payments"
+Feature gating within the app (for the subscriber's own tiers) — let the subscriber configure their own pricing tiers and what features to gate for their end-users. Provide a simple "Pricing Settings" page where the admin can set tier names, prices, and which features are gated.
 
 7. IN-APP NOTIFICATIONS (MEDIUM)
 Bell icon in the navbar showing unread count. Notification types: survey deadline approaching (3 days), new observation added by team member, species conservation status changed, approaching species count limit (starter tier).
@@ -161,9 +167,16 @@ Use html2canvas + jsPDF (already installed). Include Premiso branding, property 
 Step 1: Add your first property (address, type, purchase price, rental value). Step 2: Add your first tenant (name, email, tenancy dates, rent amount). Step 3: Set your rent collection day and late payment threshold.
 On complete: await base44.auth.updateMe({ onboarding_complete: true })
 
-6. STRIPE SUBSCRIPTION PAYWALL (CRITICAL)
-Starter £49/mo: up to 3 properties. Professional £129/mo: unlimited properties + AI document drafting + PDF export + 3 user seats. Enterprise £299/mo: unlimited everything + API + white-label reports.
-Gate AI drafting and PDF export behind Professional+. Show upgrade modal with clear ROI messaging (e.g. "One AI-drafted tenancy agreement saves 2 hours of solicitor time").
+6. SUBSCRIBER STRIPE CONNECT — REVENUE FOR THE ORGANISATION (CRITICAL)
+This app is deployed to property businesses (letting agents, landlords, estate managers) who charge their OWN clients or tenants. Each subscriber organisation connects THEIR OWN Stripe account.
+Implement a "Connect Stripe Account" step in the admin/settings area using Stripe Connect (OAuth):
+- Show a "Connect your Stripe account" card in Settings for admin users
+- Use Stripe Connect OAuth link to connect their account
+- Store the returned stripe_account_id on the organisation/user record
+- All payments (rent collection, fees, deposits) taken in the app route to the subscriber's connected Stripe account
+- Show connection status with clear "Connected" / "Not connected" indicator
+- Provide a "Rent Collection" feature that uses the connected Stripe account to request rent payments from tenants via payment link or direct charge
+Feature gating: Let the admin configure which features their team members can access. Provide a simple "Plan Settings" page in admin.
 
 7. SMART COMPLIANCE ALERTS (MEDIUM)
 Alert types: rent overdue (day 1, 7, 14), tenancy expiring in 90/60/30/14 days, gas safety certificate expiring, EPC expiring, HMO licence renewal due, right-to-rent check due, deposit not protected within 30 days.
@@ -214,9 +227,17 @@ Use html2canvas + jsPDF (already installed). Include charity branding, registere
 Step 1: Set up charity profile (name, registered charity number, cause area, Charity Commission link). Step 2: Create your first fundraising campaign (name, target, end date). Step 3: Invite your first trustee or volunteer.
 On complete: await base44.auth.updateMe({ onboarding_complete: true })
 
-6. STRIPE SUBSCRIPTION PAYWALL (CRITICAL)
-Starter £29/mo: 1 active campaign, 50 donor records. Professional £79/mo: unlimited + AI grant assistant + PDF reports + 5 user seats. Enterprise £199/mo: unlimited everything + API + white-label reports + Charity Commission integration.
-Gate AI assistant and PDF exports behind Professional+. Note: many charities qualify for discounted/free tiers — add "Apply for charity discount" link.
+6. SUBSCRIBER STRIPE CONNECT — DONATIONS & PAYMENTS FOR THE CHARITY (CRITICAL)
+This app is deployed to charities who collect donations and payments from THEIR OWN donors. Each charity subscriber connects THEIR OWN Stripe account.
+Implement a "Connect Stripe Account" step in onboarding and settings using Stripe Connect (OAuth):
+- Show a "Connect your Stripe account" card in Settings for admin users
+- Use Stripe Connect OAuth to link the charity's own Stripe account
+- Store the returned stripe_account_id on the organisation record
+- All donations, event payments, and campaign contributions route to the charity's own Stripe account
+- Show a "Donate Now" button on campaigns that uses the charity's connected Stripe account to process payments
+- Display running total of donations received via Stripe on the campaign dashboard
+- Show connection status clearly — charities need confidence their funds go to THEM not a third party
+Note: Stripe has a verified charity/nonprofit programme — add a note in the UI pointing charities to apply for reduced Stripe fees.
 
 7. SMART DEADLINE & COMPLIANCE ALERTS (MEDIUM)
 Alert types: grant application deadline approaching (30/14/7 days), donor lapsed (no gift in 12 months), campaign milestone reached (25/50/75/100% of target), volunteer shift uncovered, Charity Commission annual return due, Gift Aid submission due.
@@ -270,10 +291,17 @@ Use html2canvas + jsPDF (already installed). Include firm name, SRA number, case
 Step 1: Create practice profile (firm name, SRA number, primary practice areas, limitation date alert preferences). Step 2: Open your first case (case type, client name, incident date, limitation date). Step 3: Configure your limitation date alert thresholds (default: 90/30/14/7/3/1 days).
 On complete: await base44.auth.updateMe({ onboarding_complete: true })
 
-6. STRIPE SUBSCRIPTION PAYWALL (CRITICAL)
-Starter £59/mo: 10 active cases, basic AI narrative. Professional £149/mo: unlimited cases + full AI suite (claude_sonnet_4_6) + PDF export + 3 fee earner seats + priority support. Enterprise £349/mo: unlimited all + court bundle automation + API access + white-label.
-Gate: AI narrative builder (claude model), PDF export, precedent matching → behind Professional+.
-Competitive positioning: Clio = $49-99/user/mo. LEAP = £100+/user/mo. CaseNarrative at £149/mo for the WHOLE FIRM is significantly cheaper. Lead with this in the upgrade modal.
+6. SUBSCRIBER STRIPE CONNECT — BILLING FOR THE LAW FIRM (CRITICAL)
+This app is deployed to law firms and legal practices who bill THEIR OWN clients. Each firm subscriber connects THEIR OWN Stripe account.
+Implement a "Connect Stripe Account" step in settings using Stripe Connect (OAuth):
+- Show a "Connect your Stripe account" card in Settings for admin/managing partner users
+- Use Stripe Connect OAuth to link the firm's own Stripe account
+- Store the returned stripe_account_id on the firm/organisation record
+- Enable "Send Invoice" on case records — generates a Stripe payment link sent to the client for disbursements, fees, or deposits on account
+- Show payment status on each case: Unpaid / Payment Requested / Paid, with amount
+- Dashboard widget: Outstanding client invoices (total £ and count)
+- Show connection status clearly in settings
+This turns CaseNarrative into a billing tool as well as a case management tool — major stickiness and upsell for firms already using it for narratives.
 
 7. COMPLIANCE NOTIFICATIONS (HIGH VALUE — DO THIS BEFORE ANYTHING ELSE IF LIMITATION ALERTS DON'T EXIST)
 ⚠️ Alert types in PRIORITY ORDER:

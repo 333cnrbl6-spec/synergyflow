@@ -42,6 +42,7 @@ import ConfidentialTeaserDocument from './pages/admin/ConfidentialTeaserDocument
 import ArchitecturePrinciples from './pages/admin/ArchitecturePrinciples';
 import AppRolloutWorkbench from './pages/admin/AppRolloutWorkbench';
 import AppBriefs from './pages/admin/AppBriefs';
+import TrialReadinessTracker from './pages/admin/TrialReadinessTracker';
 import ComplianceDashboard from './pages/admin/ComplianceDashboard';
 import DeadlineDashboard from './pages/admin/DeadlineDashboard';
 import Onboarding from './pages/Onboarding';
@@ -113,6 +114,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/architecture" element={<ArchitecturePrinciples />} />
         <Route path="/admin/rollout" element={<AppRolloutWorkbench />} />
         <Route path="/admin/app-briefs" element={<AppBriefs />} />
+        <Route path="/admin/trial-tracker" element={<TrialReadinessTracker />} />
         <Route path="/admin/compliance" element={<ComplianceDashboard />} />
         <Route path="/admin/deadlines" element={<DeadlineDashboard />} />
         <Route path="/admin/pricing" element={<PricingManager />} />
