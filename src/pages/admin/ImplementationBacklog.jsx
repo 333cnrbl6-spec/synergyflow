@@ -247,63 +247,71 @@ export default function ImplementationBacklog() {
   };
 
   const postAppBuildToBoard = async (appName) => {
-    const text = buildText(appName);
     const group = productGroups[appName];
     try {
       // Find a matching channel or use general
       const channels = await base44.entities.BoardChannel.list().catch(() => []);
-      const match = channels.find(c => 
+      const match = channels.find(c =>
         c.name?.toLowerCase().includes(appName.toLowerCase()) ||
         appName.toLowerCase().includes(c.name?.toLowerCase())
       );
       const channelId = match?.id || channels[0]?.id || 'general';
       const channelName = match?.name || channels[0]?.name || 'General';
 
-      // Post to board
+      // Build a short summary (safe size for content field)
+      const summary = [
+        `🚀 **${appName} Build Brief**`,
+        `📋 Proposals: ${group.proposals.length} | ✅ Actions: ${group.actions.length} | 🔧 Tasks: ${group.tasks.length}`,
+        '',
+        group.proposals.slice(0, 5).map(p => `• ${p.title}`).join('\n'),
+        group.proposals.length > 5 ? `...and ${group.proposals.length - 5} more proposals` : '',
+      ].filter(Boolean).join('\n').substring(0, 2000);
+
       await base44.entities.BoardMessage.create({
         channel_id: channelId,
         channel_name: channelName,
-        content: text,
+        content: summary,
         message_type: 'announcement',
         sender_name: 'Implementation Backlog',
         sender_role: 'system',
       });
 
-      // Create an ImplementationTask for each item so the app's own build queue is populated
-      const taskCreations = [];
-
-      group.proposals.forEach(p => {
-        taskCreations.push(base44.entities.ImplementationTask.create({
+      // Build task objects (proposals + actions), cap at 50 to avoid rate limits
+      const allTaskData = [
+        ...group.proposals.map(p => ({
           product_name: appName,
           product_id: p.products_involved?.[0] || appName.toLowerCase().replace(/\s/g, '_'),
           board_member_app: appName,
-          issue_description: p.title,
-          implementation_notes: p.summary,
+          issue_description: p.title?.substring(0, 200) || 'Untitled',
+          implementation_notes: (p.summary || '').substring(0, 500),
           fix_type: 'feature_enhancement',
           issue_severity: 'high',
           implementation_status: 'pending',
-        }));
-      });
-
-      group.actions.forEach(a => {
-        taskCreations.push(base44.entities.ImplementationTask.create({
+        })),
+        ...group.actions.map(a => ({
           product_name: appName,
           product_id: appName.toLowerCase().replace(/\s/g, '_'),
           board_member_app: appName,
-          issue_description: a.title,
-          implementation_notes: a.description,
+          issue_description: a.title?.substring(0, 200) || 'Untitled',
+          implementation_notes: (a.description || '').substring(0, 500),
           fix_type: 'feature_enhancement',
           issue_severity: a.priority === 'critical' ? 'critical' : a.priority === 'high' ? 'high' : 'medium',
           implementation_status: 'pending',
-        }));
-      });
+        })),
+      ].slice(0, 50);
 
-      await Promise.all(taskCreations);
+      // Create in batches of 10 to stay within rate limits
+      for (let i = 0; i < allTaskData.length; i += 10) {
+        const batch = allTaskData.slice(i, i + 10);
+        await Promise.all(batch.map(t => base44.entities.ImplementationTask.create(t)));
+        if (i + 10 < allTaskData.length) await new Promise(r => setTimeout(r, 500));
+      }
+
       await loadAll();
-
-      toast.success(`Posted to #${channelName} & queued ${taskCreations.length} build tasks for ${appName}`);
+      toast.success(`Posted to #${channelName} & queued ${allTaskData.length} build tasks for ${appName}`);
     } catch (e) {
-      toast.error('Failed to post message');
+      console.error(e);
+      toast.error('Failed: ' + e.message);
     }
   };
 
