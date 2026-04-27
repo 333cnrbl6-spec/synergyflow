@@ -248,6 +248,7 @@ export default function ImplementationBacklog() {
 
   const postAppBuildToBoard = async (appName) => {
     const text = buildText(appName);
+    const group = productGroups[appName];
     try {
       // Find a matching channel or use general
       const channels = await base44.entities.BoardChannel.list().catch(() => []);
@@ -258,6 +259,7 @@ export default function ImplementationBacklog() {
       const channelId = match?.id || channels[0]?.id || 'general';
       const channelName = match?.name || channels[0]?.name || 'General';
 
+      // Post to board
       await base44.entities.BoardMessage.create({
         channel_id: channelId,
         channel_name: channelName,
@@ -266,7 +268,40 @@ export default function ImplementationBacklog() {
         sender_name: 'Implementation Backlog',
         sender_role: 'system',
       });
-      toast.success(`Posted ${appName} build backlog to #${channelName}`);
+
+      // Create an ImplementationTask for each item so the app's own build queue is populated
+      const taskCreations = [];
+
+      group.proposals.forEach(p => {
+        taskCreations.push(base44.entities.ImplementationTask.create({
+          product_name: appName,
+          product_id: p.products_involved?.[0] || appName.toLowerCase().replace(/\s/g, '_'),
+          board_member_app: appName,
+          issue_description: p.title,
+          implementation_notes: p.summary,
+          fix_type: 'feature_enhancement',
+          issue_severity: 'high',
+          implementation_status: 'pending',
+        }));
+      });
+
+      group.actions.forEach(a => {
+        taskCreations.push(base44.entities.ImplementationTask.create({
+          product_name: appName,
+          product_id: appName.toLowerCase().replace(/\s/g, '_'),
+          board_member_app: appName,
+          issue_description: a.title,
+          implementation_notes: a.description,
+          fix_type: 'feature_enhancement',
+          issue_severity: a.priority === 'critical' ? 'critical' : a.priority === 'high' ? 'high' : 'medium',
+          implementation_status: 'pending',
+        }));
+      });
+
+      await Promise.all(taskCreations);
+      await loadAll();
+
+      toast.success(`Posted to #${channelName} & queued ${taskCreations.length} build tasks for ${appName}`);
     } catch (e) {
       toast.error('Failed to post message');
     }
