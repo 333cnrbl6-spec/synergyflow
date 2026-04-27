@@ -167,6 +167,15 @@ export default function ImplementationBacklog() {
     return () => { unsub(); unsub2(); };
   }, []);
 
+  // Auto-execute once data is loaded — consent granted by board
+  const [autoExecuted, setAutoExecuted] = useState(false);
+  useEffect(() => {
+    if (!loading && products.length > 0 && !autoExecuted) {
+      setAutoExecuted(true);
+      postAllAppsToBoard();
+    }
+  }, [loading, products.length]);
+
   const loadAll = async () => {
     try {
       const [propsData, actionsData, tasksData] = await Promise.all([
@@ -303,6 +312,15 @@ export default function ImplementationBacklog() {
     toast.success(`Copied ${appName} build backlog`);
   };
 
+  const postAllAppsToBoard = async () => {
+    toast.success('🚀 Auto-executing build briefs for all apps...');
+    for (const appName of products) {
+      await postAppBuildToBoard(appName);
+      await new Promise(r => setTimeout(r, 1000)); // stagger to avoid rate limits
+    }
+    toast.success('✅ All apps posted to board — autonomous buildouts initiated!');
+  };
+
   const postAppBuildToBoard = async (appName) => {
     const group = productGroups[appName];
     try {
@@ -385,9 +403,17 @@ export default function ImplementationBacklog() {
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Implementation Backlog</h1>
-          <p className="text-slate-500 text-sm mt-1">All board-approved proposals, action items and tasks — centralised here for execution tracking.</p>
+        <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Implementation Backlog</h1>
+            <p className="text-slate-500 text-sm mt-1">All board-approved proposals, action items and tasks — centralised here for execution tracking.</p>
+          </div>
+          <Button
+            onClick={postAllAppsToBoard}
+            className="gap-2 bg-green-600 hover:bg-green-700 text-white shrink-0"
+          >
+            🚀 Post All Apps to Board
+          </Button>
         </div>
 
         {/* Summary Cards */}
