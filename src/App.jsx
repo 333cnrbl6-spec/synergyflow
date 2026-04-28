@@ -8,6 +8,7 @@ import { SubscriptionProvider } from '@/lib/SubscriptionContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import OnboardingGate from '@/components/OnboardingGate';
 import Landing from './pages/Landing';
+import NDA from './pages/NDA';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CRMDashboard from './pages/admin/CRMDashboard';
 import ProspectDetail from './pages/admin/ProspectDetail';
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
       <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/nda" element={<NDA />} />
       <Route path="/products/:slug" element={<ProductPage />} />
       <Route path="/analytics" element={<ProtectedAnalyticsRoute><UserAnalyticsDashboard /></ProtectedAnalyticsRoute>} />
       <Route element={<AdminLayout />}>
