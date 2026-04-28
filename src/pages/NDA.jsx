@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, FileText, Shield, AlertTriangle, Download, Lock } from 'lucide-react';
 
-const COMPANY_NAME = "SynergyFlow Ltd";
-const COMPANY_ADDRESS = "England & Wales";
+const COMPANY_NAME = "SynergyFlow Group Ltd";
+const COMPANY_NUMBER = "[COMPANY_NUMBER_TO_BE_INSERTED]";
+const COMPANY_ADDRESS = "[REGISTERED_OFFICE_ADDRESS_TO_BE_INSERTED]";
 const EFFECTIVE_DATE = "28 April 2026";
 
 const PRODUCTS = [
@@ -19,7 +20,7 @@ const NDA_TEXT = `NON-DISCLOSURE AGREEMENT (MULTI-PRODUCT TRIAL & ACCESS)
 This Non-Disclosure Agreement ("Agreement") is entered into as of the date of electronic acceptance ("Effective Date") between:
 
 DISCLOSING PARTY:
-${COMPANY_NAME}, a company incorporated and registered in England & Wales ("Company"), and its affiliated entities, subsidiaries, officers, directors, employees, contractors, and agents.
+${COMPANY_NAME}, a company incorporated and registered in England and Wales under company number ${COMPANY_NUMBER}, with a registered office at ${COMPANY_ADDRESS} ("Company"), and its affiliated entities, subsidiaries, officers, directors, employees, contractors, and agents.
 
 RECEIVING PARTY:
 The individual or organisation accessing the trial, test, or free-access version of one or more of the Company's software platforms ("Recipient"), as identified upon registration or sign-up.
@@ -192,7 +193,8 @@ If you do not agree to these terms, you must not access or use any Platform.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ${COMPANY_NAME}
-Registered in England & Wales
+Company Number: ${COMPANY_NUMBER}
+Registered Office: ${COMPANY_ADDRESS}
 Date: ${EFFECTIVE_DATE}
 
 This document is the property of ${COMPANY_NAME}. Unauthorised reproduction or distribution is prohibited.`;
@@ -298,12 +300,12 @@ export default function NDA() {
         {/* NDA Scroll area */}
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden mb-4">
           <div className="bg-slate-800 px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white text-sm font-semibold">
-              <FileText className="w-4 h-4" />
-              SynergyFlow Ltd — Non-Disclosure Agreement (Multi-Product)
-            </div>
-            <Badge className="bg-blue-600 text-white border-0 text-xs">England & Wales Law</Badge>
-          </div>
+             <div className="flex items-center gap-2 text-white text-sm font-semibold">
+               <FileText className="w-4 h-4" />
+               SynergyFlow Group Ltd — Non-Disclosure Agreement (Multi-Product)
+             </div>
+             <Badge className="bg-blue-600 text-white border-0 text-xs">England & Wales Law</Badge>
+           </div>
 
           <div
             onScroll={handleScroll}
