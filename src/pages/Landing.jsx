@@ -184,46 +184,47 @@ export default function Landing() {
           {[
             {
               name: 'Starter',
-              price: '£149',
-              period: '/month',
-              description: 'Perfect for teams getting started',
+              price: '£49',
+              period: '/month/per user',
+              description: 'Perfect for getting started',
               features: [
                 'Single product access',
-                'Up to 5 team members',
+                'Basic features only',
                 'Email support',
-                'Basic reporting',
-                'Community forum'
+                'Community forum',
+                'Standard storage'
               ],
               highlighted: false,
             },
             {
               name: 'Professional',
-              price: '£449',
+              price: '£99-£199',
               period: '/month',
-              description: 'Ideal for growing teams',
+              description: 'Most popular – scale with your business',
               features: [
-                '2-3 product bundle',
-                'Up to 25 team members',
+                'Full product features',
+                'Up to 5-20 properties/resources',
+                'Team collaboration',
                 'Priority email support',
                 'Advanced analytics',
-                'API access (50K req/mo)',
                 'Custom workflows',
-                'Real-time collaboration'
+                'API access',
+                'Compliance automation'
               ],
               highlighted: true,
             },
             {
               name: 'Enterprise',
-              price: '£1,299',
-              period: '/month',
-              description: 'Complete suite for large orgs',
+              price: 'Custom',
+              period: 'pricing',
+              description: 'Complete solution for large organizations',
               features: [
-                'All 4 products included',
-                'Unlimited team members',
-                '24/7 support',
+                'All features included',
+                'Unlimited resources',
+                'Multi-user access',
+                '24/7 phone support',
                 'Custom dashboards',
-                'Unlimited API requests',
-                'Advanced security',
+                'Unlimited API calls',
                 'Dedicated account manager',
                 '99.9% SLA guarantee'
               ],
@@ -303,14 +304,14 @@ export default function Landing() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: 'Products Included', starter: '1', pro: '2-3', ent: 'All 4' },
-                      { feature: 'Team Members', starter: '5', pro: '25', ent: 'Unlimited' },
-                      { feature: 'Real-time Collaboration', starter: '✗', pro: '✓', ent: '✓' },
-                      { feature: 'Advanced Analytics', starter: '✗', pro: '✓', ent: '✓' },
-                      { feature: 'API Access', starter: '✗', pro: '✓', ent: '✓' },
-                      { feature: 'Custom Workflows', starter: '✗', pro: '✓', ent: '✓' },
-                      { feature: '24/7 Support', starter: '✗', pro: '✗', ent: '✓' },
-                      { feature: 'SLA Guarantee', starter: '✗', pro: '✗', ent: '99.9%' },
+                       { feature: 'Full Feature Access', starter: 'Limited', pro: 'Full', ent: 'Full' },
+                       { feature: 'Team Members', starter: '1', pro: '2-5', ent: 'Unlimited' },
+                       { feature: 'Automation & Workflows', starter: 'Basic', pro: 'Advanced', ent: 'Unlimited' },
+                       { feature: 'Advanced Analytics', starter: '✗', pro: '✓', ent: '✓' },
+                       { feature: 'API Access', starter: '✗', pro: '✓', ent: '✓' },
+                       { feature: 'Custom Integrations', starter: '✗', pro: 'Limited', ent: 'Yes' },
+                       { feature: 'Support Level', starter: 'Email', pro: 'Priority Email', ent: '24/7 Phone' },
+                       { feature: 'SLA Guarantee', starter: 'None', pro: 'None', ent: '99.9%' },
                     ].map((row, i) => (
                       <tr key={i} className="border-b hover:bg-slate-50">
                         <td className="py-3 px-4 font-medium">{row.feature}</td>

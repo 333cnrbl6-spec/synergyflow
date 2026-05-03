@@ -191,62 +191,62 @@ const PRODUCTS = {
   'premiso': {
     name: 'Premiso',
     emoji: '🏠',
-    tagline: 'Conveyancing at lightspeed',
-    description: 'Zero missed defects. Zero regulatory risk. Automated searches, chain verification, and RICS compliance built in.',
-    badge: 'For Conveyancing Solicitors',
+    tagline: 'Property management made simple',
+    description: 'Automated rent reminders, maintenance ticketing, compliance tracking, and tenant communications in one unified platform for UK landlords.',
+    badge: 'For UK Landlords & Property Managers',
     badgeBg: 'bg-green-100 text-green-900',
     buttonColor: 'bg-green-600 hover:bg-green-700',
     accentColor: 'text-green-600',
     features: [
       {
-        icon: '🏠',
-        title: 'Property Search Automation',
-        description: 'Auto-pull searches from multiple providers. No more manual form filling. Save 3+ hours per transaction.'
+        icon: '📧',
+        title: 'Automated Rent Reminders',
+        description: 'Send 3-day pre-rent reminders and automatic late-payment follow-ups. Save hours on chasing overdue payments.'
       },
       {
-        icon: '☑️',
-        title: 'Chain Verification & Defect Flagging',
-        description: 'Automated defect identification. Catch liens, encumbrances, and title issues instantly.'
+        icon: '🔧',
+        title: 'Maintenance Ticketing & Work Orders',
+        description: 'Tenants report issues with photos. You track status, assign contractors, and manage work orders in one place.'
       },
       {
-        icon: '🛡️',
-        title: 'RICS Compliance Automation',
-        description: 'Built-in RICS checklists and compliance standards. Never miss a regulatory requirement.'
+        icon: '📄',
+        title: 'Smart Templates & Documents',
+        description: 'Tenancy agreements, rent demands, notices to quit. Auto-populate from tenant and property data. Generate in seconds.'
       },
       {
-        icon: '⚡',
-        title: 'Document Assembly Engine',
-        description: 'Auto-populate contracts and completion documents from case data. Completions in minutes.'
+        icon: '✅',
+        title: 'Compliance & Deadline Automation',
+        description: 'Gas Safety, EICR, EPC, deposit protection. Automatic reminders 30 days before expiry. Never miss a deadline.'
       }
     ],
     tiers: [
       {
-        name: 'Solo Conveyancer',
-        price: '£69',
+        name: 'Starter',
+        price: '£49',
         period: '/month',
-        description: 'Independent conveyancing practitioners',
-        features: ['Up to 20 active deals', 'Automated property search', 'Chain verification', 'Basic RICS checklists', 'Email support', 'Mobile access', 'Document templates (20+)'],
+        description: 'Single property landlords',
+        features: ['1 property', 'Up to 3 tenants', 'Rent tracking', 'Basic templates', 'Email reminders', 'Document storage', 'Email support'],
         popular: false
       },
       {
-        name: 'Conveyancing Firm',
-        price: '£199',
+        name: 'Professional',
+        price: '£99',
         period: '/month',
-        description: 'Busy property teams',
-        features: ['Unlimited active deals', 'Advanced chain verification', 'RICS compliance automation', 'Automated document assembly', 'Completion milestone tracking', 'Team collaboration', 'Client portal', 'Priority support', 'Integration with Land Registry'],
+        description: 'Growing landlords & small portfolios',
+        features: ['Up to 5 properties', 'Unlimited tenants', 'Full automation suite', 'Custom templates', 'Maintenance ticketing', 'Work order management', 'Compliance tracking', 'Advanced analytics', 'Priority support'],
         popular: true
       },
       {
         name: 'Enterprise',
-        price: '£499',
+        price: '£199',
         period: '/month',
-        description: 'Large firms & property teams',
-        features: ['All Firm features', 'Multi-office management', 'Advanced reporting', 'Custom integrations', 'White-label options', 'Dedicated account manager', '24/7 support', 'Custom workflows', 'API access'],
+        description: 'Large portfolios & agencies',
+        features: ['Up to 20 properties', 'Multi-user access (5 users)', 'All Professional features', 'API access', 'Custom integrations', 'Advanced reporting', 'Team management', 'Dedicated support', 'SLA guarantee'],
         popular: false
       }
     ],
-    cta: 'Join 300+ Conveyancing Firms',
-    ctaSubtitle: 'Cut deal times in half. Eliminate manual work. Guarantee compliance.'
+    cta: 'Join 1,000+ UK Landlords',
+    ctaSubtitle: 'Stop chasing rent. Stop managing spreadsheets. Start managing properties smarter.'
   },
   'charity-hub': {
     name: 'CharityHub',
