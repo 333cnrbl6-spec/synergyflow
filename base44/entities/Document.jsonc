@@ -1,0 +1,101 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Document name (e.g., 'Gas Safety Certificate - 42 Maple St')"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "gas_safety_certificate",
+        "epc",
+        "eicr",
+        "hmo_license",
+        "insurance",
+        "tenancy_agreement",
+        "risk_assessment",
+        "other"
+      ],
+      "description": "Type of compliance document"
+    },
+    "property_id": {
+      "type": "string",
+      "description": "Related property ID"
+    },
+    "property_name": {
+      "type": "string",
+      "description": "Property name for reference"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Secure URL to the uploaded file"
+    },
+    "file_size_kb": {
+      "type": "number",
+      "description": "File size in kilobytes"
+    },
+    "upload_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date document was uploaded"
+    },
+    "issue_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date document was issued"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date document expires (for certificates with validity periods)"
+    },
+    "renewal_alert_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether renewal alert has been sent"
+    },
+    "renewal_alert_sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When renewal alert was sent"
+    },
+    "certification_number": {
+      "type": "string",
+      "description": "Certificate/reference number"
+    },
+    "certified_by": {
+      "type": "string",
+      "description": "Organization/person who issued certificate"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or details"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "expiring_soon",
+        "expired",
+        "archived"
+      ],
+      "default": "valid",
+      "description": "Current compliance status"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Custom tags for organization (e.g., 'urgent', 'renewal_pending')"
+    }
+  },
+  "required": [
+    "name",
+    "document_type",
+    "property_id",
+    "file_url"
+  ]
+}
