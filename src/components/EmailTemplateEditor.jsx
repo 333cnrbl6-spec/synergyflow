@@ -231,7 +231,7 @@ export default function EmailTemplateEditor({ template = null, onSave, onCancel 
             <CardContent className="pt-6 space-y-3 text-xs text-slate-700">
               <p className="font-semibold text-slate-900">Tips:</p>
               <ul className="space-y-2">
-                <li>• Use {{placeholder}} format</li>
+                <li>• Use {`{{placeholder}}`} format</li>
                 <li>• Click placeholders to insert</li>
                 <li>• Missing data shows as [placeholder]</li>
                 <li>• Load defaults to get started</li>
