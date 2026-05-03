@@ -9,6 +9,7 @@ import {
   Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
 import { CalendarDays, TrendingUp } from 'lucide-react';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 
 export default function AnalyticsDashboard() {
   const [startDate, setStartDate] = useState(() => {
@@ -110,8 +111,18 @@ export default function AnalyticsDashboard() {
 
   if (loadingSubs) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="w-full max-w-md">
+          <ProcessingFeedback
+            label="Loading Analytics Dashboard…"
+            detail="Aggregating metrics across all products and subscriptions."
+            tips={[
+              'Analytics are updated daily for optimal performance.',
+              'Historical data is available for the last 12 months.',
+              'Real-time metrics update every 5 minutes during business hours.',
+            ]}
+          />
+        </div>
       </div>
     );
   }

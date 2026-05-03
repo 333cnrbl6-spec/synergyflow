@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Users, DollarSign, Package, Target, Zap } from 'lucide-react';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 import ActionItemsMonitor from '@/components/ActionItemsMonitor';
 import AdvancedAnalytics from '@/components/AdvancedAnalytics';
 import BenchmarkForm from '@/components/BenchmarkForm';
@@ -42,8 +43,18 @@ export default function PortfolioMetrics() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="w-full max-w-md">
+          <ProcessingFeedback
+            label="Loading Portfolio Metrics…"
+            detail="Calculating MRR, churn analysis, and benchmark comparisons."
+            tips={[
+              'Churn risk analysis uses 90-day rolling window metrics.',
+              'Benchmarks are updated quarterly with industry data.',
+              'Metrics dashboard refreshes every 6 hours automatically.',
+            ]}
+          />
+        </div>
       </div>
     );
   }

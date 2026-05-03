@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle2, AlertCircle, Clock, ChevronDown, ChevronUp, Plus, Save, X } from 'lucide-react';
+import ProcessingFeedback from '@/components/ui/ProcessingFeedback';
 import { toast } from 'sonner';
 import ImplementationPanel from '@/components/ImplementationPanel';
 
@@ -150,8 +151,18 @@ export default function ProductVerificationDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen p-6">
+        <div className="w-full max-w-md">
+          <ProcessingFeedback
+            label="Loading Verification Dashboard…"
+            detail="Fetching product test results, readiness scores, and deployment status."
+            tips={[
+              'Each product undergoes 8 critical verification categories.',
+              'Test results are retained for 90 days for compliance audits.',
+              'You can re-run tests anytime from the individual product pages.',
+            ]}
+          />
+        </div>
       </div>
     );
   }
