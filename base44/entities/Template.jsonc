@@ -1,0 +1,56 @@
+{
+  "name": "Template",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name (e.g., 'Standard Tenancy Agreement')"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "tenancy_agreement",
+        "notice_to_quit",
+        "notice_to_repair",
+        "rent_demand",
+        "custom"
+      ],
+      "description": "Type of template"
+    },
+    "content": {
+      "type": "string",
+      "description": "Template content with placeholder tags (e.g., {{tenant_name}}, {{property_address}})"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description of what this template is used for"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a system default template"
+    },
+    "available_placeholders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of available placeholder tags for this template type"
+    },
+    "usage_count": {
+      "type": "integer",
+      "default": 0,
+      "description": "Number of times this template has been used"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this template was used"
+    }
+  },
+  "required": [
+    "name",
+    "template_type",
+    "content"
+  ]
+}
