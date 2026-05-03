@@ -52,6 +52,7 @@ import UserAnalyticsDashboard from './pages/UserAnalyticsDashboard';
 import ProtectedAnalyticsRoute from './components/ProtectedAnalyticsRoute';
 import AdminLayout from './components/AdminLayout';
 import FinancialInsightsDashboard from './components/FinancialInsightsDashboard';
+import ContractorPortal from './pages/ContractorPortal';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -85,6 +86,7 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/nda" element={<NDA />} />
       <Route path="/products/:slug" element={<ProductPage />} />
+      <Route path="/contractor" element={<ContractorPortal />} />
       <Route path="/analytics" element={<ProtectedAnalyticsRoute><UserAnalyticsDashboard /></ProtectedAnalyticsRoute>} />
       <Route element={<AdminLayout />}>
         <Route path="/admin" element={<AdminDashboard />} />
