@@ -1,0 +1,189 @@
+{
+  "name": "DepositProtection",
+  "type": "object",
+  "properties": {
+    "property_id": {
+      "type": "string",
+      "description": "Related property ID"
+    },
+    "property_name": {
+      "type": "string",
+      "description": "Property name for reference"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Full property address"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Related tenant ID"
+    },
+    "tenant_name": {
+      "type": "string",
+      "description": "Tenant name"
+    },
+    "tenant_email": {
+      "type": "string",
+      "description": "Tenant email for notifications"
+    },
+    "tenancy_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When tenancy begins"
+    },
+    "deposit_amount": {
+      "type": "number",
+      "description": "Deposit amount in pounds"
+    },
+    "deposit_received_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date deposit was received"
+    },
+    "protection_deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "30th day after receipt (protection must be in place by this date)"
+    },
+    "prescribed_info_deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "30th day after receipt (prescribed information must be provided)"
+    },
+    "protection_scheme": {
+      "type": "string",
+      "enum": [
+        "dps",
+        "tds",
+        "mydeposits",
+        "not_protected"
+      ],
+      "description": "Which scheme the deposit is protected with"
+    },
+    "protection_reference": {
+      "type": "string",
+      "description": "Reference/certificate number from the scheme"
+    },
+    "protection_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When protection was actually registered"
+    },
+    "prescribed_info_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether prescribed information was provided to tenant"
+    },
+    "prescribed_info_sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When prescribed information was sent"
+    },
+    "prescribed_info_document_url": {
+      "type": "string",
+      "description": "URL to the prescribed information document sent to tenant"
+    },
+    "tenant_notification_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tenant was notified of protection"
+    },
+    "tenant_notification_sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When tenant notification was sent"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "compliant",
+        "at_risk",
+        "non_compliant",
+        "overdue"
+      ],
+      "default": "at_risk",
+      "description": "Current compliance status"
+    },
+    "compliance_alerts_sent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "alert_type": {
+            "type": "string",
+            "enum": [
+              "protection_deadline_warning",
+              "prescribed_info_deadline_warning",
+              "protection_overdue",
+              "prescribed_info_overdue"
+            ]
+          },
+          "days_before_deadline": {
+            "type": "integer",
+            "description": "e.g. 7 (days before deadline when alert sent)"
+          },
+          "sent_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Alerts sent to landlord"
+    },
+    "tenancy_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When tenancy ends"
+    },
+    "deposit_status": {
+      "type": "string",
+      "enum": [
+        "held",
+        "returned",
+        "deductions_made",
+        "disputed"
+      ],
+      "default": "held",
+      "description": "Current status of deposit"
+    },
+    "return_amount": {
+      "type": "number",
+      "description": "Amount to be returned to tenant"
+    },
+    "deductions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Reason for deduction (e.g., damage, cleaning)"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Itemized deductions from deposit"
+    },
+    "protection_scheme_contact": {
+      "type": "string",
+      "description": "Contact details for scheme (for tenant disputes)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes about this deposit"
+    }
+  },
+  "required": [
+    "property_id",
+    "tenant_id",
+    "deposit_amount",
+    "deposit_received_date",
+    "protection_deadline",
+    "prescribed_info_deadline"
+  ]
+}
