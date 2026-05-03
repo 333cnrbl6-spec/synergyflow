@@ -1,0 +1,78 @@
+{
+  "name": "RentPayment",
+  "type": "object",
+  "properties": {
+    "property_id": {
+      "type": "string",
+      "description": "Related property ID"
+    },
+    "property_name": {
+      "type": "string",
+      "description": "Property name for reference"
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Related tenant ID"
+    },
+    "tenant_name": {
+      "type": "string",
+      "description": "Tenant name for reference"
+    },
+    "rent_amount": {
+      "type": "number",
+      "description": "Monthly rent in pounds"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date rent was due"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date payment was received"
+    },
+    "payment_received": {
+      "type": "number",
+      "description": "Amount actually received"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "overdue",
+        "partial",
+        "missed"
+      ],
+      "default": "pending",
+      "description": "Payment status"
+    },
+    "days_overdue": {
+      "type": "integer",
+      "description": "How many days overdue (if applicable)"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "cheque",
+        "cash",
+        "standing_order",
+        "online",
+        "other"
+      ],
+      "description": "How payment was made"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about payment"
+    }
+  },
+  "required": [
+    "property_id",
+    "tenant_id",
+    "rent_amount",
+    "due_date"
+  ]
+}

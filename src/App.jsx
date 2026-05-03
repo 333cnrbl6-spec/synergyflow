@@ -51,6 +51,7 @@ import ProductPage from './pages/ProductPage';
 import UserAnalyticsDashboard from './pages/UserAnalyticsDashboard';
 import ProtectedAnalyticsRoute from './components/ProtectedAnalyticsRoute';
 import AdminLayout from './components/AdminLayout';
+import FinancialInsightsDashboard from './components/FinancialInsightsDashboard';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -123,6 +124,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/market-strategy" element={<StrategicMarketAnalysis />} />
         <Route path="/admin/team" element={<TeamManagement />} />
         <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/admin/financial-insights" element={<FinancialInsightsDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
       </Routes>
