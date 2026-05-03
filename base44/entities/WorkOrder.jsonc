@@ -1,0 +1,159 @@
+{
+  "name": "WorkOrder",
+  "type": "object",
+  "properties": {
+    "work_order_number": {
+      "type": "string",
+      "description": "Unique work order reference"
+    },
+    "maintenance_ticket_id": {
+      "type": "string",
+      "description": "Related MaintenanceTicket ID"
+    },
+    "ticket_number": {
+      "type": "string",
+      "description": "Ticket reference for display"
+    },
+    "property_id": {
+      "type": "string",
+      "description": "Related property ID"
+    },
+    "property_name": {
+      "type": "string",
+      "description": "Property name"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Full property address"
+    },
+    "contractor_name": {
+      "type": "string",
+      "description": "Contractor or company name"
+    },
+    "contractor_email": {
+      "type": "string",
+      "description": "Contractor email"
+    },
+    "contractor_phone": {
+      "type": "string",
+      "description": "Contractor phone"
+    },
+    "task_description": {
+      "type": "string",
+      "description": "Detailed work to be performed"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When work order was issued"
+    },
+    "scheduled_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Planned start date"
+    },
+    "scheduled_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Planned completion date"
+    },
+    "actual_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual work start date"
+    },
+    "actual_completion_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual completion date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "issued",
+        "assigned",
+        "in_progress",
+        "completed",
+        "invoiced",
+        "paid",
+        "cancelled"
+      ],
+      "default": "issued",
+      "description": "Work order status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "emergency"
+      ],
+      "default": "medium",
+      "description": "Priority level"
+    },
+    "estimated_cost": {
+      "type": "number",
+      "description": "Estimated cost in pounds"
+    },
+    "actual_cost": {
+      "type": "number",
+      "description": "Actual cost after completion"
+    },
+    "materials_cost": {
+      "type": "number",
+      "description": "Cost of materials"
+    },
+    "labor_cost": {
+      "type": "number",
+      "description": "Cost of labor"
+    },
+    "materials_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "List of materials needed"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "invoiced",
+        "paid",
+        "overdue"
+      ],
+      "default": "pending",
+      "description": "Payment status"
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "Invoice reference"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    },
+    "tenant_access_instructions": {
+      "type": "string",
+      "description": "Instructions for contractor accessing property"
+    }
+  },
+  "required": [
+    "maintenance_ticket_id",
+    "property_id",
+    "contractor_name",
+    "task_description"
+  ]
+}
