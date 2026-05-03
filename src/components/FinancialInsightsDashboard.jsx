@@ -66,7 +66,10 @@ export default function FinancialInsightsDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Financial Insights</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Financial Insights</h1>
+          <p className="text-xs text-slate-500 mt-1">Last updated: {new Date().toLocaleString('en-GB')}</p>
+        </div>
         <Button onClick={fetchInsights} variant="outline" className="gap-2">
           <Download className="w-4 h-4" />
           Refresh

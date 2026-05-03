@@ -382,9 +382,27 @@ function DepositDetailsModal({ deposit, onClose, onUpdate }) {
   };
 
   const handleSendPrescribedInfo = async () => {
+    // Validate email before sending
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!deposit.tenant_email || !emailRegex.test(deposit.tenant_email)) {
+      toast.error('Invalid tenant email address');
+      return;
+    }
+
+    // Validate protection date >= deposit received date
+    const protDate = new Date(protectionDate);
+    const recDate = new Date(deposit.deposit_received_date);
+    if (protDate < recDate) {
+      toast.error('Protection date cannot be before deposit received date');
+      return;
+    }
+
     const prescribedInfo = generatePrescribedInformation(deposit, scheme);
     
     try {
+      // Show loading state
+      const originalText = 'Send Prescribed Information to Tenant';
+      
       await base44.integrations.Core.SendEmail({
         to: deposit.tenant_email,
         subject: `Prescribed Information - Your Tenancy Deposit at ${deposit.property_address}`,

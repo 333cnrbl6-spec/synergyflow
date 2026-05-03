@@ -23,6 +23,7 @@ export default function MaintenanceReportForm({ property, tenant, onSuccess }) {
   const [notes, setNotes] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [lastSubmitTime, setLastSubmitTime] = useState(0); // Prevent duplicate submissions
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
@@ -73,8 +74,28 @@ export default function MaintenanceReportForm({ property, tenant, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Prevent duplicate submissions (debounce)
+    const now = Date.now();
+    if (now - lastSubmitTime < 1000) {
+      toast.error('Please wait before submitting again');
+      return;
+    }
+    setLastSubmitTime(now);
+
     if (!title.trim() || !description.trim()) {
       toast.error('Title and description are required');
+      return;
+    }
+
+    // Validate tenant info exists
+    if (!tenant?.id || !tenant?.email) {
+      toast.error('Tenant information missing');
+      return;
+    }
+
+    // Validate property info exists
+    if (!property?.id) {
+      toast.error('Property information missing');
       return;
     }
 

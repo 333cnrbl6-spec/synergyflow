@@ -60,8 +60,20 @@ Deno.serve(async (req) => {
         const shouldAlert = checkAlertCondition(deposit, daysUntil);
 
         if (shouldAlert) {
+          // Validate landlord email before sending
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!user.email || !emailRegex.test(user.email)) {
+            checkResults.errors.push({
+              deposit_id: deposit.id,
+              error: `Invalid landlord email: ${user.email}`
+            });
+            continue;
+          }
+
           // Record alert sent
-          const alertLog = deposit.compliance_alerts_sent || [];
+          const alertLog = (deposit.compliance_alerts_sent && Array.isArray(deposit.compliance_alerts_sent)) 
+            ? [...deposit.compliance_alerts_sent]
+            : [];
           alertLog.push({
             alert_type: shouldAlert.type,
             days_before_deadline: daysUntil,
@@ -112,7 +124,10 @@ function checkAlertCondition(deposit, daysUntil) {
   }
 
   // Check if already sent same type of alert (avoid spam)
-  const alertHistory = deposit.compliance_alerts_sent || [];
+  // Safely handle null/undefined alert history
+  const alertHistory = (deposit.compliance_alerts_sent && Array.isArray(deposit.compliance_alerts_sent)) 
+    ? deposit.compliance_alerts_sent 
+    : [];
   
   // Alert when protection not yet done and 14 days remain
   if (!deposit.protection_date && daysUntil === 14) {
@@ -156,6 +171,19 @@ function checkAlertCondition(deposit, daysUntil) {
 }
 
 /**
+ * HTML escape user input to prevent XSS
+ */
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Build email alert for landlord
  */
 function buildAlertEmail(deposit, daysUntil, alertInfo) {
@@ -185,8 +213,8 @@ function buildAlertEmail(deposit, daysUntil, alertInfo) {
   return `
     <h2>Deposit Compliance Alert</h2>
     
-    <p><strong>Property:</strong> ${deposit.property_address}</p>
-    <p><strong>Tenant:</strong> ${deposit.tenant_name}</p>
+    <p><strong>Property:</strong> ${escapeHtml(deposit.property_address)}</p>
+    <p><strong>Tenant:</strong> ${escapeHtml(deposit.tenant_name)}</p>
     <p><strong>Deposit Amount:</strong> £${deposit.deposit_amount}</p>
     <p><strong>Received:</strong> ${new Date(deposit.deposit_received_date).toLocaleDateString('en-GB')}</p>
     <p><strong>Deadline:</strong> ${new Date(deposit.protection_deadline).toLocaleDateString('en-GB')} (${daysUntil} days)</p>

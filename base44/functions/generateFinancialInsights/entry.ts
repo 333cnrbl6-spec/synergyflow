@@ -103,6 +103,7 @@ Deno.serve(async (req) => {
       const income = incomeByProperty[propId];
       const maintenance = maintenanceByProperty[propId] || { total_maintenance: 0 };
       const netProfit = income.total_received - maintenance.total_maintenance;
+      // Guard against division by zero: if no rent received, ROI is 0
       const roi = income.total_received > 0 ? (netProfit / income.total_received) * 100 : 0;
 
       return {

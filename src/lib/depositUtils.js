@@ -114,6 +114,19 @@ export function getComplianceStatus(deposit) {
 }
 
 /**
+ * HTML escape user input to prevent XSS
+ */
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Generate prescribed information text (England & Wales)
  */
 export function generatePrescribedInformation(deposit, scheme) {
@@ -130,7 +143,7 @@ This document contains prescribed information about how your tenancy deposit has
 
 DEPOSIT DETAILS
 ===============
-Property Address: ${deposit.property_address}
+Property Address: ${escapeHtml(deposit.property_address)}
 Deposit Amount: £${deposit.deposit_amount}
 Date Received: ${new Date(deposit.deposit_received_date).toLocaleDateString('en-GB')}
 Tenancy Start Date: ${new Date(deposit.tenancy_start_date).toLocaleDateString('en-GB')}
