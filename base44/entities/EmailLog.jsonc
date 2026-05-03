@@ -1,0 +1,69 @@
+{
+  "name": "EmailLog",
+  "type": "object",
+  "properties": {
+    "tenant_email": {
+      "type": "string",
+      "description": "Recipient email address"
+    },
+    "tenant_name": {
+      "type": "string",
+      "description": "Tenant name for reference"
+    },
+    "property_id": {
+      "type": "string",
+      "description": "Related property ID"
+    },
+    "property_name": {
+      "type": "string",
+      "description": "Property name for reference"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "EmailTemplate ID used"
+    },
+    "template_type": {
+      "type": "string",
+      "description": "Type of template sent"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject as sent"
+    },
+    "body": {
+      "type": "string",
+      "description": "Email body as sent"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When email was sent"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed",
+        "bounced",
+        "scheduled"
+      ],
+      "default": "sent",
+      "description": "Email delivery status"
+    },
+    "trigger_context": {
+      "type": "object",
+      "description": "Context that triggered this email (e.g., rent overdue by 7 days)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or error messages"
+    }
+  },
+  "required": [
+    "tenant_email",
+    "tenant_name",
+    "property_id",
+    "template_type",
+    "subject"
+  ]
+}

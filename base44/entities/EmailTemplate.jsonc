@@ -1,0 +1,74 @@
+{
+  "name": "EmailTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name (e.g., 'Rent Reminder - 3 Days Late')"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "rent_reminder",
+        "rent_overdue",
+        "tenancy_renewal",
+        "maintenance_update",
+        "inspection_notice",
+        "deposit_return",
+        "custom"
+      ],
+      "description": "Type of email template"
+    },
+    "subject_line": {
+      "type": "string",
+      "description": "Email subject with placeholders (e.g., 'Rent Payment Due - {{property_name}}')"
+    },
+    "body": {
+      "type": "string",
+      "description": "Email body with placeholder tags for auto-population"
+    },
+    "description": {
+      "type": "string",
+      "description": "When/why this template is sent"
+    },
+    "trigger_type": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "rent_due",
+        "rent_overdue_3_days",
+        "rent_overdue_7_days",
+        "rent_overdue_14_days",
+        "tenancy_renewal_90_days",
+        "tenancy_renewal_30_days",
+        "maintenance_scheduled",
+        "custom_date"
+      ],
+      "description": "When this template is triggered"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a system default template"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this template is active"
+    },
+    "available_placeholders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of available placeholder tags"
+    }
+  },
+  "required": [
+    "name",
+    "template_type",
+    "subject_line",
+    "body",
+    "trigger_type"
+  ]
+}
