@@ -1,0 +1,37 @@
+{
+  "name": "Auto-Implement Approved Proposals",
+  "description": "Automatically implements any proposal approved by chairman or majority board vote",
+  "trigger": {
+    "condition": "${ ((.trigger.data.status == \"approved\") or (.trigger.data.approval_stage == \"passed\")) }",
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "update"
+      ],
+      "entity_name": "BoardProposal"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "auto_implement_approved_proposals",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "autoImplementApprovedProposals",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "autoImplementApprovedProposals"
+  }
+}

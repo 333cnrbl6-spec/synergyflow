@@ -1,0 +1,37 @@
+{
+  "name": "Notify Board - Proposal Vote Passed",
+  "description": "Send alerts when proposals pass voting and move to approval",
+  "trigger": {
+    "condition": "${ ((.trigger.data.approval_stage == \"passed\") or (.trigger.data.status == \"approved\")) }",
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "update"
+      ],
+      "entity_name": "BoardProposal"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "notify_board_proposal_vote_passed",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "notifyProposalVotePassed",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "notifyProposalVotePassed"
+  }
+}
